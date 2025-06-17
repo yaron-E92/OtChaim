@@ -64,7 +64,12 @@ public class User : Entity
             case SubscriptionRequested subscriptionRequested:
                 OnSubscriptionRequested(subscriptionRequested);
                 break;
-            // Add more cases for other event types as needed
+            case SubscriptionApproved subscriptionApproved:
+                OnSubscriptionApproved(subscriptionApproved);
+                break;
+            case SubscriptionRejected subscriptionRejected:
+                OnSubscriptionRejected(subscriptionRejected);
+                break;
             default:
                 throw new NotImplementedException($"No handler for event type {userEvent.GetType().Name}");
         }
@@ -75,7 +80,24 @@ public class User : Entity
     public void OnSubscriptionRequested(SubscriptionRequested subscriptionEvent)
     {
         var subscription = new Subscription(subscriptionEvent.SubscriberId, subscriptionEvent.SubscribedToId, RequiresSubscriptionApproval());
-
         _subscriptions.Add(subscription);
+    }
+
+    public void OnSubscriptionApproved(SubscriptionApproved subscriptionEvent)
+    {
+        var subscription = _subscriptions.FirstOrDefault(s => s.SubscriberId == subscriptionEvent.SubscriberId && s.SubscribedToId == subscriptionEvent.SubscribedToId);
+        if (subscription != null)
+        {
+            subscription.Approve();
+        }
+    }
+
+    public void OnSubscriptionRejected(SubscriptionRejected subscriptionEvent)
+    {
+        var subscription = _subscriptions.FirstOrDefault(s => s.SubscriberId == subscriptionEvent.SubscriberId && s.SubscribedToId == subscriptionEvent.SubscribedToId);
+        if (subscription != null)
+        {
+            subscription.Reject();
+        }
     }
 }
