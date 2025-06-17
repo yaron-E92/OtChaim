@@ -1,6 +1,5 @@
 using System;
 using OtChaim.Domain.Common;
-using OtChaim.Domain.EmergencyEvents.Commands;
 
 namespace OtChaim.Domain.EmergencyEvents.Events
 {
@@ -11,7 +10,8 @@ namespace OtChaim.Domain.EmergencyEvents.Events
         public EmergencyType EmergencyType { get; }
         public Location Location { get; }
         public Area AffectedArea { get; }
-        public DateTime StartedOn { get; }
+        public DateTime StartedOn => OccurredOn;
+        public DateTime OccurredOn { get; }
 
         public EmergencySituationStarted(
             Guid emergencySituationId,
@@ -25,7 +25,7 @@ namespace OtChaim.Domain.EmergencyEvents.Events
             EmergencyType = emergencyType;
             Location = location;
             AffectedArea = affectedArea;
-            StartedOn = DateTime.UtcNow;
+            OccurredOn = DateTime.UtcNow;
         }
     }
 }

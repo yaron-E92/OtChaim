@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OtChaim.Domain\OtChaim.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

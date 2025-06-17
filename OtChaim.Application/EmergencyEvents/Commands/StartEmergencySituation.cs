@@ -1,26 +1,28 @@
 using OtChaim.Application.Common;
-using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
+using OtChaim.Domain.Common;
 
-namespace OtChaim.Application.EmergencyEvents.Commands
+namespace OtChaim.Application.EmergencyEvents.Commands;
+
+public class StartEmergencySituation : ICommand
 {
-    public class StartEmergencySituation : ICommand
-    {
-        public Guid InitiatorId { get; }
-        public EmergencyType EmergencyType { get; }
-        public Location Location { get; }
-        public Area AffectedArea { get; }
+    public Guid InitiatorUserId { get; }
+    public EmergencyType Type { get; }
+    public Location Location { get; }
+    public Area Area { get; }
+    public string Description { get; }
 
-        public StartEmergencySituation(
-            Guid initiatorId,
-            EmergencyType emergencyType,
-            Location location,
-            Area affectedArea)
-        {
-            InitiatorId = initiatorId;
-            EmergencyType = emergencyType;
-            Location = location;
-            AffectedArea = affectedArea;
-        }
+    public StartEmergencySituation(
+        Guid initiatorUserId,
+        EmergencyType type,
+        Location location,
+        Area area,
+        string description)
+    {
+        InitiatorUserId = initiatorUserId;
+        Type = type;
+        Location = location;
+        Area = area;
+        Description = description;
     }
 }

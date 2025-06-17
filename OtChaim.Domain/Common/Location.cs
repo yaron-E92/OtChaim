@@ -1,24 +1,23 @@
 using System.Collections.Generic;
 
-namespace OtChaim.Domain.Common
+namespace OtChaim.Domain.Common;
+
+public class Location : ValueObject
 {
-    public class Location : ValueObject
+    public double Latitude { get; }
+    public double Longitude { get; }
+    public string Description { get; }
+
+    public Location(double latitude, double longitude, string description)
     {
-        public double Latitude { get; }
-        public double Longitude { get; }
-        public string Description { get; }
+        Latitude = latitude;
+        Longitude = longitude;
+        Description = description;
+    }
 
-        public Location(double latitude, double longitude, string description)
-        {
-            Latitude = latitude;
-            Longitude = longitude;
-            Description = description;
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Latitude;
-            yield return Longitude;
-        }
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Latitude;
+        yield return Longitude;
     }
 }
