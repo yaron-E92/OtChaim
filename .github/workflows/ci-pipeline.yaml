@@ -11,8 +11,9 @@ on:
 
 jobs:
   gitVersion:
+    name: Determine Version
     runs-on: ubuntu-latest
-    if: false  # Skip this job
+    if: ${{ false }}  # Skip this job
     outputs:
       branchName: ${{ steps.gitversion.outputs.branchName }}
       semVer: ${{ steps.gitversion.outputs.semVer }}
@@ -26,13 +27,16 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        persist-credentials: false
+
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v1.1.1
       with:
         versionSpec: '5.x'
         preferLatestVersion: true
+
     - name: Determine Version
-      id:   gitversion
+      id: gitversion
       uses: gittools/actions/gitversion/execute@v1.1.1
       with:
         additionalArguments: '/updateprojectfiles'
@@ -40,32 +44,61 @@ jobs:
         configFilePath: '.github/GitVersion.yaml'
 
   buildAndTestWithoutGUI:
-    needs: [gitVersion]
+    name: Build and Test (No GUI)
+    # needs: [gitVersion]
     runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
       contents: read
+      packages: read
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
     - name: Setup .NET
       id: setupDotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
     - name: Ensure GitHub NuGet Source
       run: |
         dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json \
           -n github \
           -u Yaron-E92 \
-          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_05JUL2025 }} \
+          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
           --store-password-in-clear-text
+      continue-on-error: true
+
+    - name: Restore Dependencies
+      run: dotnet restore --no-cache
+      continue-on-error: true
+
     - name: Build
       id: build
-      run: dotnet build -c NoGUI
+      run: |
+        dotnet build -c NoGUI --no-restore
+        if [ $? -ne 0 ]; then
+          echo "::error::Build failed"
+          exit 1
+        fi
+
     - name: Test
-      run: dotnet test --logger "trx" --no-build -c NoGUI --verbosity normal /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+      run: |
+        dotnet test --logger "trx" --no-build -c NoGUI --verbosity normal \
+          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
+          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
+          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+        if [ $? -ne 0 ]; then
+          echo "::error::Tests failed"
+          exit 1
+        fi
+
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: ${{steps.build.outcome == 'success'}}
@@ -74,97 +107,149 @@ jobs:
           tests/**/TestResults/*.xml
           tests/**/TestResults/*.trx
           tests/**/TestResults/*.json
+        check_name: "Test Results (No GUI)"
 
   checkWhetherGUIBuildNeeded:
+    name: Check GUI Build Requirements
     needs: [gitVersion]
     runs-on: ubuntu-latest
-    if: false  # Skip this job
     outputs:
       diff: ${{steps.checkDiff.outputs.diff}}
       override: ${{steps.determineOverride.outputs.override}}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Check diff
-        id: checkDiff
-        run: |
-          DIFF=$(git diff origin/main HEAD -- src/TATATORPLAG.GUI/**/*.cs src/TATATORPLAG.GUI/*.cs src/TATATORPLAG.GUI/**/*.xaml src/TATATORPLAG.GUI/*.xaml | head -n 1)
-          echo "diff=$DIFF" >> $GITHUB_OUTPUT
-      - name: Check for override in PR description
-        id: checkOverridePR
-        if: contains(needs.gitVersion.outputs.branchName, 'pull')
-        env:
-          PR_DESCRIPTION: ${{ github.event.pull_request.body }}
-        run: |
-          guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $PR_DESCRIPTION)
-          echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
-      - name: Check for override in merge commit
-        if: contains(needs.gitVersion.outputs.branchName, 'main')
-        id: checkOverrideMerge
-        env:
-          MERGE_COMMIT: ${{ github.event.head_commit.message }}
-        run: |
-          guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $MERGE_COMMIT)
-          echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
-      - name: Determine override
-        id: determineOverride
-        if: |
-          steps.checkOverridePR.outputs.guiLine != '' ||
-          steps.checkOverrideMerge.outputs.guiLine != ''
-        env:
-          PR_GUILINE: ${{steps.checkOverridePR.outputs.guiLine}}
-          MERGE_GUILINE: ${{steps.checkOverrideMerge.outputs.guiLine}}
-        run: |
-          if [[ $PR_GUILINE == *"false"* || $MERGE_GUILINE == *"false"* ]]; then
-            echo "override=false" >> $GITHUB_OUTPUT
-          elif [[ $PR_GUILINE == *"true"* || $MERGE_GUILINE == *"true"* ]]; then
-            echo "override=true" >> $GITHUB_OUTPUT
-          else
-            echo "override=" >> $GITHUB_OUTPUT
-          fi
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
+    - name: Check diff
+      id: checkDiff
+      run: |
+        DIFF=$(git diff origin/main HEAD -- src/OtChaim.GUI/**/*.cs src/OtChaim.GUI/*.cs src/OtChaim.GUI/**/*.xaml src/OtChaim.GUI/*.xaml | head -n 1)
+        echo "diff=$DIFF" >> $GITHUB_OUTPUT
+        echo "Diff found: $DIFF"
+
+    - name: Check for override in PR description
+      id: checkOverridePR
+      if: contains(needs.gitVersion.outputs.branchName, 'pull')
+      env:
+        PR_DESCRIPTION: ${{ github.event.pull_request.body }}
+      run: |
+        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $PR_DESCRIPTION)
+        echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
+        echo "PR GUI override: $guiLine"
+
+    - name: Check for override in merge commit
+      if: contains(needs.gitVersion.outputs.branchName, 'main')
+      id: checkOverrideMerge
+      env:
+        MERGE_COMMIT: ${{ github.event.head_commit.message }}
+      run: |
+        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $MERGE_COMMIT)
+        echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
+        echo "Merge GUI override: $guiLine"
+
+    - name: Determine override
+      id: determineOverride
+      if: |
+        steps.checkOverridePR.outputs.guiLine != '' ||
+        steps.checkOverrideMerge.outputs.guiLine != ''
+      env:
+        PR_GUILINE: ${{steps.checkOverridePR.outputs.guiLine}}
+        MERGE_GUILINE: ${{steps.checkOverrideMerge.outputs.guiLine}}
+      run: |
+        if [[ $PR_GUILINE == *"false"* || $MERGE_GUILINE == *"false"* ]]; then
+          echo "override=false" >> $GITHUB_OUTPUT
+        elif [[ $PR_GUILINE == *"true"* || $MERGE_GUILINE == *"true"* ]]; then
+          echo "override=true" >> $GITHUB_OUTPUT
+        else
+          echo "override=" >> $GITHUB_OUTPUT
+        fi
+        echo "Final override value: ${{ steps.determineOverride.outputs.override }}"
 
   buildAndTestGUI:
+    name: Build and Test GUI
     needs: [checkWhetherGUIBuildNeeded]
     if: |
-      false && ((needs.checkWhetherGUIBuildNeeded.outputs.diff != '' &&
+      (needs.checkWhetherGUIBuildNeeded.outputs.diff != '' &&
       needs.checkWhetherGUIBuildNeeded.outputs.override != 'false') ||
-      needs.checkWhetherGUIBuildNeeded.outputs.override == 'true')
+      needs.checkWhetherGUIBuildNeeded.outputs.override == 'true'
     runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
       contents: read
+      packages: read
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
     - name: Setup .NET
       id: setupDotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
     - name: Ensure GitHub NuGet Source
       run: |
         dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json \
           -n github \
           -u Yaron-E92 \
-          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_05JUL2025 }} \
+          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
           --store-password-in-clear-text
+      continue-on-error: true
+
     - name: Install workload
-      run: dotnet workload install maui-android wasi-experimental
+      run: |
+        dotnet workload install maui-android wasi-experimental
+        if [ $? -ne 0 ]; then
+          echo "::error::Failed to install workloads"
+          exit 1
+        fi
+
     - name: Setup Android SDK
       run: |
-        echo ${{needs.checkWhetherGUIBuildNeeded.outputs.diff}}
+        echo "Checking GUI changes: ${{needs.checkWhetherGUIBuildNeeded.outputs.diff}}"
         /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "tools"
+        if [ $? -ne 0 ]; then
+          echo "::error::Failed to setup Android SDK"
+          exit 1
+        fi
+
     - name: Restore dependencies
-      run: dotnet restore src/TATATORPLAG.GUI/TATATORPLAG.GUI.csproj
+      run: |
+        dotnet restore src/OtChaim.GUI/OtChaim.GUI.csproj
+        if [ $? -ne 0 ]; then
+          echo "::error::Failed to restore dependencies"
+          exit 1
+        fi
+
     - name: Build
       id: build
-      run: dotnet build --no-restore src/TATATORPLAG.GUI/TATATORPLAG.GUI.csproj
+      run: |
+        dotnet build --no-restore src/OtChaim.GUI/OtChaim.GUI.csproj
+        if [ $? -ne 0 ]; then
+          echo "::error::Build failed"
+          exit 1
+        fi
+
     - name: Test
-      run: dotnet test src/TATATORPLAG.GUI/TATATORPLAG.GUI.csproj --logger "trx" --no-build --verbosity normal /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+      run: |
+        dotnet test src/OtChaim.GUI/OtChaim.GUI.csproj --logger "trx" --no-build --verbosity normal \
+          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
+          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
+          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+        if [ $? -ne 0 ]; then
+          echo "::error::Tests failed"
+          exit 1
+        fi
+
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: ${{steps.build.outcome == 'success'}}
@@ -173,22 +258,36 @@ jobs:
           tests/**/TestResults/*.xml
           tests/**/TestResults/*.trx
           tests/**/TestResults/*.json
+        check_name: "Test Results (GUI)"
 
   tagAndRelease:
+    name: Tag and Release
     needs: [gitVersion, buildAndTestWithoutGUI, buildAndTestGUI]
-    runs-on: ubuntu-latest
     if:  |
-      never() &&
       (needs.buildAndTestGUI.result == 'skipped' || needs.buildAndTestGUI.result == 'success') &&
       contains(needs.gitVersion.outputs.branchName, 'main')
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
     - name: Tag on main
       run: |
-          git config --global user.name "Github actions: gitversion"
-          git config --global user.email "gitversion@github-actions.com"
-          git tag -a "${{ needs.gitVersion.outputs.semVer}}" -m "Version ${{ needs.gitVersion.outputs.semVer}}"
-          git push --tags
+        git config --global user.name "Github actions: gitversion"
+        git config --global user.email "gitversion@github-actions.com"
+        git tag -a "${{ needs.gitVersion.outputs.semVer}}" -m "Version ${{ needs.gitVersion.outputs.semVer}}"
+        if [ $? -ne 0 ]; then
+          echo "::error::Failed to create tag"
+          exit 1
+        fi
+        git push --tags
+        if [ $? -ne 0 ]; then
+          echo "::error::Failed to push tags"
+          exit 1
+        fi
