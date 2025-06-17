@@ -1,6 +1,5 @@
-namespace OtChaim.Application.Common
+namespace OtChaim.Application.Common;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-    }
 }

@@ -1,25 +1,24 @@
-namespace OtChaim.Domain.EmergencyEvents
+namespace OtChaim.Domain.EmergencyEvents;
+
+public enum EmergencyType
 {
-    public enum EmergencyType
-    {
-        // Natural Events
-        NaturalDisaster,
-        WeatherAlert,
-        
-        // Infrastructure & Utilities
-        InfrastructureFailure,
-        UtilityOutage,
-        TransportationDisruption,
-        
-        // Social & Security
-        SecurityThreat,
-        CivilUnrest,
-        
-        // Personal & Health
-        PersonalEmergency,
-        MedicalEmergency,
-        
-        // General
-        LocalIncident
-    }
+    // Natural Events
+    NaturalDisaster,
+    WeatherAlert,
+
+    // Infrastructure & Utilities
+    InfrastructureFailure,
+    UtilityOutage,
+    TransportationDisruption,
+
+    // Social & Security
+    SecurityThreat,
+    CivilUnrest,
+
+    // Personal & Health
+    PersonalEmergency,
+    MedicalEmergency,
+
+    // General
+    LocalIncident
 }

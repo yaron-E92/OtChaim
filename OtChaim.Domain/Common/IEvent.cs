@@ -1,7 +1,6 @@
-namespace OtChaim.Domain.Common
+namespace OtChaim.Domain.Common;
+
+public interface IEvent
 {
-    public interface IEvent
-    {
-        DateTime OccurredOn { get; }
-    }
+    DateTime OccurredOn { get; }
 }

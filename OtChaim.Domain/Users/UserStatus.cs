@@ -1,9 +1,8 @@
-namespace OtChaim.Domain.Users
+namespace OtChaim.Domain.Users;
+
+public enum UserStatus
 {
-    public enum UserStatus
-    {
-        Safe,
-        Unsafe,
-        HelpNeeded
-    }
+    Safe,
+    Unsafe,
+    HelpNeeded
 }
