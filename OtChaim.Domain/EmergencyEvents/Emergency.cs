@@ -4,22 +4,22 @@ using OtChaim.Domain.Common;
 
 namespace OtChaim.Domain.EmergencyEvents;
 
-public class EmergencyEvent : Entity
+public class Emergency : Entity
 {
     public Guid InitiatorId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? ResolvedAt { get; private set; }
-    public EmergencyEventStatus Status { get; private set; }
+    public EmergencyStatus Status { get; private set; }
     private readonly List<EmergencyResponse> _responses = new();
     public IReadOnlyList<EmergencyResponse> Responses => _responses.AsReadOnly();
 
-    private EmergencyEvent() { } // For EF Core
+    private Emergency() { } // For EF Core
 
-    public EmergencyEvent(Guid initiatorId)
+    public Emergency(Guid initiatorId)
     {
         InitiatorId = initiatorId;
         CreatedAt = DateTime.UtcNow;
-        Status = EmergencyEventStatus.Active;
+        Status = EmergencyStatus.Active;
     }
 
     public void AddResponse(Guid userId, bool isSafe, string? message = null)
@@ -36,9 +36,9 @@ public class EmergencyEvent : Entity
 
     public void Resolve()
     {
-        if (Status == EmergencyEventStatus.Active)
+        if (Status == EmergencyStatus.Active)
         {
-            Status = EmergencyEventStatus.Resolved;
+            Status = EmergencyStatus.Resolved;
             ResolvedAt = DateTime.UtcNow;
         }
     }
@@ -51,7 +51,7 @@ public class EmergencyEvent : Entity
     }
 }
 
-public enum EmergencyEventStatus
+public enum EmergencyStatus
 {
     Active,
     Resolved

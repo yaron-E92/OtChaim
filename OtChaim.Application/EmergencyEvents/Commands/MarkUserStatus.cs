@@ -6,18 +6,18 @@ namespace OtChaim.Application.EmergencyEvents.Commands;
 public class MarkUserStatus : ICommand
 {
     public Guid UserId { get; }
-    public Guid EmergencySituationId { get; }
+    public Guid EmergencyId { get; }
     public UserStatus Status { get; }
     public string Message { get; }
 
     public MarkUserStatus(
         Guid userId,
-        Guid emergencySituationId,
+        Guid emergencyId,
         UserStatus status,
         string message = null)
     {
         UserId = userId;
-        EmergencySituationId = emergencySituationId;
+        EmergencyId = emergencyId;
         Status = status;
         Message = message;
     }

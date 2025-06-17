@@ -2,14 +2,14 @@ using Yaref92.Events;
 
 namespace OtChaim.Domain.EmergencyEvents.Events;
 
-public class EmergencySituationEnded : DomainEventBase
+public class EmergencyEnded : DomainEventBase
 {
-    public Guid EmergencySituationId { get; }
+    public Guid EmergencyId { get; }
     public DateTime EndedOn => DateTimeOccurredUtc;
 
-    public EmergencySituationEnded(Guid emergencySituationId, DateTime occurred = default, Guid eventId = default)
+    public EmergencyEnded(Guid emergencyId, DateTime occurred = default, Guid eventId = default)
         : base(occurred, eventId)
     {
-        EmergencySituationId = emergencySituationId;
+        EmergencyId = emergencyId;
     }
 }

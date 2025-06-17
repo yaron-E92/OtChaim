@@ -4,7 +4,7 @@ using OtChaim.Domain.Common;
 
 namespace OtChaim.Application.EmergencyEvents.Commands;
 
-public class StartEmergencySituation : ICommand
+public class StartEmergency : ICommand
 {
     public Guid InitiatorUserId { get; }
     public EmergencyType Type { get; }
@@ -12,7 +12,7 @@ public class StartEmergencySituation : ICommand
     public Area Area { get; }
     public string Description { get; }
 
-    public StartEmergencySituation(
+    public StartEmergency(
         Guid initiatorUserId,
         EmergencyType type,
         Location location,
