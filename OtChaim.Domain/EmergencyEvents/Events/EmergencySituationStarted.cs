@@ -1,17 +1,17 @@
-using System;
 using OtChaim.Domain.Common;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Domain.EmergencyEvents.Events
 {
-    public class EmergencySituationStarted : IEvent
+    public class EmergencySituationStarted : IDomainEvent
     {
         public Guid EmergencySituationId { get; }
         public Guid InitiatorId { get; }
         public EmergencyType EmergencyType { get; }
         public Location Location { get; }
         public Area AffectedArea { get; }
-        public DateTime StartedOn => OccurredOn;
-        public DateTime OccurredOn { get; }
+        public DateTime StartedOn => DateTimeOccurredUtc;
+        public DateTime DateTimeOccurredUtc { get; }
 
         public EmergencySituationStarted(
             Guid emergencySituationId,
@@ -25,7 +25,7 @@ namespace OtChaim.Domain.EmergencyEvents.Events
             EmergencyType = emergencyType;
             Location = location;
             AffectedArea = affectedArea;
-            OccurredOn = DateTime.UtcNow;
+            DateTimeOccurredUtc = DateTime.UtcNow;
         }
     }
 }
