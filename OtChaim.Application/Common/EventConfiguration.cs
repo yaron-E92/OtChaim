@@ -1,5 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using OtChaim.Application.EmergencyEvents.EventSubscribers;
+using OtChaim.Application.EmergencyEvents.Handlers;
 using OtChaim.Application.Users.EventSubscribers;
+using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Domain.Users.Events;
 using Yaref92.Events;
@@ -15,6 +18,14 @@ public static class EventConfiguration
         
         // Register event subscribers
         services.AddScoped<SubscriptionEventSubscriber>();
+        services.AddScoped<EmergencyEventSubscriber>();
+        
+        // Register command handlers
+        services.AddScoped<RequestSubscriptionHandler>();
+        services.AddScoped<ApproveSubscriptionHandler>();
+        services.AddScoped<RejectSubscriptionHandler>();
+        services.AddScoped<StartEmergencySituationHandler>();
+        services.AddScoped<MarkUserStatusHandler>();
         
         return services;
     }
@@ -27,10 +38,15 @@ public static class EventConfiguration
         eventAggregator.RegisterEventType<SubscriptionRejected>();
         eventAggregator.RegisterEventType<UserStatusMarked>();
         eventAggregator.RegisterEventType<SubscriberNotified>();
+        eventAggregator.RegisterEventType<EmergencySituationStarted>();
+        eventAggregator.RegisterEventType<EmergencySituationEnded>();
 
         // Subscribe to events
         var subscriptionSubscriber = serviceProvider.GetRequiredService<SubscriptionEventSubscriber>();
         eventAggregator.SubscribeToEventType(subscriptionSubscriber);
+
+        var emergencySubscriber = serviceProvider.GetRequiredService<EmergencyEventSubscriber>();
+        eventAggregator.SubscribeToEventType(emergencySubscriber);
 
         return eventAggregator;
     }
