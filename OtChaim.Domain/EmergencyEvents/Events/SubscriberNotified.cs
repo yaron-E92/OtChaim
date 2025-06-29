@@ -1,31 +1,28 @@
 using System;
-using OtChaim.Domain.Common;
-using OtChaim.Domain.Users;
+using Yaref92.Events;
+using OtChaim.Domain.Notifications;
 
 namespace OtChaim.Domain.EmergencyEvents.Events
 {
-    public class SubscriberNotified : IEvent
+    public class SubscriberNotified : IDomainEvent
     {
-        public Guid EmergencySituationId { get; }
-        public Guid SubscriberId { get; }
         public Guid UserId { get; }
-        public UserStatus Status { get; }
+        public Guid SubscriberId { get; }
+        public Guid EmergencyId { get; }
         public string Message { get; }
-        public DateTime OccurredOn { get; }
+        public DateTime DateTimeOccurredUtc { get; }
 
         public SubscriberNotified(
-            Guid emergencySituationId,
-            Guid subscriberId,
             Guid userId,
-            UserStatus status,
+            Guid emergencyId,
+            Guid subscriberId,
             string message = null)
         {
-            EmergencySituationId = emergencySituationId;
-            SubscriberId = subscriberId;
             UserId = userId;
-            Status = status;
+            EmergencyId = emergencyId;
+            SubscriberId = subscriberId;
             Message = message;
-            OccurredOn = DateTime.UtcNow;
+            DateTimeOccurredUtc = DateTime.UtcNow;
         }
     }
 }
