@@ -1,18 +1,17 @@
-using System;
-using OtChaim.Domain.Common;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Domain.EmergencyEvents.Events
 {
-    public class EmergencySituationEnded : IEvent
+    public class EmergencySituationEnded : IDomainEvent
     {
         public Guid EmergencySituationId { get; }
-        public DateTime EndedOn => OccurredOn;
-        public DateTime OccurredOn { get; }
+        public DateTime EndedOn => DateTimeOccurredUtc;
+        public DateTime DateTimeOccurredUtc { get; }
 
         public EmergencySituationEnded(Guid emergencySituationId)
         {
             EmergencySituationId = emergencySituationId;
-            OccurredOn = DateTime.UtcNow;
+            DateTimeOccurredUtc = DateTime.UtcNow;
         }
     }
 }
