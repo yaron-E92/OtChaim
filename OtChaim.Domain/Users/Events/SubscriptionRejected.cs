@@ -1,18 +1,17 @@
-using System;
-using OtChaim.Domain.Common;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Domain.Users.Events;
 
-public class SubscriptionRejected : IEvent
+public class SubscriptionRejected : IDomainEvent
 {
     public Guid SubscriberId { get; }
     public Guid SubscribedToId { get; }
-    public DateTime OccurredOn { get; }
+    public DateTime DateTimeOccurredUtc { get; }
 
     public SubscriptionRejected(Guid subscriberId, Guid subscribedToId)
     {
         SubscriberId = subscriberId;
         SubscribedToId = subscribedToId;
-        OccurredOn = DateTime.UtcNow;
+        DateTimeOccurredUtc = DateTime.UtcNow;
     }
 } 
