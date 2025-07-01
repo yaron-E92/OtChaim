@@ -7,6 +7,7 @@ using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
 using OtChaim.Domain.Users.Events;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
@@ -18,13 +19,14 @@ public class RejectSubscriptionHandlerTests
     {
         // Arrange
         var userRepository = Substitute.For<IUserRepository>();
+        var eventAggregator = Substitute.For<IEventAggregator>();
         var subscriber = new User("Test Subscriber", "subscriber@example.com", "1234567890");
         var subscribedTo = new User("Test SubscribedTo", "subscribedto@example.com", "0987654321");
         var subscriberId = Guid.NewGuid();
         var subscribedToId = Guid.NewGuid();
         
         // First request a subscription
-        var requestHandler = new RequestSubscriptionHandler(userRepository);
+        var requestHandler = new RequestSubscriptionHandler(userRepository, eventAggregator);
         var requestCommand = new RequestSubscription(subscriberId, subscribedToId);
         
         userRepository.GetByIdAsync(subscriberId, Arg.Any<CancellationToken>()).Returns(subscriber);
@@ -37,7 +39,7 @@ public class RejectSubscriptionHandlerTests
         Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Pending));
         
         // Now reject the subscription
-        var rejectHandler = new RejectSubscriptionHandler(userRepository);
+        var rejectHandler = new RejectSubscriptionHandler(userRepository, eventAggregator);
         var rejectCommand = new RejectSubscription(subscriberId, subscribedToId);
 
         // Act
