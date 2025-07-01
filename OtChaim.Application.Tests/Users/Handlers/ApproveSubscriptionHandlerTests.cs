@@ -1,12 +1,8 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
-using OtChaim.Domain.Users.Events;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
@@ -18,13 +14,14 @@ public class ApproveSubscriptionHandlerTests
     {
         // Arrange
         var userRepository = Substitute.For<IUserRepository>();
+        var eventAggregator = Substitute.For<IEventAggregator>();
         var subscriber = new User("Test Subscriber", "subscriber@example.com", "1234567890");
         var subscribedTo = new User("Test SubscribedTo", "subscribedto@example.com", "0987654321");
         var subscriberId = Guid.NewGuid();
         var subscribedToId = Guid.NewGuid();
         
         // First request a subscription
-        var requestHandler = new RequestSubscriptionHandler(userRepository);
+        var requestHandler = new RequestSubscriptionHandler(userRepository, eventAggregator);
         var requestCommand = new RequestSubscription(subscriberId, subscribedToId);
         
         userRepository.GetByIdAsync(subscriberId, Arg.Any<CancellationToken>()).Returns(subscriber);
@@ -37,7 +34,7 @@ public class ApproveSubscriptionHandlerTests
         Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Pending));
         
         // Now approve the subscription
-        var approveHandler = new ApproveSubscriptionHandler(userRepository);
+        var approveHandler = new ApproveSubscriptionHandler(userRepository, eventAggregator);
         var approveCommand = new ApproveSubscription(subscriberId, subscribedToId);
 
         // Act
