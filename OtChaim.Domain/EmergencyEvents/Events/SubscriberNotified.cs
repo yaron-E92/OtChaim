@@ -1,31 +1,25 @@
-using System;
-using OtChaim.Domain.Common;
-using OtChaim.Domain.Users;
+using Yaref92.Events;
 
-namespace OtChaim.Domain.EmergencyEvents.Events
+namespace OtChaim.Domain.EmergencyEvents.Events;
+
+public class SubscriberNotified : DomainEventBase
 {
-    public class SubscriberNotified : IEvent
-    {
-        public Guid EmergencySituationId { get; }
-        public Guid SubscriberId { get; }
-        public Guid UserId { get; }
-        public UserStatus Status { get; }
-        public string Message { get; }
-        public DateTime OccurredOn { get; }
+    public Guid UserId { get; }
+    public Guid SubscriberId { get; }
+    public Guid EmergencyId { get; }
+    public string? Message { get; }
 
-        public SubscriberNotified(
-            Guid emergencySituationId,
-            Guid subscriberId,
-            Guid userId,
-            UserStatus status,
-            string message = null)
-        {
-            EmergencySituationId = emergencySituationId;
-            SubscriberId = subscriberId;
-            UserId = userId;
-            Status = status;
-            Message = message;
-            OccurredOn = DateTime.UtcNow;
-        }
+    public SubscriberNotified(
+        Guid userId,
+        Guid emergencyId,
+        Guid subscriberId,
+        string? message = null,
+        DateTime occurred = default, Guid eventId = default)
+        : base(occurred, eventId)
+    {
+        UserId = userId;
+        EmergencyId = emergencyId;
+        SubscriberId = subscriberId;
+        Message = message;
     }
 }

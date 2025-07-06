@@ -11,4 +11,8 @@
     <ProjectReference Include="..\OtChaim.Domain\OtChaim.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Yaref92.Events" Version="1.2.0" />
+  </ItemGroup>
+
 </Project>

@@ -57,47 +57,23 @@ public class User : Entity
         IsActive = true;
     }
 
-    public void RaiseEvent(IEvent userEvent)
-    {
-        switch (userEvent)
-        {
-            case SubscriptionRequested subscriptionRequested:
-                OnSubscriptionRequested(subscriptionRequested);
-                break;
-            case SubscriptionApproved subscriptionApproved:
-                OnSubscriptionApproved(subscriptionApproved);
-                break;
-            case SubscriptionRejected subscriptionRejected:
-                OnSubscriptionRejected(subscriptionRejected);
-                break;
-            default:
-                throw new NotImplementedException($"No handler for event type {userEvent.GetType().Name}");
-        }
-    }
-
     private bool RequiresSubscriptionApproval() => true; // Placeholder
 
     public void OnSubscriptionRequested(SubscriptionRequested subscriptionEvent)
     {
-        var subscription = new Subscription(subscriptionEvent.SubscriberId, subscriptionEvent.SubscribedToId, RequiresSubscriptionApproval());
+        Subscription? subscription = new Subscription(subscriptionEvent.SubscriberId, subscriptionEvent.SubscribedToId, RequiresSubscriptionApproval());
         _subscriptions.Add(subscription);
     }
 
     public void OnSubscriptionApproved(SubscriptionApproved subscriptionEvent)
     {
-        var subscription = _subscriptions.FirstOrDefault(s => s.SubscriberId == subscriptionEvent.SubscriberId && s.SubscribedToId == subscriptionEvent.SubscribedToId);
-        if (subscription != null)
-        {
-            subscription.Approve();
-        }
+        Subscription? subscription = _subscriptions.FirstOrDefault(s => s.SubscriberId == subscriptionEvent.SubscriberId && s.SubscribedToId == subscriptionEvent.SubscribedToId);
+        subscription?.Approve();
     }
 
     public void OnSubscriptionRejected(SubscriptionRejected subscriptionEvent)
     {
-        var subscription = _subscriptions.FirstOrDefault(s => s.SubscriberId == subscriptionEvent.SubscriberId && s.SubscribedToId == subscriptionEvent.SubscribedToId);
-        if (subscription != null)
-        {
-            subscription.Reject();
-        }
+        Subscription? subscription = _subscriptions.FirstOrDefault(s => s.SubscriberId == subscriptionEvent.SubscriberId && s.SubscribedToId == subscriptionEvent.SubscribedToId);
+        subscription?.Reject();
     }
 }

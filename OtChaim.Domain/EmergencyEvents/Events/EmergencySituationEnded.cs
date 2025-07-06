@@ -1,18 +1,15 @@
-using System;
-using OtChaim.Domain.Common;
+using Yaref92.Events;
 
-namespace OtChaim.Domain.EmergencyEvents.Events
+namespace OtChaim.Domain.EmergencyEvents.Events;
+
+public class EmergencySituationEnded : DomainEventBase
 {
-    public class EmergencySituationEnded : IEvent
-    {
-        public Guid EmergencySituationId { get; }
-        public DateTime EndedOn => OccurredOn;
-        public DateTime OccurredOn { get; }
+    public Guid EmergencySituationId { get; }
+    public DateTime EndedOn => DateTimeOccurredUtc;
 
-        public EmergencySituationEnded(Guid emergencySituationId)
-        {
-            EmergencySituationId = emergencySituationId;
-            OccurredOn = DateTime.UtcNow;
-        }
+    public EmergencySituationEnded(Guid emergencySituationId, DateTime occurred = default, Guid eventId = default)
+        : base(occurred, eventId)
+    {
+        EmergencySituationId = emergencySituationId;
     }
 }
