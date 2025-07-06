@@ -1,18 +1,17 @@
-using Yaref92.Events.Abstractions;
+using Yaref92.Events;
 
-namespace OtChaim.Domain.Users.Events
+namespace OtChaim.Domain.Users.Events;
+
+public class SubscriptionRequested : DomainEventBase
 {
-    public class SubscriptionRequested : IDomainEvent
-    {
-        public Guid SubscriberId { get; }
-        public Guid SubscribedToId { get; }
-        public DateTime DateTimeOccurredUtc { get; }
+    public Guid SubscriberId { get; }
+    public Guid SubscribedToId { get; }
 
-        public SubscriptionRequested(Guid subscriberId, Guid subscribedToId)
-        {
-            SubscriberId = subscriberId;
-            SubscribedToId = subscribedToId;
-            DateTimeOccurredUtc = DateTime.UtcNow;
-        }
+    public SubscriptionRequested(Guid subscriberId, Guid subscribedToId, DateTime occurred = default, Guid eventId = default)
+        : base(occurred, eventId)
+    {
+        SubscriberId = subscriberId;
+        SubscribedToId = subscribedToId;
     }
-} 
+}
+

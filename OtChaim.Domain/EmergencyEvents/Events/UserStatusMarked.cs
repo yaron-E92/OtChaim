@@ -1,27 +1,26 @@
-using Yaref92.Events.Abstractions;
+using Yaref92.Events;
 using OtChaim.Domain.Users;
 
-namespace OtChaim.Domain.EmergencyEvents.Events
-{
-    public class UserStatusMarked : IDomainEvent
-    {
-        public Guid UserId { get; }
-        public Guid EmergencyId { get; }
-        public UserStatus Status { get; }
-        public string? Message { get; }
-        public DateTime DateTimeOccurredUtc { get; }
+namespace OtChaim.Domain.EmergencyEvents.Events;
 
-        public UserStatusMarked(
-            Guid userId,
-            Guid emergencyId,
-            UserStatus status,
-            string? message = null)
-        {
-            UserId = userId;
-            EmergencyId = emergencyId;
-            Status = status;
-            Message = message;
-            DateTimeOccurredUtc = DateTime.UtcNow;
-        }
+public class UserStatusMarked : DomainEventBase
+{
+    public Guid UserId { get; }
+    public Guid EmergencyId { get; }
+    public UserStatus Status { get; }
+    public string? Message { get; }
+
+    public UserStatusMarked(
+        Guid userId,
+        Guid emergencyId,
+        UserStatus status,
+        string? message = null,
+        DateTime occurred = default, Guid eventId = default)
+        : base(occurred, eventId)
+    {
+        UserId = userId;
+        EmergencyId = emergencyId;
+        Status = status;
+        Message = message;
     }
 }
