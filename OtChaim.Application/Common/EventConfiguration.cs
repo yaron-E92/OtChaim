@@ -24,6 +24,7 @@ public static class EventConfiguration
         // Register event subscribers
         services.AddScoped<SubscriptionEventSubscriber>();
         services.AddScoped<EmergencyEventSubscriber>();
+        services.AddScoped<EndEmergencyHandler>();
 
         // Register command handlers
         services.AddScoped<RequestSubscriptionHandler>();
