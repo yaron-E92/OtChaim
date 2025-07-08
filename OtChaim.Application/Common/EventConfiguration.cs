@@ -29,7 +29,7 @@ public static class EventConfiguration
         services.AddScoped<RequestSubscriptionHandler>();
         services.AddScoped<ApproveSubscriptionHandler>();
         services.AddScoped<RejectSubscriptionHandler>();
-        services.AddScoped<StartEmergencySituationHandler>();
+        services.AddScoped<StartEmergencyHandler>();
         services.AddScoped<MarkUserStatusHandler>();
 
         // Register logger
@@ -63,8 +63,8 @@ public static class EventConfiguration
         eventAggregator.RegisterEventType<SubscriptionRequested>();
         eventAggregator.RegisterEventType<SubscriptionApproved>();
         eventAggregator.RegisterEventType<SubscriptionRejected>();
-        eventAggregator.RegisterEventType<EmergencySituationStarted>();
-        eventAggregator.RegisterEventType<EmergencySituationEnded>();
+        eventAggregator.RegisterEventType<EmergencyStarted>();
+        eventAggregator.RegisterEventType<EmergencyEnded>();
         eventAggregator.RegisterEventType<UserStatusMarked>();
         eventAggregator.RegisterEventType<SubscriberNotified>();
 
@@ -75,8 +75,8 @@ public static class EventConfiguration
         eventAggregator.SubscribeToEventType<SubscriptionRejected>(subscriptionSubscriber);
 
         EmergencyEventSubscriber emergencySubscriber = serviceProvider.GetRequiredService<EmergencyEventSubscriber>();
-        eventAggregator.SubscribeToEventType<EmergencySituationStarted>(emergencySubscriber);
-        eventAggregator.SubscribeToEventType<EmergencySituationEnded>(emergencySubscriber);
+        eventAggregator.SubscribeToEventType<EmergencyStarted>(emergencySubscriber);
+        eventAggregator.SubscribeToEventType<EmergencyEnded>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<UserStatusMarked>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<SubscriberNotified>(emergencySubscriber);
 

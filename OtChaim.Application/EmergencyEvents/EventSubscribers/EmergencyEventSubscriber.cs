@@ -4,15 +4,15 @@ using Yaref92.Events.Abstractions;
 namespace OtChaim.Application.EmergencyEvents.EventSubscribers;
 
 public class EmergencyEventSubscriber :
-    IAsyncEventSubscriber<EmergencySituationStarted>,
-    IAsyncEventSubscriber<EmergencySituationEnded>,
+    IAsyncEventSubscriber<EmergencyStarted>,
+    IAsyncEventSubscriber<EmergencyEnded>,
     IAsyncEventSubscriber<UserStatusMarked>,
     IAsyncEventSubscriber<SubscriberNotified>
 {
     // In a real application, you would inject repositories and services here
     // For now, this is a placeholder for the domain logic
 
-    public async Task OnNextAsync(EmergencySituationStarted domainEvent, CancellationToken cancellationToken = default)
+    public async Task OnNextAsync(EmergencyStarted domainEvent, CancellationToken cancellationToken = default)
     {
         // Handle emergency situation started event
         // This could involve:
@@ -22,7 +22,7 @@ public class EmergencyEventSubscriber :
         throw new NotImplementedException();
     }
 
-    public Task OnNextAsync(EmergencySituationEnded domainEvent, CancellationToken cancellationToken = default)
+    public Task OnNextAsync(EmergencyEnded domainEvent, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
