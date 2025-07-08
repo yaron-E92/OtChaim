@@ -6,18 +6,29 @@ namespace OtChaim.Domain.EmergencyEvents;
 
 public class Emergency : Entity
 {
-    public Guid InitiatorId { get; private set; }
+    public Location Location { get; private set; }
+    public IReadOnlyList<Area> AffectedAreas => _affectedAreas.AsReadOnly();
+    private readonly List<Area> _affectedAreas = new();
+    public Severity Severity { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? ResolvedAt { get; private set; }
     public EmergencyStatus Status { get; private set; }
     private readonly List<EmergencyResponse> _responses = new();
     public IReadOnlyList<EmergencyResponse> Responses => _responses.AsReadOnly();
+    public EmergencyType? EmergencyType { get; private set; }
 
     private Emergency() { } // For EF Core
 
-    public Emergency(Guid initiatorId)
+    public Emergency(Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium, EmergencyType? emergencyType = null)
     {
-        InitiatorId = initiatorId;
+        if (location == null)
+            throw new ArgumentNullException(nameof(location));
+        Location = location;
+        EmergencyType = emergencyType;
+        _affectedAreas = (affectedAreas == null || !affectedAreas.Any())
+            ? new List<Area> { Area.FromLocation(location, emergencyType: emergencyType) }
+            : new List<Area>(affectedAreas);
+        Severity = severity;
         CreatedAt = DateTime.UtcNow;
         Status = EmergencyStatus.Active;
     }
@@ -49,10 +60,4 @@ public class Emergency : Entity
         // You might want to compare against a list of expected responders
         return false;
     }
-}
-
-public enum EmergencyStatus
-{
-    Active,
-    Resolved
 } 
