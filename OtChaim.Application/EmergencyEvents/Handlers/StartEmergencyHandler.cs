@@ -5,14 +5,9 @@ using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.EmergencyEvents.Handlers;
 
-public class StartEmergencyHandler : ICommandHandler<StartEmergency>
+public class StartEmergencyHandler(IEventAggregator eventAggregator) : ICommandHandler<StartEmergency>
 {
-    private readonly IEventAggregator _eventAggregator;
-
-    public StartEmergencyHandler(IEventAggregator eventAggregator)
-    {
-        _eventAggregator = eventAggregator;
-    }
+    private readonly IEventAggregator _eventAggregator = eventAggregator;
 
     public async Task Handle(StartEmergency command, CancellationToken cancellationToken = default)
     {
@@ -22,7 +17,8 @@ public class StartEmergencyHandler : ICommandHandler<StartEmergency>
             command.InitiatorUserId,
             command.Type,
             command.Location,
-            command.Area);
+            command.Area,
+            command.Severity);
 
         // Publish the event through the event aggregator
         await _eventAggregator.PublishEventAsync(emergencySituationStartedEvent, cancellationToken);
