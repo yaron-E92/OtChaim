@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OtChaim.Presentation.MAUI.MainPage"
+             BackgroundColor="{StaticResource Gray100}">
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,40,20,10" Spacing="8">
+            <Label Text="🚨 Emergency Dashboard" Style="{StaticResource Headline}" />
+            <Label Text="Monitor and manage emergencies in real time" Style="{StaticResource SubHeadline}" />
+        </VerticalStackLayout>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="2*,3*" Padding="20" RowSpacing="20" ColumnSpacing="20">
+            <!-- Emergencies List -->
+            <Frame Grid.Column="0" CornerRadius="16" BackgroundColor="{StaticResource White}" Padding="0" HasShadow="True">
+                <VerticalStackLayout Padding="16" Spacing="12">
+                    <Label Text="Active Emergencies" FontSize="20" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                    <!-- Placeholder for emergencies list -->
+                    <CollectionView x:Name="EmergenciesList" HeightRequest="300">
+                        <CollectionView.EmptyView>
+                            <Label Text="No active emergencies" TextColor="{StaticResource Gray400}" HorizontalOptions="Center" />
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                    <Button Text="Start New Emergency" StyleClass="Primary" CornerRadius="12" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Emergency Details & Actions -->
+            <Frame Grid.Column="1" CornerRadius="16" BackgroundColor="{StaticResource White}" Padding="0" HasShadow="True">
+                <VerticalStackLayout Padding="16" Spacing="16">
+                    <Label Text="Emergency Details" FontSize="20" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                    <!-- Placeholder for details -->
+                    <Label Text="Select an emergency to view details." TextColor="{StaticResource Gray400}" />
+                    <HorizontalStackLayout Spacing="12">
+                        <Button Text="Mark as Safe" StyleClass="Primary" CornerRadius="12" />
+                        <Button Text="Mark as Not Safe" StyleClass="Secondary" CornerRadius="12" BackgroundColor="{StaticResource Magenta}" TextColor="{StaticResource White}" />
+                        <Button Text="Resolve" StyleClass="Secondary" CornerRadius="12" BackgroundColor="{StaticResource Gray400}" TextColor="{StaticResource White}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+    </Grid>
+</ContentPage>

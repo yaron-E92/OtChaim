@@ -9,13 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Application", "OtCh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Application.Tests", "OtChaim.Application.Tests\OtChaim.Application.Tests.csproj", "{F3B89882-97C5-43AF-95C2-7CE4C180234A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Domain.Tests", "OtChaim.Domain.Tests\OtChaim.Domain.Tests.csproj", "{459F4C3C-010B-42B3-A648-90680B750811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Domain.Tests", "OtChaim.Domain.Tests\OtChaim.Domain.Tests.csproj", "{459F4C3C-010B-42B3-A648-90680B750811}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Persistence", "OtChaim.Persistence\OtChaim.Persistence.csproj", "{B2659672-D4C0-44E6-BE89-6EC9A764C6AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Persistence", "OtChaim.Persistence\OtChaim.Persistence.csproj", "{B2659672-D4C0-44E6-BE89-6EC9A764C6AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Persistence.Tests", "OtChaim.Persistence.Tests\OtChaim.Persistence.Tests.csproj", "{5E925A61-11D1-4AE8-863A-B7F6F2208617}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Persistence.Tests", "OtChaim.Persistence.Tests\OtChaim.Persistence.Tests.csproj", "{5E925A61-11D1-4AE8-863A-B7F6F2208617}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.IntegrationTests", "OtChaim.IntegrationTests\OtChaim.IntegrationTests.csproj", "{EDF4D099-67FB-4FF0-947A-E6443B6146A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.IntegrationTests", "OtChaim.IntegrationTests\OtChaim.IntegrationTests.csproj", "{EDF4D099-67FB-4FF0-947A-E6443B6146A1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Presentation.MAUI", "OtChaim.Presentation.MAUI\OtChaim.Presentation.MAUI.csproj", "{6349AC17-2DE3-40A4-9762-111C89098268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,8 +68,17 @@ Global
 		{EDF4D099-67FB-4FF0-947A-E6443B6146A1}.NoGui|Any CPU.Build.0 = Debug|Any CPU
 		{EDF4D099-67FB-4FF0-947A-E6443B6146A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF4D099-67FB-4FF0-947A-E6443B6146A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6349AC17-2DE3-40A4-9762-111C89098268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6349AC17-2DE3-40A4-9762-111C89098268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6349AC17-2DE3-40A4-9762-111C89098268}.NoGui|Any CPU.ActiveCfg = Debug|Any CPU
+		{6349AC17-2DE3-40A4-9762-111C89098268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6349AC17-2DE3-40A4-9762-111C89098268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6349AC17-2DE3-40A4-9762-111C89098268}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {16F60CD4-DE5F-47D0-9E34-C6B9937FBB57}
 	EndGlobalSection
 EndGlobal
