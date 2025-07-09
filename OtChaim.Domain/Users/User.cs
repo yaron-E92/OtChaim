@@ -6,16 +6,18 @@ namespace OtChaim.Domain.Users;
 
 public class User : Entity
 {
-    public string Name { get; private set; }
-    public string Email { get; private set; }
-    public string PhoneNumber { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string Email { get; private set; } = string.Empty;
+    public string PhoneNumber { get; private set; } = string.Empty;
     public bool IsActive { get; private set; }
-    private readonly List<Guid> _subscriberIds = new();
+    private readonly List<Guid> _subscriberIds = [];
     public IReadOnlyList<Guid> SubscriberIds => _subscriberIds.AsReadOnly();
-    private readonly List<NotificationChannel> _notificationChannels = new();
+    private readonly List<NotificationChannel> _notificationChannels = [];
     public IReadOnlyList<NotificationChannel> NotificationChannels => _notificationChannels.AsReadOnly();
-    private readonly List<Subscription> _subscriptions = new();
+    private readonly List<Subscription> _subscriptions = [];
     public IReadOnlyList<Subscription> Subscriptions => _subscriptions.AsReadOnly();
+
+    public static User None { get; } = new User{ Id = Guid.Empty };
 
     private User() { } // For EF Core
 
@@ -57,7 +59,7 @@ public class User : Entity
         IsActive = true;
     }
 
-    private bool RequiresSubscriptionApproval() => true; // Placeholder
+    public bool RequiresSubscriptionApproval() => true; // Placeholder
 
     public void OnSubscriptionRequested(SubscriptionRequested subscriptionEvent)
     {
