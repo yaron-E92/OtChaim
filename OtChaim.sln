@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Application", "OtCh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtChaim.Application.Tests", "OtChaim.Application.Tests\OtChaim.Application.Tests.csproj", "{F3B89882-97C5-43AF-95C2-7CE4C180234A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Domain.Tests", "OtChaim.Domain.Tests\OtChaim.Domain.Tests.csproj", "{459F4C3C-010B-42B3-A648-90680B750811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,12 @@ Global
 		{F3B89882-97C5-43AF-95C2-7CE4C180234A}.NoGui|Any CPU.Build.0 = NoGui|Any CPU
 		{F3B89882-97C5-43AF-95C2-7CE4C180234A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3B89882-97C5-43AF-95C2-7CE4C180234A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459F4C3C-010B-42B3-A648-90680B750811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459F4C3C-010B-42B3-A648-90680B750811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459F4C3C-010B-42B3-A648-90680B750811}.NoGui|Any CPU.ActiveCfg = Debug|Any CPU
+		{459F4C3C-010B-42B3-A648-90680B750811}.NoGui|Any CPU.Build.0 = Debug|Any CPU
+		{459F4C3C-010B-42B3-A648-90680B750811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459F4C3C-010B-42B3-A648-90680B750811}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

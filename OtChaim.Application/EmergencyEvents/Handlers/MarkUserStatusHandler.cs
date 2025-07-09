@@ -18,7 +18,7 @@ public class MarkUserStatusHandler : ICommandHandler<MarkUserStatus>
     {
         var userStatusMarkedEvent = new UserStatusMarked(
             command.UserId,
-            command.EmergencySituationId,
+            command.EmergencyId,
             command.Status,
             command.Message);
 

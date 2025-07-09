@@ -6,7 +6,7 @@ namespace OtChaim.Domain.Notifications;
 public class Notification : Entity
 {
     public Guid UserId { get; private set; }
-    public Guid EmergencyEventId { get; private set; }
+    public Guid EmergencyId { get; private set; }
     public NotificationType Type { get; private set; }
     public string Message { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -15,10 +15,10 @@ public class Notification : Entity
 
     private Notification() { } // For EF Core
 
-    public Notification(Guid userId, Guid emergencyEventId, NotificationType type, string message)
+    public Notification(Guid userId, Guid emergencyId, NotificationType type, string message)
     {
         UserId = userId;
-        EmergencyEventId = emergencyEventId;
+        EmergencyId = emergencyId;
         Type = type;
         Message = message;
         CreatedAt = DateTime.UtcNow;

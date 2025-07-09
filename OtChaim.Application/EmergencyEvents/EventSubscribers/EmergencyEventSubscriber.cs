@@ -1,44 +1,57 @@
+using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.EmergencyEvents.Events;
 using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.EmergencyEvents.EventSubscribers;
 
 public class EmergencyEventSubscriber :
-    IAsyncEventSubscriber<EmergencySituationStarted>,
-    IAsyncEventSubscriber<EmergencySituationEnded>,
+    IAsyncEventSubscriber<EmergencyStarted>,
+    IAsyncEventSubscriber<EmergencyEnded>,
     IAsyncEventSubscriber<UserStatusMarked>,
     IAsyncEventSubscriber<SubscriberNotified>
 {
-    // In a real application, you would inject repositories and services here
-    // For now, this is a placeholder for the domain logic
+    private readonly IEmergencyRepository _emergencyRepository;
 
-    public async Task OnNextAsync(EmergencySituationStarted domainEvent, CancellationToken cancellationToken = default)
+    public EmergencyEventSubscriber(IEmergencyRepository emergencyRepository)
     {
-        // Handle emergency situation started event
-        // This could involve:
-        // - Creating an Emergency entity
-        // - Notifying subscribers in the affected area
-        // - Logging the emergency
-        throw new NotImplementedException();
+        _emergencyRepository = emergencyRepository;
     }
 
-    public Task OnNextAsync(EmergencySituationEnded domainEvent, CancellationToken cancellationToken = default)
+    public async Task OnNextAsync(EmergencyStarted domainEvent, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        // Create and persist a new Emergency
+        var emergency = new Emergency(
+            domainEvent.Location,
+            new[] { domainEvent.AffectedArea },
+            domainEvent.Severity,
+            domainEvent.EmergencyType
+        );
+        await _emergencyRepository.AddAsync(emergency, cancellationToken);
+    }
+
+    public async Task OnNextAsync(EmergencyEnded domainEvent, CancellationToken cancellationToken = default)
+    {
+        var emergency = await _emergencyRepository.GetByIdAsync(domainEvent.EmergencyId, cancellationToken);
+        if (emergency != null)
+        {
+            emergency.Resolve();
+            await _emergencyRepository.SaveAsync(emergency, cancellationToken);
+        }
     }
 
     public async Task OnNextAsync(UserStatusMarked domainEvent, CancellationToken cancellationToken = default)
     {
-        // Handle user status marked event
-        // This could involve:
-        // - Updating user status in the emergency
-        // - Notifying emergency coordinators
-        // - Logging the status change
-        throw new NotImplementedException();
+        var emergency = await _emergencyRepository.GetByIdAsync(domainEvent.EmergencyId, cancellationToken);
+        if (emergency != null)
+        {
+            emergency.AddResponse(domainEvent.UserId, domainEvent.Status == Domain.Users.UserStatus.Safe, domainEvent.Message);
+            await _emergencyRepository.SaveAsync(emergency, cancellationToken);
+        }
     }
 
     public Task OnNextAsync(SubscriberNotified domainEvent, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        // Implement notification logic as needed
+        return Task.CompletedTask;
     }
 }
