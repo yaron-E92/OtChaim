@@ -43,9 +43,12 @@ public class ApproveSubscriptionHandlerTests
         // Assert
         // Verify subscription status is now Approved
         subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
-        Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Approved));
-        Assert.That(subscription.ApprovedAt, Is.Not.Null);
-        
+        Assert.Multiple(() =>
+        {
+            Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Approved));
+            Assert.That(subscription.ApprovedAt, Is.Not.Null);
+        });
+
         await userRepository.Received().SaveAsync(subscriber, Arg.Any<CancellationToken>());
     }
 } 
