@@ -5,8 +5,10 @@ namespace OtChaim.Domain.Notifications;
 
 public class NotificationChannel : ValueObject
 {
-    public string ChannelType { get; }
-    public string? Address { get; }
+    public string ChannelType { get; private set; }
+    public string? Address { get; private set; }
+
+    private NotificationChannel() { } // For EF Core
 
     public NotificationChannel(string channelType, string? address = null)
     {
