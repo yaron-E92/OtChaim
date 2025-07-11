@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Domain.Tests", "OtC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Persistence", "OtChaim.Persistence\OtChaim.Persistence.csproj", "{B2659672-D4C0-44E6-BE89-6EC9A764C6AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtChaim.Persistence.Tests", "OtChaim.Persistence.Tests\OtChaim.Persistence.Tests.csproj", "{5E925A61-11D1-4AE8-863A-B7F6F2208617}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,12 @@ Global
 		{B2659672-D4C0-44E6-BE89-6EC9A764C6AB}.NoGui|Any CPU.Build.0 = Debug|Any CPU
 		{B2659672-D4C0-44E6-BE89-6EC9A764C6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2659672-D4C0-44E6-BE89-6EC9A764C6AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E925A61-11D1-4AE8-863A-B7F6F2208617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E925A61-11D1-4AE8-863A-B7F6F2208617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E925A61-11D1-4AE8-863A-B7F6F2208617}.NoGui|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E925A61-11D1-4AE8-863A-B7F6F2208617}.NoGui|Any CPU.Build.0 = Debug|Any CPU
+		{5E925A61-11D1-4AE8-863A-B7F6F2208617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E925A61-11D1-4AE8-863A-B7F6F2208617}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
