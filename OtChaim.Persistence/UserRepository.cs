@@ -16,6 +16,12 @@ public class UserRepository(OtChaimDbContext context) : IUserRepository
             .Select(u => u.RequiresSubscriptionApproval())
             .FirstOrDefaultAsync(cancellationToken);
 
+    public async Task AddAsync(User user, CancellationToken cancellationToken = default)
+    {
+        await _context.Users.AddAsync(user, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task SaveAsync(User user, CancellationToken cancellationToken = default)
     {
         _context.Users.Update(user);
