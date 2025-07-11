@@ -15,6 +15,8 @@ public class User : Entity
     private readonly List<NotificationChannel> _notificationChannels = [];
     public IReadOnlyList<NotificationChannel> NotificationChannels => _notificationChannels.AsReadOnly();
     private readonly List<Subscription> _subscriptions = [];
+    private bool _requireApproval = true;
+
     public IReadOnlyList<Subscription> Subscriptions => _subscriptions.AsReadOnly();
 
     public static User None { get; } = new User{ Id = Guid.Empty };
@@ -30,6 +32,7 @@ public class User : Entity
         if (string.IsNullOrWhiteSpace(phoneNumber))
             throw new ArgumentException("Phone number cannot be empty", nameof(phoneNumber));
 
+        Id = Guid.NewGuid();
         Name = name;
         Email = email;
         PhoneNumber = phoneNumber;
@@ -59,7 +62,12 @@ public class User : Entity
         IsActive = true;
     }
 
-    public bool RequiresSubscriptionApproval() => true; // Placeholder
+    public void ToggleApproval()
+    {
+        _requireApproval = !_requireApproval;
+    }
+
+    public bool RequiresSubscriptionApproval() => _requireApproval;
 
     public void OnSubscriptionRequested(SubscriptionRequested subscriptionEvent)
     {

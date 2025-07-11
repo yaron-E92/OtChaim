@@ -12,7 +12,7 @@ public class EmergencyResponse : ValueObject
 
     private EmergencyResponse() { } // For EF Core
 
-    public EmergencyResponse(Guid userId, bool isSafe, string message = null)
+    public EmergencyResponse(Guid userId, bool isSafe, string message = "")
     {
         UserId = userId;
         IsSafe = isSafe;

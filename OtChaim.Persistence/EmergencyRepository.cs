@@ -33,4 +33,4 @@ public class EmergencyRepository(OtChaimDbContext context) : IEmergencyRepositor
 
     public async Task<IReadOnlyList<Emergency>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default)
         => await _context.Emergencies.Where(e => e.Responses.Any(r => r.UserId == userId)).ToListAsync(cancellationToken);
-} 
+}

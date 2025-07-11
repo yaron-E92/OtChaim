@@ -19,21 +19,21 @@ public class Emergency : Entity
 
     public Emergency(Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium, EmergencyType? emergencyType = null)
     {
-        if (location == null)
-            throw new ArgumentNullException(nameof(location));
+        ArgumentNullException.ThrowIfNull(location);
+
         Location = location;
         EmergencyType = emergencyType;
         _affectedAreas = (affectedAreas == null || !affectedAreas.Any())
-            ? new List<Area> { Area.FromLocation(location, emergencyType: emergencyType) }
+            ? [Area.FromLocation(location.Clone(), emergencyType: emergencyType)]
             : new List<Area>(affectedAreas);
         Severity = severity;
         CreatedAt = DateTime.UtcNow;
         Status = EmergencyStatus.Active;
     }
 
-    public void AddResponse(Guid userId, bool isSafe, string? message = null)
+    public void AddResponse(Guid userId, bool isSafe, string message = "")
     {
-        var response = new EmergencyResponse(userId, isSafe, message);
+        var response = new EmergencyResponse(userId, isSafe, message ?? "");
         _responses.Add(response);
 
         // If all subscribers have responded, mark the event as resolved

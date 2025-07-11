@@ -1,12 +1,13 @@
-using System.Collections.Generic;
 using OtChaim.Domain.EmergencyEvents;
 
 namespace OtChaim.Domain.Common;
 
 public class Area : ValueObject
 {
-    public Location Center { get; }
-    public double RadiusInMeters { get; }
+    public Location Center { get; private set; }
+    public double RadiusInMeters { get; private set; }
+
+    private Area() { } // For EF Core
 
     public Area(Location center, double radiusInMeters)
     {
@@ -27,31 +28,18 @@ public class Area : ValueObject
     }
 
     private static double DetermineDefaultRadius(EmergencyType? emergencyType)
-        {
-            if (emergencyType != null)
+    {
+        return emergencyType != null
+            ? emergencyType switch
             {
-                switch (emergencyType)
-                {
-                    case EmergencyType.NaturalDisaster:
-                    case EmergencyType.CivilUnrest:
-                        return 1000;
-                    case EmergencyType.WeatherAlert:
-                    case EmergencyType.SecurityThreat:
-                        return 500;
-                    case EmergencyType.InfrastructureFailure:
-                    case EmergencyType.TransportationDisruption:
-                        return 300;
-                    case EmergencyType.UtilityOutage:
-                        return 200;
-                    case EmergencyType.LocalIncident:
-                        return 100;
-                    case EmergencyType.PersonalEmergency:
-                    case EmergencyType.MedicalEmergency:
-                        return 10;
-                    default:
-                        return 100;
-                }
+                EmergencyType.NaturalDisaster or EmergencyType.CivilUnrest => 1000.0,
+                EmergencyType.WeatherAlert or EmergencyType.SecurityThreat => 500.0,
+                EmergencyType.InfrastructureFailure or EmergencyType.TransportationDisruption => 300.0,
+                EmergencyType.UtilityOutage => 200.0,
+                EmergencyType.LocalIncident => 100.0,
+                EmergencyType.PersonalEmergency or EmergencyType.MedicalEmergency => 10.0,
+                _ => 100.0,
             }
-            return 100;
-        }
+            : 100.0;
+    }
 }

@@ -44,4 +44,4 @@ public class UserRepository(OtChaimDbContext context) : IUserRepository
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
-} 
+}
