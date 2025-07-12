@@ -12,6 +12,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
 
     [Test]
     [Explicit("Integration test for starting an emergency.")]
+    [Category("Integration")]
     public async Task StartEmergencyHandler_CreatesEmergencyInDatabase()
     {
         // Arrange
@@ -32,6 +33,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
 
     [Test]
     [Explicit("Integration test for marking user status in an emergency.")]
+    [Category("Integration")]
     public async Task MarkUserStatusHandler_AddsResponseToEmergency()
     {
         // Arrange
@@ -57,6 +59,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
 
     [Test]
     [Explicit("Integration test for ending an emergency.")]
+    [Category("Integration")]
     public async Task EndEmergencyHandler_ChangesEmergencyStatusToResolved()
     {
         // Arrange
