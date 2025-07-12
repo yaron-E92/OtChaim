@@ -4,6 +4,7 @@ using OtChaim.Application.EmergencyEvents.Handlers;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Users;
+using FluentAssertions;
 
 namespace OtChaim.IntegrationTests;
 
@@ -27,8 +28,8 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         IReadOnlyList<Emergency> emergencies = await repo.GetAllAsync();
 
         // Assert
-        Assert.That(emergencies, Is.Not.Empty);
-        Assert.That(emergencies.Any(e => e.Location.Equals(location) && e.Severity == Severity.High));
+        emergencies.Should().NotBeEmpty();
+        emergencies.Any(e => e.Location.Equals(location) && e.Severity == Severity.High).Should().BeTrue();
     }
 
     [Test]
@@ -53,8 +54,8 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         emergency = await repo.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(emergency.Responses, Is.Not.Empty);
-        Assert.That(emergency.Responses.Any(r => r.Message == Message));
+        emergency.Responses.Should().NotBeEmpty();
+        emergency.Responses.Any(r => r.Message == Message).Should().BeTrue();
     }
 
     [Test]
@@ -78,6 +79,6 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         emergency = await repo.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(emergency.Status, Is.EqualTo(EmergencyStatus.Resolved));
+        emergency.Status.Should().Be(EmergencyStatus.Resolved);
     }
 }
