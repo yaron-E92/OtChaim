@@ -14,10 +14,18 @@ using Yaref92.Events.Transports;
 
 namespace OtChaim.Application.Common;
 
+/// <summary>
+/// Provides extension methods for configuring event aggregation and dependency injection.
+/// </summary>
 public static class EventConfiguration
 {
     private const int ListenPort = 9000;
 
+    /// <summary>
+    /// Adds and configures the event aggregator and related services to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddEventAggregator(this IServiceCollection services)
     {
         // Register event subscribers
@@ -57,6 +65,12 @@ public static class EventConfiguration
         return services;
     }
 
+    /// <summary>
+    /// Registers event types and subscribes event subscribers to the event aggregator.
+    /// </summary>
+    /// <param name="eventAggregator">The event aggregator to configure.</param>
+    /// <param name="serviceProvider">The service provider for resolving subscribers.</param>
+    /// <returns>The configured event aggregator.</returns>
     public static IEventAggregator ConfigureEventAggregator(IEventAggregator eventAggregator, IServiceProvider serviceProvider)
     {
         // Register all event types

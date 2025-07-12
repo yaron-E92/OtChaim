@@ -1,16 +1,20 @@
-using System;
 using OtChaim.Application.Common;
 
 namespace OtChaim.Application.Users.Commands;
 
-public class RejectSubscription : ICommand
+/// <summary>
+/// Command to reject a user subscription.
+/// </summary>
+/// <param name="subscriberId">The ID of the subscriber.</param>
+/// <param name="subscribedToId">The ID of the user being subscribed to.</param>
+public class RejectSubscription(Guid subscriberId, Guid subscribedToId) : ICommand
 {
-    public Guid SubscriberId { get; }
-    public Guid SubscribedToId { get; }
-
-    public RejectSubscription(Guid subscriberId, Guid subscribedToId)
-    {
-        SubscriberId = subscriberId;
-        SubscribedToId = subscribedToId;
-    }
-} 
+    /// <summary>
+    /// The ID of the subscriber.
+    /// </summary>
+    public Guid SubscriberId { get; } = subscriberId;
+    /// <summary>
+    /// The ID of the user being subscribed to.
+    /// </summary>
+    public Guid SubscribedToId { get; } = subscribedToId;
+}

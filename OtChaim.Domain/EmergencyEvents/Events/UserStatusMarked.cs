@@ -8,13 +8,13 @@ public class UserStatusMarked : DomainEventBase
     public Guid UserId { get; }
     public Guid EmergencyId { get; }
     public UserStatus Status { get; }
-    public string? Message { get; }
+    public string Message { get; }
 
     public UserStatusMarked(
         Guid userId,
         Guid emergencyId,
         UserStatus status,
-        string? message = null,
+        string message = "",
         DateTime occurred = default, Guid eventId = default)
         : base(occurred, eventId)
     {
