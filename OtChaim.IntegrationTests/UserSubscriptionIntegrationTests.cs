@@ -9,6 +9,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
 {
     [Test]
     [Explicit("Integration test for requesting a subscription.")]
+    [Category("Integration")]
     public async Task RequestSubscriptionHandler_AddsSubscriptionToSubscribedToUser()
     {
         // Arrange
@@ -33,6 +34,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
 
     [Test]
     [Explicit("Integration test for approving a subscription.")]
+    [Category("Integration")]
     public async Task ApproveSubscriptionHandler_ApprovesSubscription()
     {
         // Arrange
@@ -59,6 +61,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
 
     [Test]
     [Explicit("Integration test for rejecting a subscription.")]
+    [Category("Integration")]
     public async Task RejectSubscriptionHandler_RejectsSubscription()
     {
         // Arrange

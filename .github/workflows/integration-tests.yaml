@@ -24,7 +24,7 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run Integration Tests
-        run: dotnet test OtChaim.IntegrationTests/OtChaim.IntegrationTests.csproj --configuration Release --no-build --logger "trx"
+        run: dotnet test OtChaim.IntegrationTests/OtChaim.IntegrationTests.csproj --configuration Release --no-build --logger "trx" --filter TestCategory=Integration
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
