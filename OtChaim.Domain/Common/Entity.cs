@@ -1,9 +1,13 @@
-using System;
-
 namespace OtChaim.Domain.Common;
 
+/// <summary>
+/// Represents a base entity with an identity.
+/// </summary>
 public abstract class Entity
 {
+    /// <summary>
+    /// Gets the unique identifier for the entity.
+    /// </summary>
     public Guid Id { get; protected set; }
 
     protected Entity()
@@ -11,7 +15,10 @@ public abstract class Entity
         Id = Guid.NewGuid();
     }
 
-    public override bool Equals(object obj)
+    /// <summary>
+    /// Determines whether the specified object is equal to the current entity.
+    /// </summary>
+    public override bool Equals(object? obj)
     {
         if (obj is not Entity other)
             return false;
@@ -19,10 +26,8 @@ public abstract class Entity
         if (ReferenceEquals(this, other))
             return true;
 
-        if (GetType() != other.GetType())
-            return false;
-
-        return Id == other.Id;
+        return GetType() == other.GetType()
+            && Id == other.Id;
     }
 
     public static bool operator ==(Entity a, Entity b)
@@ -41,8 +46,11 @@ public abstract class Entity
         return !(a == b);
     }
 
+    /// <summary>
+    /// Returns a hash code for the entity.
+    /// </summary>
     public override int GetHashCode()
     {
         return (GetType().ToString() + Id).GetHashCode();
     }
-} 
+}

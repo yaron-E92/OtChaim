@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
+using FluentAssertions;
 
 namespace OtChaim.IntegrationTests;
 
@@ -28,8 +29,8 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
         User updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedToId);
 
         // Assert
-        Assert.That(updatedSubscribedTo.Subscriptions, Is.Not.Empty);
-        Assert.That(updatedSubscribedTo.Subscriptions[0].SubscriberId, Is.EqualTo(subscriberId));
+        updatedSubscribedTo.Subscriptions.Should().NotBeEmpty();
+        updatedSubscribedTo.Subscriptions[0].SubscriberId.Should().Be(subscriberId);
     }
 
     [Test]
@@ -54,9 +55,9 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
         var updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedTo.Id);
 
         // Assert
-        Assert.That(updatedSubscribedTo.Subscriptions, Is.Not.Empty);
-        Assert.That(updatedSubscribedTo.Subscriptions[0].SubscriberId, Is.EqualTo(subscriber.Id));
-        Assert.That(updatedSubscribedTo.Subscriptions[0].Status, Is.EqualTo(SubscriptionStatus.Approved));
+        updatedSubscribedTo.Subscriptions.Should().NotBeEmpty();
+        updatedSubscribedTo.Subscriptions[0].SubscriberId.Should().Be(subscriber.Id);
+        updatedSubscribedTo.Subscriptions[0].Status.Should().Be(SubscriptionStatus.Approved);
     }
 
     [Test]
@@ -81,8 +82,8 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
         var updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedTo.Id);
 
         // Assert
-        Assert.That(updatedSubscribedTo.Subscriptions, Is.Not.Empty);
-        Assert.That(updatedSubscribedTo.Subscriptions[0].SubscriberId, Is.EqualTo(subscriber.Id));
-        Assert.That(updatedSubscribedTo.Subscriptions[0].Status, Is.EqualTo(SubscriptionStatus.Rejected));
+        updatedSubscribedTo.Subscriptions.Should().NotBeEmpty();
+        updatedSubscribedTo.Subscriptions[0].SubscriberId.Should().Be(subscriber.Id);
+        updatedSubscribedTo.Subscriptions[0].Status.Should().Be(SubscriptionStatus.Rejected);
     }
 }

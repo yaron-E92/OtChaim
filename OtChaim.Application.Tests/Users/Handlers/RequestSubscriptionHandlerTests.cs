@@ -3,6 +3,7 @@ using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
 using Yaref92.Events.Abstractions;
+using FluentAssertions;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
@@ -28,9 +29,9 @@ public class RequestSubscriptionHandlerTests
 
         // Assert
         // Check that a subscription was added to the subscriber
-        Assert.That(subscriber.Subscriptions, Has.Some.Matches<Subscription>(s =>
+        subscriber.Subscriptions.Should().ContainSingle(s =>
             s.SubscriberId == command.SubscriberId &&
-            s.SubscribedToId == command.SubscribedToId));
+            s.SubscribedToId == command.SubscribedToId);
         await userRepository.Received().SaveAsync(subscriber, Arg.Any<CancellationToken>());
     }
 } 

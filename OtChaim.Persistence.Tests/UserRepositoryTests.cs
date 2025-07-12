@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OtChaim.Domain.Users;
+using FluentAssertions;
 
 namespace OtChaim.Persistence.Tests;
 
@@ -36,8 +37,8 @@ public class UserRepositoryTests
         User loaded = await _repository.GetByIdAsync(user.Id);
 
         // Assert
-        Assert.That(loaded, Is.Not.Null);
-        Assert.That(loaded.Id, Is.EqualTo(user.Id));
+        loaded.Should().NotBeNull();
+        loaded.Id.Should().Be(user.Id);
     }
 
     [Test]
@@ -53,22 +54,23 @@ public class UserRepositoryTests
         IReadOnlyList<User> all = await _repository.GetAllAsync();
 
         // Assert
-        Assert.That(all, Has.Count.EqualTo(2));
+        all.Should().HaveCount(2);
     }
 
     [Test]
     public async Task GetByEmailAsync_ReturnsCorrectUser()
     {
         // Arrange
-        User user = new User("findme", "findme@example.com", "0000000");
+        const string Email = "findme@example.com";
+        User user = new User("findme", Email, "0000000");
         await _repository.AddAsync(user);
 
         // Act
-        User? found = await _repository.GetByEmailAsync("findme@example.com");
+        User? found = await _repository.GetByEmailAsync(Email);
 
         // Assert
-        Assert.That(found, Is.Not.Null);
-        Assert.That(found!.Email, Is.EqualTo("findme@example.com"));
+        found.Should().NotBeNull();
+        found!.Email.Should().Be(Email);
     }
 
     [Test]
@@ -83,7 +85,7 @@ public class UserRepositoryTests
         User loaded = await _repository.GetByIdAsync(user.Id);
 
         // Assert
-        Assert.That(loaded, Is.EqualTo(User.None));
+        loaded.Should().Be(User.None);
     }
 
     [Test]
@@ -97,7 +99,7 @@ public class UserRepositoryTests
         bool requires = await _repository.RequiresSubscriptionApprovalAsync(user.Id);
 
         // Assert
-        Assert.That(requires, Is.True);
+        requires.Should().BeTrue();
     }
 
     [Test]
@@ -112,6 +114,6 @@ public class UserRepositoryTests
         bool requires = await _repository.RequiresSubscriptionApprovalAsync(user.Id);
 
         // Assert
-        Assert.That(requires, Is.False);
+        requires.Should().BeFalse();
     }
-} 
+}

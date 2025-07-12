@@ -8,6 +8,7 @@ using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
 using OtChaim.Domain.Users.Events;
 using Yaref92.Events.Abstractions;
+using FluentAssertions;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
@@ -36,7 +37,7 @@ public class RejectSubscriptionHandlerTests
         
         // Verify initial subscription status is Pending
         var subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
-        Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Pending));
+        subscription.Status.Should().Be(SubscriptionStatus.Pending);
         
         // Now reject the subscription
         var rejectHandler = new RejectSubscriptionHandler(userRepository, eventAggregator);
@@ -48,7 +49,7 @@ public class RejectSubscriptionHandlerTests
         // Assert
         // Verify subscription status is now Rejected
         subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
-        Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Rejected));
+        subscription.Status.Should().Be(SubscriptionStatus.Rejected);
         
         await userRepository.Received().SaveAsync(subscriber, Arg.Any<CancellationToken>());
     }

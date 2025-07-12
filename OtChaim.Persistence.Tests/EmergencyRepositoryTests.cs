@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Common;
+using FluentAssertions;
 
 namespace OtChaim.Persistence.Tests;
 
@@ -39,8 +40,8 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(loaded, Is.Not.Null);
-        Assert.That(loaded.Id, Is.EqualTo(emergency.Id));
+        loaded.Should().NotBeNull();
+        loaded!.Id.Should().Be(emergency.Id);
     }
 
     [Test]
@@ -56,12 +57,9 @@ public class EmergencyRepositoryTests
         IReadOnlyList<Emergency> all = await _repository.GetAllAsync();
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(all, Has.Count.EqualTo(2));
-            Assert.That(all, Has.Member(e1));
-            Assert.That(all, Has.Member(e2));
-        });
+        all.Should().HaveCount(2);
+        all.Should().Contain(e1);
+        all.Should().Contain(e2);
     }
 
     [Test]
@@ -78,8 +76,8 @@ public class EmergencyRepositoryTests
         IReadOnlyList<Emergency> actives = await _repository.GetByStatusAsync(EmergencyStatus.Active);
 
         // Assert
-        Assert.That(actives, Has.Count.EqualTo(1));
-        Assert.That(actives[0].Status, Is.EqualTo(EmergencyStatus.Active));
+        actives.Should().HaveCount(1);
+        actives[0].Status.Should().Be(EmergencyStatus.Active);
     }
 
     [Test]
@@ -96,8 +94,8 @@ public class EmergencyRepositoryTests
         IReadOnlyList<Emergency> actives = await _repository.GetActiveAsync();
 
         // Assert
-        Assert.That(actives, Has.Count.EqualTo(1));
-        Assert.That(actives[0].Status, Is.EqualTo(EmergencyStatus.Active));
+        actives.Should().HaveCount(1);
+        actives[0].Status.Should().Be(EmergencyStatus.Active);
     }
 
     [Test]
@@ -115,9 +113,9 @@ public class EmergencyRepositoryTests
         IReadOnlyList<Emergency> byUser = await _repository.GetByUserAsync(userId);
 
         // Assert
-        Assert.That(byUser, Is.Not.Null);
-        Assert.That(byUser, Has.Count.EqualTo(1));
-        Assert.That(byUser[0], Is.EqualTo(e1));
+        byUser.Should().NotBeNull();
+        byUser.Should().HaveCount(1);
+        byUser[0].Should().Be(e1);
     }
 
     [Test]
@@ -134,11 +132,8 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(startingStatus, Is.EqualTo(EmergencyStatus.Active));
-            Assert.That(loaded?.Status, Is.EqualTo(EmergencyStatus.Resolved));
-        });
+        startingStatus.Should().Be(EmergencyStatus.Active);
+        loaded?.Status.Should().Be(EmergencyStatus.Resolved);
     }
 
     [Test]
@@ -156,13 +151,10 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(loaded?.Responses, Has.Count.EqualTo(1));
-            Assert.That(loaded?.Responses[0].UserId, Is.EqualTo(userId));
-            Assert.That(loaded?.Responses[0].IsSafe, Is.True);
-            Assert.That(loaded?.Responses[0].Message, Is.EqualTo(Message));
-        });
+        loaded?.Responses.Should().HaveCount(1);
+        loaded?.Responses[0].UserId.Should().Be(userId);
+        loaded?.Responses[0].IsSafe.Should().BeTrue();
+        loaded?.Responses[0].Message.Should().Be(Message);
     }
 
     [Test]
@@ -181,12 +173,9 @@ public class EmergencyRepositoryTests
         var loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(loaded?.Responses, Has.Count.EqualTo(2));
-            Assert.That(loaded?.Responses.Any(r => r.UserId == userId1 && r.IsSafe), Is.True);
-            Assert.That(loaded?.Responses.Any(r => r.UserId == userId2 && !r.IsSafe), Is.True);
-        });
+        loaded?.Responses.Should().HaveCount(2);
+        loaded?.Responses.Any(r => r.UserId == userId1 && r.IsSafe).Should().BeTrue();
+        loaded?.Responses.Any(r => r.UserId == userId2 && !r.IsSafe).Should().BeTrue();
     }
 
     [Test]
@@ -203,12 +192,9 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(loaded?.ResolvedAt, Is.Not.Null);
-            Assert.That(loaded?.ResolvedAt, Is.GreaterThanOrEqualTo(beforeResolve));
-            Assert.That(loaded?.Status, Is.EqualTo(EmergencyStatus.Resolved));
-        });
+        loaded?.ResolvedAt.Should().NotBeNull();
+        loaded?.ResolvedAt.Should().BeOnOrAfter(beforeResolve);
+        loaded?.Status.Should().Be(EmergencyStatus.Resolved);
     }
 
     [Test]
@@ -227,7 +213,7 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(loaded?.ResolvedAt, Is.EqualTo(firstResolvedAt));
+        loaded?.ResolvedAt.Should().Be(firstResolvedAt);
     }
 
     [Test]
@@ -244,11 +230,8 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(loaded?.Responses, Has.Count.EqualTo(1));
-            Assert.That(loaded?.Responses[0].Message, Is.Empty);
-        });
+        loaded?.Responses.Should().HaveCount(1);
+        loaded?.Responses[0].Message.Should().BeEmpty();
     }
 
     [Test]
@@ -265,11 +248,8 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(loaded?.Responses, Has.Count.EqualTo(1));
-            Assert.That(loaded?.Responses[0].Message, Is.EqualTo(""));
-        });
+        loaded?.Responses.Should().HaveCount(1);
+        loaded?.Responses[0].Message.Should().BeEmpty();
     }
 
     [Test]
@@ -287,7 +267,7 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(loaded?.Severity, Is.EqualTo(originalSeverity));
+        loaded?.Severity.Should().Be(originalSeverity);
     }
 
     [Test]
@@ -304,7 +284,7 @@ public class EmergencyRepositoryTests
         var loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(loaded.EmergencyType, Is.EqualTo(originalType));
+        loaded.EmergencyType.Should().Be(originalType);
     }
 
     [Test]
@@ -320,12 +300,8 @@ public class EmergencyRepositoryTests
         await _repository.SaveAsync(emergency);
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
-        Assert.Multiple(() =>
-        {
-            // Assert
-            Assert.That(loaded?.Location.Latitude, Is.EqualTo(originalLocation.Latitude));
-            Assert.That(loaded?.Location.Longitude, Is.EqualTo(originalLocation.Longitude));
-        });
+        loaded?.Location.Latitude.Should().Be(originalLocation.Latitude);
+        loaded?.Location.Longitude.Should().Be(originalLocation.Longitude);
     }
 
     [Test]
@@ -342,12 +318,8 @@ public class EmergencyRepositoryTests
         await _repository.SaveAsync(emergency);
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
-        Assert.Multiple(() =>
-        {
-            // Assert
-            Assert.That(loaded?.AffectedAreas, Has.Count.EqualTo(1));
-            Assert.That(loaded?.AffectedAreas[0], Is.EqualTo(area));
-        });
+        loaded?.AffectedAreas.Should().HaveCount(1);
+        loaded?.AffectedAreas[0].Should().Be(area);
     }
 
     [Test]
@@ -364,6 +336,6 @@ public class EmergencyRepositoryTests
         Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        Assert.That(loaded?.CreatedAt, Is.EqualTo(originalCreatedAt));
+        loaded?.CreatedAt.Should().Be(originalCreatedAt);
     }
 } 

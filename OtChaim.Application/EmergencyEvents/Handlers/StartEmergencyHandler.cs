@@ -5,10 +5,19 @@ using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.EmergencyEvents.Handlers;
 
+/// <summary>
+/// Handles the <see cref="StartEmergency"/> command by publishing an <see cref="EmergencyStarted"/> event.
+/// </summary>
+/// <param name="eventAggregator">The event aggregator to use for publishing events.</param>
 public class StartEmergencyHandler(IEventAggregator eventAggregator) : ICommandHandler<StartEmergency>
 {
     private readonly IEventAggregator _eventAggregator = eventAggregator;
 
+    /// <summary>
+    /// Handles the <see cref="StartEmergency"/> command.
+    /// </summary>
+    /// <param name="command">The command to handle.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     public async Task Handle(StartEmergency command, CancellationToken cancellationToken = default)
     {
         var emergencySituationId = Guid.NewGuid();
@@ -17,10 +26,9 @@ public class StartEmergencyHandler(IEventAggregator eventAggregator) : ICommandH
             command.InitiatorUserId,
             command.Type,
             command.Location,
-            command.Area,
-            command.Severity);
+            command.AffectedAreas, command.Severity);
 
         // Publish the event through the event aggregator
         await _eventAggregator.PublishEventAsync(emergencySituationStartedEvent, cancellationToken);
     }
-} 
+}

@@ -6,11 +6,23 @@ using OtChaim.Domain.Users;
 
 namespace OtChaim.Persistence;
 
+/// <summary>
+/// Entity Framework Core database context for the OtChaim application.
+/// </summary>
 public class OtChaimDbContext(DbContextOptions<OtChaimDbContext> options) : DbContext(options)
 {
+    /// <summary>
+    /// Gets or sets the emergencies database set.
+    /// </summary>
     public DbSet<Emergency> Emergencies { get; set; }
+    /// <summary>
+    /// Gets or sets the users database set.
+    /// </summary>
     public DbSet<User> Users { get; set; }
 
+    /// <summary>
+    /// Configures the database model.
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Emergency configuration
@@ -55,6 +67,9 @@ public class OtChaimDbContext(DbContextOptions<OtChaimDbContext> options) : DbCo
         base.OnModelCreating(modelBuilder);
     }
 
+    /// <summary>
+    /// Configures the location value object.
+    /// </summary>
     private static void ConfigureLocation<T>(OwnedNavigationBuilder<T, Location> loc) where T : class
     {
         loc.WithOwner();

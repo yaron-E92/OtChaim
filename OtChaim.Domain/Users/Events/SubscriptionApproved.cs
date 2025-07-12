@@ -2,16 +2,23 @@ using Yaref92.Events;
 
 namespace OtChaim.Domain.Users.Events;
 
-public class SubscriptionApproved : DomainEventBase
+/// <summary>
+/// Event raised when a subscription is approved.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="SubscriptionApproved"/> class.
+/// </remarks>
+/// <param name="subscriberId">The ID of the subscriber</param>
+/// <param name="subscribedToId">The ID of the user being subscribed to</param>
+public class SubscriptionApproved(Guid subscriberId, Guid subscribedToId, DateTime occurred = default,
+                                  Guid eventId = default) : DomainEventBase(occurred, eventId)
 {
-    public Guid SubscriberId { get; }
-    public Guid SubscribedToId { get; }
-
-    public SubscriptionApproved(Guid subscriberId, Guid subscribedToId, DateTime occurred = default, Guid eventId = default)
-        : base(occurred, eventId)
-    {
-        SubscriberId = subscriberId;
-        SubscribedToId = subscribedToId;
-    }
+    /// <summary>
+    /// The ID of the subscriber.
+    /// </summary>
+    public Guid SubscriberId { get; } = subscriberId;
+    /// <summary>
+    /// The ID of the user being subscribed to.
+    /// </summary>
+    public Guid SubscribedToId { get; } = subscribedToId;
 }
-

@@ -34,6 +34,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
+        id: build
         run: dotnet build --no-restore --configuration Release
 
       - name: Run Integration Tests
@@ -41,5 +42,7 @@ jobs:
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
+        if: ${{steps.build.outcome == 'success'}}
         with:
-          files: OtChaim.IntegrationTests/TestResults/*.trx 
+          files: OtChaim.IntegrationTests/TestResults/*.trx
+          check_name: "Integration tests Results"
