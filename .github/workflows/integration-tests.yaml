@@ -17,6 +17,15 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Ensure GitHub NuGet Source
+        run: |
+          dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json \
+            -n github \
+            -u Yaron-E92 \
+            -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
+            --store-password-in-clear-text
+        continue-on-error: true
+
       - name: Restore dependencies
         run: dotnet restore
 
