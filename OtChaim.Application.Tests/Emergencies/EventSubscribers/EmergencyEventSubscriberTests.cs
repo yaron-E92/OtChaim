@@ -24,8 +24,7 @@ public class EmergencyEventSubscriberTests
             Guid.NewGuid(),
             EmergencyType.WeatherAlert,
             location,
-            area,
-            Severity.High,
+            [area], Severity.High,
             DateTime.UtcNow,
             Guid.NewGuid()
         );
@@ -37,7 +36,7 @@ public class EmergencyEventSubscriberTests
         await repo.Received(1).AddAsync(Arg.Is<Emergency>(e =>
             e.Location == evt.Location &&
             e.EmergencyType == evt.EmergencyType &&
-            e.AffectedAreas.Contains(evt.AffectedArea)
+            e.AffectedAreas.SequenceEqual(evt.AffectedAreas)
         ), Arg.Any<CancellationToken>());
     }
 
@@ -45,7 +44,7 @@ public class EmergencyEventSubscriberTests
     public async Task OnNextAsync_EmergencyEnded_ResolvesEmergency()
     {
         // Arrange
-        var repo = Substitute.For<IEmergencyRepository>();
+        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
         var emergency = new Emergency(new Location(1, 2));
         repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(emergency);
         var subscriber = new EmergencyEventSubscriber(repo);
@@ -63,7 +62,7 @@ public class EmergencyEventSubscriberTests
     public async Task OnNextAsync_UserStatusMarked_AddsResponse()
     {
         // Arrange
-        var repo = Substitute.For<IEmergencyRepository>();
+        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
         var emergency = new Emergency(new Location(1, 2));
         repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(emergency);
         var subscriber = new EmergencyEventSubscriber(repo);
@@ -92,7 +91,7 @@ public class EmergencyEventSubscriberTests
     public async Task OnNextAsync_EmergencyEnded_DoesNothingIfEmergencyNotFound()
     {
         // Arrange
-        var repo = Substitute.For<IEmergencyRepository>();
+        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
         repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((Emergency?)null);
         var subscriber = new EmergencyEventSubscriber(repo);
         var evt = new EmergencyEnded(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
@@ -108,7 +107,7 @@ public class EmergencyEventSubscriberTests
     public async Task OnNextAsync_UserStatusMarked_DoesNothingIfEmergencyNotFound()
     {
         // Arrange
-        var repo = Substitute.For<IEmergencyRepository>();
+        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
         repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((Emergency?)null);
         var subscriber = new EmergencyEventSubscriber(repo);
         var evt = new UserStatusMarked(

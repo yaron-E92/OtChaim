@@ -2,24 +2,28 @@ using Yaref92.Events;
 
 namespace OtChaim.Domain.EmergencyEvents.Events;
 
-public class SubscriberNotified : DomainEventBase
+/// <summary>
+/// Event raised when a subscriber is notified about an emergency.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="SubscriberNotified"/> class.
+/// </remarks>
+public class SubscriberNotified(
+    Guid userId,
+    Guid emergencyId,
+    string message = "",
+    DateTime occurred = default, Guid eventId = default) : DomainEventBase(occurred, eventId)
 {
-    public Guid UserId { get; }
-    public Guid SubscriberId { get; }
-    public Guid EmergencyId { get; }
-    public string? Message { get; }
-
-    public SubscriberNotified(
-        Guid userId,
-        Guid emergencyId,
-        Guid subscriberId,
-        string? message = null,
-        DateTime occurred = default, Guid eventId = default)
-        : base(occurred, eventId)
-    {
-        UserId = userId;
-        EmergencyId = emergencyId;
-        SubscriberId = subscriberId;
-        Message = message;
-    }
+    /// <summary>
+    /// The ID of the user who was notified.
+    /// </summary>
+    public Guid UserId { get; } = userId;
+    /// <summary>
+    /// The ID of the emergency.
+    /// </summary>
+    public Guid EmergencyId { get; } = emergencyId;
+    /// <summary>
+    /// The message sent to the subscriber, if any.
+    /// </summary>
+    public string Message { get; } = message;
 }

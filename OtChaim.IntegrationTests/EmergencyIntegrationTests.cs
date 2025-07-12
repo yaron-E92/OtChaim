@@ -21,7 +21,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
         var location = new Location(1.0, 2.0, "Test");
         var area = new Area(location, 100);
-        var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, area, Severity.High, "Test emergency");
+        var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, [area], Severity.High, "Test emergency");
 
         // Act
         await handler.Handle(command);
@@ -43,7 +43,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
         var location = new Location(2.0, 3.0, "Test2");
         var area = new Area(location, 200);
-        var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, area, Severity.Medium, "Flood emergency");
+        var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, [area], Severity.Medium, "Flood emergency");
         await startHandler.Handle(command);
         Emergency? emergency = (await repo.GetAllAsync())[0];
         const string Message = "I'm safe";
@@ -54,8 +54,8 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         emergency = await repo.GetByIdAsync(emergency.Id);
 
         // Assert
-        emergency.Responses.Should().NotBeEmpty();
-        emergency.Responses.Any(r => r.Message == Message).Should().BeTrue();
+        emergency?.Responses.Should().NotBeEmpty();
+        emergency?.Responses.Any(r => r.Message == Message).Should().BeTrue();
     }
 
     [Test]
@@ -69,7 +69,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
         var location = new Location(3.0, 4.0, "Test3");
         var area = new Area(location, 300);
-        var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, area, Severity.Low, "Earthquake");
+        var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, [area], Severity.Low, "Earthquake");
         await startHandler.Handle(command);
         Emergency? emergency = (await repo.GetAllAsync())[0];
         var endCommand = new EndEmergency(emergency.Id);
@@ -79,6 +79,6 @@ public class EmergencyIntegrationTests : IntegrationTestBase
         emergency = await repo.GetByIdAsync(emergency.Id);
 
         // Assert
-        emergency.Status.Should().Be(EmergencyStatus.Resolved);
+        emergency?.Status.Should().Be(EmergencyStatus.Resolved);
     }
 }

@@ -27,7 +27,7 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository) 
         // Create and persist a new Emergency
         var emergency = new Emergency(
             domainEvent.Location.Clone(),
-            [domainEvent.AffectedArea],
+            [.. domainEvent.AffectedAreas],
             domainEvent.Severity,
             domainEvent.EmergencyType
         );

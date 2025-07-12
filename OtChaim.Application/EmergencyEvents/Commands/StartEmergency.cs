@@ -10,14 +10,14 @@ namespace OtChaim.Application.EmergencyEvents.Commands;
 /// <param name="initiatorUserId">The ID of the user initiating the emergency.</param>
 /// <param name="type">The type of emergency.</param>
 /// <param name="location">The location of the emergency.</param>
-/// <param name="area">The affected area.</param>
+/// <param name="affectedAreas">The affected areas</param>
 /// <param name="severity">The severity of the emergency.</param>
 /// <param name="description">A description of the emergency.</param>
 public class StartEmergency(
     Guid initiatorUserId,
     EmergencyType type,
     Location location,
-    Area area,
+    IEnumerable<Area> affectedAreas,
     Severity severity,
     string description = "") : ICommand
 {
@@ -36,7 +36,7 @@ public class StartEmergency(
     /// <summary>
     /// The affected area.
     /// </summary>
-    public Area Area { get; } = area;
+    public IEnumerable<Area> AffectedAreas { get; } = affectedAreas;
     /// <summary>
     /// The severity of the emergency.
     /// </summary>
