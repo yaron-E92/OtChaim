@@ -4,6 +4,7 @@ using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Application.EmergencyEvents.EventSubscribers;
 using OtChaim.Domain.Users;
 using OtChaim.Domain.Common;
+using FluentAssertions;
 
 namespace OtChaim.Application.Tests.Emergencies.EventSubscribers;
 
@@ -54,7 +55,7 @@ public class EmergencyEventSubscriberTests
         await subscriber.OnNextAsync(evt);
 
         // Assert
-        Assert.That(emergency.Status, Is.EqualTo(EmergencyStatus.Resolved));
+        emergency.Status.Should().Be(EmergencyStatus.Resolved);
         await repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());
     }
 
@@ -79,11 +80,11 @@ public class EmergencyEventSubscriberTests
         await subscriber.OnNextAsync(evt);
 
         // Assert
-        Assert.That(emergency.Responses, Has.Some.Matches<EmergencyResponse>(r =>
+        emergency.Responses.Should().ContainSingle(r =>
             r.UserId == evt.UserId &&
             r.IsSafe == true &&
             r.Message == evt.Message
-        ));
+        );
         await repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());
     }
 
