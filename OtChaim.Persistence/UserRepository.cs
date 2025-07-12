@@ -28,7 +28,6 @@ public class UserRepository(OtChaimDbContext context) : IUserRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    // Recommended additional methods:
     public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken cancellationToken = default)
         => await _context.Users.ToListAsync(cancellationToken);
 

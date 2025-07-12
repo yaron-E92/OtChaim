@@ -7,7 +7,6 @@ using OtChaim.Application.Users.EventSubscribers;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Domain.Users.Events;
-using System.Net.NetworkInformation;
 using Yaref92.Events;
 using Yaref92.Events.Abstractions;
 using Yaref92.Events.Serialization;

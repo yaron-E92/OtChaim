@@ -26,4 +26,4 @@ public class ApproveSubscriptionHandler : ICommandHandler<ApproveSubscription>
         
         await _userRepository.SaveAsync(subscriber, cancellationToken);
     }
-} 
+}

@@ -114,4 +114,4 @@ public class UserRepositoryTests
         // Assert
         Assert.That(requires, Is.False);
     }
-} 
+}

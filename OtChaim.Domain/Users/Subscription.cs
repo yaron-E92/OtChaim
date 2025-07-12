@@ -21,11 +21,7 @@ public class Subscription : Entity
         SubscriberId = subscriberId;
         SubscribedToId = subscribedToId;
         CreatedAt = DateTime.UtcNow;
-        Status = SubscriptionStatus.Pending;
-        if (!requiresApproval)
-        {
-            Status = SubscriptionStatus.Approved;
-        }
+        Status = requiresApproval ? SubscriptionStatus.Pending : SubscriptionStatus.Approved;
     }
 
     public void Approve()
@@ -43,4 +39,4 @@ public class Subscription : Entity
     {
         LastKnownStatus = status;
     }
-} 
+}

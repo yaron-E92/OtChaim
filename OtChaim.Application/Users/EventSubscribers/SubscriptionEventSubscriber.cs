@@ -36,4 +36,4 @@ public class SubscriptionEventSubscriber :
         subscribedTo.OnSubscriptionRejected(@event);
         await _userRepository.SaveAsync(subscribedTo, cancellationToken);
     }
-} 
+}

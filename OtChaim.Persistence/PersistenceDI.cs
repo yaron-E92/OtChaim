@@ -31,4 +31,4 @@ public static class PersistenceDI
 
         return services;
     }
-} 
+}
