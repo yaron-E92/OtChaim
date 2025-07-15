@@ -74,12 +74,12 @@ jobs:
           --store-password-in-clear-text
 
     - name: Restore Dependencies
-      run: dotnet restore
+      run: dotnet restore OtChaim.NoGUI.slnf
 
     - name: Build
       id: build
       run: |
-        dotnet build -c NoGUI --no-restore
+        dotnet build -c NoGUI --no-restore OtChaim.NoGUI.slnf
         if [ $? -ne 0 ]; then
           echo "::error::Build failed"
           exit 1
@@ -90,7 +90,8 @@ jobs:
         dotnet test --logger "trx" --no-build -c NoGUI --verbosity normal \
           /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
           /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} \
+          OtChaim.NoGUI.slnf
         if [ $? -ne 0 ]; then
           echo "::error::Tests failed"
           exit 1
@@ -134,7 +135,7 @@ jobs:
       env:
         PR_DESCRIPTION: ${{ github.event.pull_request.body }}
       run: |
-        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $PR_DESCRIPTION)
+        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $PR_DESCRIPTION | xargs)
         echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
         echo "PR GUI override: $guiLine"
 
@@ -144,7 +145,7 @@ jobs:
       env:
         MERGE_COMMIT: ${{ github.event.head_commit.message }}
       run: |
-        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $MERGE_COMMIT)
+        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $MERGE_COMMIT | xargs)
         echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
         echo "Merge GUI override: $guiLine"
 
@@ -164,6 +165,13 @@ jobs:
         else
           echo "override=" >> $GITHUB_OUTPUT
         fi
+
+    - name: Echo override
+      id: echoOverride
+      if: |
+        steps.checkOverridePR.outputs.guiLine != '' ||
+        steps.checkOverrideMerge.outputs.guiLine != ''
+      run: |
         echo "Final override value: ${{ steps.determineOverride.outputs.override }}"
 
   buildAndTestGUI:
@@ -251,9 +259,9 @@ jobs:
       if: ${{steps.build.outcome == 'success'}}
       with:
         files: |
-          tests/**/TestResults/*.xml
-          tests/**/TestResults/*.trx
-          tests/**/TestResults/*.json
+          ./**/TestResults/*.xml
+          ./**/TestResults/*.trx
+          ./**/TestResults/*.json
         check_name: "Test Results (GUI)"
 
   tagAndRelease:
