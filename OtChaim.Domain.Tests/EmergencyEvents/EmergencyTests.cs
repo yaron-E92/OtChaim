@@ -13,7 +13,7 @@ public class EmergencyTests
     public void CannotCreateEmergency_WithoutLocation()
     {
         // Act
-        Action act = () => new Emergency(null!);
+        Action act = () => new Emergency(Guid.Empty, Guid.Empty, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
@@ -26,7 +26,7 @@ public class EmergencyTests
         var location = new Location(32.0853, 34.7818);
 
         // Act
-        var emergency = new Emergency(location);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location);
 
         // Assert
         emergency.Location.Should().Be(location);
@@ -47,7 +47,7 @@ public class EmergencyTests
         var severity = Severity.High;
 
         // Act
-        var emergency = new Emergency(location, null, severity, type);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location, null, severity, type);
 
         // Assert
         emergency.Location.Should().Be(location);
@@ -61,7 +61,7 @@ public class EmergencyTests
     {
         // Arrange
         var location = new Location(32.0853, 34.7818);
-        var emergency = new Emergency(location);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location);
 
         // Act
         emergency.Resolve();
@@ -76,7 +76,7 @@ public class EmergencyTests
     {
         // Arrange
         var location = new Location(32.0853, 34.7818);
-        var emergency = new Emergency(location);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location);
         emergency.Resolve();
         var firstResolvedAt = emergency.ResolvedAt;
 
@@ -93,7 +93,7 @@ public class EmergencyTests
     {
         // Arrange
         var location = new Location(32.0853, 34.7818);
-        var emergency = new Emergency(location);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location);
         var userId = Guid.NewGuid();
         var isSafe = true;
         var message = "I'm safe!";

@@ -33,7 +33,7 @@ public class EmergencyRepositoryTests
     public async Task AddAndGetById_Works()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
 
         // Act
         await _repository.AddAsync(emergency);
@@ -48,8 +48,8 @@ public class EmergencyRepositoryTests
     public async Task GetAllAsync_ReturnsAllEmergencies()
     {
         // Arrange
-        var e1 = new Emergency(TestLocation.Clone());
-        var e2 = new Emergency(new Location(1, 1), null, Severity.High);
+        var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(1, 1), null, Severity.High);
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
 
@@ -66,8 +66,8 @@ public class EmergencyRepositoryTests
     public async Task GetByStatusAsync_ReturnsCorrectEmergencies()
     {
         // Arrange
-        var e1 = new Emergency(TestLocation.Clone());
-        var e2 = new Emergency(new Location(2, 2), null, Severity.Low);
+        var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(2, 2), null, Severity.Low);
         e2.Resolve();
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
@@ -84,8 +84,8 @@ public class EmergencyRepositoryTests
     public async Task GetActiveAsync_ReturnsOnlyActive()
     {
         // Arrange
-        var e1 = new Emergency(TestLocation.Clone());
-        var e2 = new Emergency(new Location(3, 3), null, Severity.Medium);
+        var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(3, 3), null, Severity.Medium);
         e2.Resolve();
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
@@ -103,8 +103,8 @@ public class EmergencyRepositoryTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var e1 = new Emergency(TestLocation.Clone());
-        var e2 = new Emergency(new Location(4, 4));
+        var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(4, 4));
         e1.AddResponse(userId, true);
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
@@ -122,7 +122,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergency()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         EmergencyStatus startingStatus = emergency.Status;
         await _repository.AddAsync(emergency);
         emergency.Resolve();
@@ -140,7 +140,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergencyWithResponse()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         var userId = Guid.NewGuid();
         await _repository.AddAsync(emergency);
         const string Message = "I'm safe";
@@ -161,7 +161,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergencyWithMultipleResponses()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         var userId1 = Guid.NewGuid();
         var userId2 = Guid.NewGuid();
         await _repository.AddAsync(emergency);
@@ -182,7 +182,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesResolvedAtWhenEmergencyResolved()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         await _repository.AddAsync(emergency);
         DateTime beforeResolve = DateTime.UtcNow;
         
@@ -201,7 +201,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_DoesNotUpdateResolvedAtWhenAlreadyResolved()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         await _repository.AddAsync(emergency);
         emergency.Resolve();
         await _repository.SaveAsync(emergency);
@@ -220,7 +220,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergencyWithNullResponseMessage()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         var userId = Guid.NewGuid();
         await _repository.AddAsync(emergency);
         
@@ -238,7 +238,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergencyWithEmptyResponseMessage()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         var userId = Guid.NewGuid();
         await _repository.AddAsync(emergency);
         
@@ -258,7 +258,7 @@ public class EmergencyRepositoryTests
         // Arrange
         Severity originalSeverity = Severity.Low;
 
-        var emergency = new Emergency(TestLocation.Clone(), severity: originalSeverity);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone(), severity: originalSeverity);
         await _repository.AddAsync(emergency);
 
         // Act
@@ -275,7 +275,7 @@ public class EmergencyRepositoryTests
     {
         // Arrange
         var originalType = EmergencyType.NaturalDisaster;
-        var emergency = new Emergency(TestLocation.Clone(), emergencyType: originalType);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone(), emergencyType: originalType);
         await _repository.AddAsync(emergency);
 
         // Act
@@ -292,7 +292,7 @@ public class EmergencyRepositoryTests
     {
         // Arrange
         var originalLocation = new Location(10.5, 20.3);
-        var emergency = new Emergency(originalLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, originalLocation.Clone());
         await _repository.AddAsync(emergency);
         
         // Act
@@ -310,7 +310,7 @@ public class EmergencyRepositoryTests
         // Arrange
         var location = new Location(15.0, 25.0);
         var area = new Area(location.Clone(), 50.0);
-        var emergency = new Emergency(location.Clone(), [area]);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location.Clone(), [area]);
         await _repository.AddAsync(emergency);
         
         // Act
@@ -326,7 +326,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergencyCreatedAtPreserved()
     {
         // Arrange
-        var emergency = new Emergency(TestLocation.Clone());
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         await _repository.AddAsync(emergency);
         DateTime originalCreatedAt = emergency.CreatedAt;
         
@@ -338,4 +338,4 @@ public class EmergencyRepositoryTests
         // Assert
         loaded?.CreatedAt.Should().Be(originalCreatedAt);
     }
-} 
+}
