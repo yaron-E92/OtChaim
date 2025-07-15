@@ -6,8 +6,15 @@ using OtChaim.Presentation.MAUI.Services;
 
 namespace OtChaim.Presentation.MAUI;
 
+/// <summary>
+/// Provides configuration and startup logic for the OtChaim MAUI application.
+/// </summary>
 public static class MauiProgram
 {
+    /// <summary>
+    /// Creates and configures the MAUI application.
+    /// </summary>
+    /// <returns>The configured <see cref="MauiApp"/> instance.</returns>
     public static MauiApp CreateMauiApp()
     {
         MauiAppBuilder builder = MauiApp.CreateBuilder();

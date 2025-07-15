@@ -11,12 +11,24 @@ using Location = OtChaim.Domain.Common.Location;
 
 namespace OtChaim.Presentation.MAUI.ViewModels;
 
+/// <summary>
+/// ViewModel for the emergency dashboard, managing emergencies and user interactions.
+/// </summary>
 public class EmergencyDashboardViewModel : INotifyPropertyChanged
 {
-
+    /// <summary>
+    /// The collection of active emergencies.
+    /// </summary>
     public ObservableCollection<Emergency> Emergencies { get; }
+
+    /// <summary>
+    /// The collection of users.
+    /// </summary>
     public ObservableCollection<User> Users { get; }
 
+    /// <summary>
+    /// The currently selected emergency.
+    /// </summary>
     public Emergency? SelectedEmergency
     {
         get => _selectedEmergency;
@@ -27,6 +39,9 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// A value indicating whether data is loading.
+    /// </summary>
     public bool IsLoading
     {
         get => _isLoading;
@@ -37,11 +52,31 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Command to start a new emergency.
+    /// </summary>
     public Command StartEmergencyCommand { get; }
+
+    /// <summary>
+    /// Command to mark a user as safe.
+    /// </summary>
     public Command MarkAsSafeCommand { get; }
+
+    /// <summary>
+    /// Command to mark a user as not safe.
+    /// </summary>
     public Command MarkAsNotSafeCommand { get; }
+
+    /// <summary>
+    /// Command to resolve an emergency.
+    /// </summary>
     public Command ResolveEmergencyCommand { get; }
+
+    /// <summary>
+    /// Command to refresh emergency data.
+    /// </summary>
     public Command RefreshCommand { get; }
+
     private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
     private readonly ICommandHandler<MarkUserStatus> _markUserStatusHandler;
     private readonly ICommandHandler<EndEmergency> _endEmergencyHandler;
@@ -50,11 +85,20 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     private Emergency? _selectedEmergency;
     private bool _isLoading;
 
-    // Emergency creation properties
+    /// <summary>
+    /// The available emergency types.
+    /// </summary>
     public ObservableCollection<EmergencyType> EmergencyTypes { get; } = new(Enum.GetValues(typeof(EmergencyType)).Cast<EmergencyType>());
+
+    /// <summary>
+    /// The available severities.
+    /// </summary>
     public ObservableCollection<Severity> Severities { get; } = new(Enum.GetValues(typeof(Severity)).Cast<Severity>());
 
     private EmergencyType _selectedEmergencyType;
+    /// <summary>
+    /// The selected emergency type.
+    /// </summary>
     public EmergencyType SelectedEmergencyType
     {
         get => _selectedEmergencyType;
@@ -62,6 +106,9 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     }
 
     private Severity _selectedSeverity;
+    /// <summary>
+    /// The selected severity.
+    /// </summary>
     public Severity SelectedSeverity
     {
         get => _selectedSeverity;
@@ -69,6 +116,9 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     }
 
     private string _locationDescription = string.Empty;
+    /// <summary>
+    /// The location description for a new emergency.
+    /// </summary>
     public string LocationDescription
     {
         get => _locationDescription;
@@ -76,6 +126,9 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     }
 
     private double _latitude;
+    /// <summary>
+    /// The latitude for a new emergency.
+    /// </summary>
     public double Latitude
     {
         get => _latitude;
@@ -83,6 +136,9 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     }
 
     private double _longitude;
+    /// <summary>
+    /// The longitude for a new emergency.
+    /// </summary>
     public double Longitude
     {
         get => _longitude;
@@ -90,16 +146,37 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     }
 
     private bool _isCreatePopupVisible;
+    /// <summary>
+    /// A value indicating whether the create emergency popup is visible.
+    /// </summary>
     public bool IsCreatePopupVisible
     {
         get => _isCreatePopupVisible;
         set { _isCreatePopupVisible = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Command to show the create emergency popup.
+    /// </summary>
     public Command ShowCreatePopupCommand { get; }
+
+    /// <summary>
+    /// Command to hide the create emergency popup.
+    /// </summary>
     public Command HideCreatePopupCommand { get; }
+
+    /// <summary>
+    /// Command triggered when the selected emergency changes.
+    /// </summary>
     public Command<SelectionChangedEventArgs> SelectedEmergencyChanged { get; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmergencyDashboardViewModel"/> class.
+    /// </summary>
+    /// <param name="startEmergencyHandler">Handler for starting emergencies.</param>
+    /// <param name="markUserStatusHandler">Handler for marking user status.</param>
+    /// <param name="endEmergencyHandler">Handler for ending emergencies.</param>
+    /// <param name="dataService">Service for loading emergency and user data.</param>
     public EmergencyDashboardViewModel(
         ICommandHandler<StartEmergency> startEmergencyHandler,
         ICommandHandler<MarkUserStatus> markUserStatusHandler,
@@ -257,4 +334,4 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-} 
+}

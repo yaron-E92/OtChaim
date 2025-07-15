@@ -158,9 +158,9 @@ jobs:
         PR_GUILINE: ${{steps.checkOverridePR.outputs.guiLine}}
         MERGE_GUILINE: ${{steps.checkOverrideMerge.outputs.guiLine}}
       run: |
-        if [[ $PR_GUILINE == *"false"* || $MERGE_GUILINE == *"false"* ]]; then
+        if [[ "$PR_GUILINE" == "false" || "$MERGE_GUILINE" == "false" ]]; then
           echo "override=false" >> $GITHUB_OUTPUT
-        elif [[ $PR_GUILINE == *"true"* || $MERGE_GUILINE == *"true"* ]]; then
+        elif [[ "$PR_GUILINE" == "true" || "$MERGE_GUILINE" == "true" ]]; then
           echo "override=true" >> $GITHUB_OUTPUT
         else
           echo "override=" >> $GITHUB_OUTPUT
