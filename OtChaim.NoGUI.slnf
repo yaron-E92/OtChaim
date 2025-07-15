@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "OtChaim.sln",
+    "projects": [
+      "OtChaim.Application.Tests\\OtChaim.Application.Tests.csproj",
+      "OtChaim.Application\\OtChaim.Application.csproj",
+      "OtChaim.Domain.Tests\\OtChaim.Domain.Tests.csproj",
+      "OtChaim.Domain\\OtChaim.Domain.csproj",
+      "OtChaim.IntegrationTests\\OtChaim.IntegrationTests.csproj",
+      "OtChaim.Persistence.Tests\\OtChaim.Persistence.Tests.csproj",
+      "OtChaim.Persistence\\OtChaim.Persistence.csproj"
+    ]
+  }
+}
