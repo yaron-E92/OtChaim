@@ -3,6 +3,7 @@ using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
 using FluentAssertions;
+using OtChaim.Application.Common;
 
 namespace OtChaim.IntegrationTests;
 
@@ -15,7 +16,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     {
         // Arrange
         IUserRepository userRepository = Provider.GetRequiredService<IUserRepository>();
-        RequestSubscriptionHandler handler = Provider.GetRequiredService<RequestSubscriptionHandler>();
+        RequestSubscriptionHandler handler = Provider.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
         var subscriber = new User("subscriber", "subscriber@test.com", "0000000");
         var subscribedTo = new User("subscribedTo", "subscribedto@test.com", "1111111");
         await userRepository.AddAsync(subscriber);
@@ -40,8 +41,8 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     {
         // Arrange
         var userRepository = Provider.GetRequiredService<IUserRepository>();
-        var requestHandler = Provider.GetRequiredService<RequestSubscriptionHandler>();
-        var approveHandler = Provider.GetRequiredService<ApproveSubscriptionHandler>();
+        RequestSubscriptionHandler requestHandler = Provider.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
+        ApproveSubscriptionHandler approveHandler = Provider.GetRequiredService<ICommandHandler<ApproveSubscription>>() as ApproveSubscriptionHandler;
         var subscriber = new User("subscriber", "subscriber@test.com", "0000000");
         var subscribedTo = new User("subscribedTo", "subscribedto@test.com", "1111111");
         await userRepository.AddAsync(subscriber);
@@ -67,8 +68,8 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     {
         // Arrange
         var userRepository = Provider.GetRequiredService<IUserRepository>();
-        var requestHandler = Provider.GetRequiredService<RequestSubscriptionHandler>();
-        var rejectHandler = Provider.GetRequiredService<RejectSubscriptionHandler>();
+        RequestSubscriptionHandler requestHandler = Provider.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
+        RejectSubscriptionHandler rejectHandler = Provider.GetRequiredService<ICommandHandler<RejectSubscription>>() as RejectSubscriptionHandler;
         var subscriber = new User("subscriber", "subscriber@test.com", "0000000");
         var subscribedTo = new User("subscribedTo", "subscribedto@test.com", "1111111");
         await userRepository.AddAsync(subscriber);

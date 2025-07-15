@@ -5,6 +5,7 @@ using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Users;
 using FluentAssertions;
+using OtChaim.Application.Common;
 
 namespace OtChaim.IntegrationTests;
 
@@ -17,7 +18,7 @@ public class EmergencyIntegrationTests : IntegrationTestBase
     public async Task StartEmergencyHandler_CreatesEmergencyInDatabase()
     {
         // Arrange
-        StartEmergencyHandler handler = Provider.GetRequiredService<StartEmergencyHandler>();
+        StartEmergencyHandler handler = Provider.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
         IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
         var location = new Location(1.0, 2.0, "Test");
         var area = new Area(location, 100);
@@ -38,8 +39,8 @@ public class EmergencyIntegrationTests : IntegrationTestBase
     public async Task MarkUserStatusHandler_AddsResponseToEmergency()
     {
         // Arrange
-        StartEmergencyHandler startHandler = Provider.GetRequiredService<StartEmergencyHandler>();
-        MarkUserStatusHandler markHandler = Provider.GetRequiredService<MarkUserStatusHandler>();
+        StartEmergencyHandler startHandler = Provider.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
+        MarkUserStatusHandler markHandler = Provider.GetRequiredService<ICommandHandler<MarkUserStatus>>() as MarkUserStatusHandler;
         IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
         var location = new Location(2.0, 3.0, "Test2");
         var area = new Area(location, 200);
@@ -64,8 +65,8 @@ public class EmergencyIntegrationTests : IntegrationTestBase
     public async Task EndEmergencyHandler_ChangesEmergencyStatusToResolved()
     {
         // Arrange
-        StartEmergencyHandler startHandler = Provider.GetRequiredService<StartEmergencyHandler>();
-        EndEmergencyHandler endHandler = Provider.GetRequiredService<EndEmergencyHandler>();
+        StartEmergencyHandler startHandler = Provider.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
+        EndEmergencyHandler endHandler = Provider.GetRequiredService<ICommandHandler<EndEmergency>>() as EndEmergencyHandler;
         IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
         var location = new Location(3.0, 4.0, "Test3");
         var area = new Area(location, 300);
