@@ -4,17 +4,29 @@ using OtChaim.Domain.Users;
 
 namespace OtChaim.Presentation.MAUI.Services;
 
+/// <summary>
+/// Provides data operations for emergencies and users in the OtChaim MAUI application.
+/// </summary>
 public class EmergencyDataService
 {
     private readonly IEmergencyRepository _emergencyRepository;
     private readonly IUserRepository _userRepository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmergencyDataService"/> class.
+    /// </summary>
+    /// <param name="emergencyRepository">The emergency repository.</param>
+    /// <param name="userRepository">The user repository.</param>
     public EmergencyDataService(IEmergencyRepository emergencyRepository, IUserRepository userRepository)
     {
         _emergencyRepository = emergencyRepository;
         _userRepository = userRepository;
     }
 
+    /// <summary>
+    /// Loads active emergencies into the provided collection.
+    /// </summary>
+    /// <param name="emergencies">The collection to populate with active emergencies.</param>
     public async Task LoadActiveEmergenciesAsync(ObservableCollection<Emergency> emergencies)
     {
         try
@@ -32,6 +44,10 @@ public class EmergencyDataService
         }
     }
 
+    /// <summary>
+    /// Loads all users into the provided collection.
+    /// </summary>
+    /// <param name="users">The collection to populate with users.</param>
     public async Task LoadUsersAsync(ObservableCollection<User> users)
     {
         try
@@ -48,4 +64,4 @@ public class EmergencyDataService
             System.Diagnostics.Debug.WriteLine($"Error loading users: {ex.Message}");
         }
     }
-} 
+}
