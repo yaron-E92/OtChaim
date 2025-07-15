@@ -13,7 +13,6 @@ jobs:
   gitVersion:
     name: Determine Version
     runs-on: ubuntu-latest
-    if: ${{ false }}  # Skip this job
     outputs:
       branchName: ${{ steps.gitversion.outputs.branchName }}
       semVer: ${{ steps.gitversion.outputs.semVer }}
@@ -45,7 +44,7 @@ jobs:
 
   buildAndTestWithoutGUI:
     name: Build and Test (No GUI)
-    # needs: [gitVersion]
+    needs: [gitVersion]
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -73,11 +72,9 @@ jobs:
           -u Yaron-E92 \
           -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
           --store-password-in-clear-text
-      continue-on-error: true
 
     - name: Restore Dependencies
-      run: dotnet restore --no-cache
-      continue-on-error: true
+      run: dotnet restore
 
     - name: Build
       id: build
@@ -127,7 +124,7 @@ jobs:
     - name: Check diff
       id: checkDiff
       run: |
-        DIFF=$(git diff origin/main HEAD -- src/OtChaim.GUI/**/*.cs src/OtChaim.GUI/*.cs src/OtChaim.GUI/**/*.xaml src/OtChaim.GUI/*.xaml | head -n 1)
+        DIFF=$(git diff origin/main HEAD -- src/OtChaim.Prentation.MAUI/**/*.cs src/OtChaim.Prentation.MAUI/*.cs src/OtChaim.Prentation.MAUI/**/*.xaml src/OtChaim.Prentation.MAUI/*.xaml | head -n 1)
         echo "diff=$DIFF" >> $GITHUB_OUTPUT
         echo "Diff found: $DIFF"
 
@@ -203,7 +200,6 @@ jobs:
           -u Yaron-E92 \
           -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
           --store-password-in-clear-text
-      continue-on-error: true
 
     - name: Install workload
       run: |
@@ -224,7 +220,7 @@ jobs:
 
     - name: Restore dependencies
       run: |
-        dotnet restore src/OtChaim.GUI/OtChaim.GUI.csproj
+        dotnet restore ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj
         if [ $? -ne 0 ]; then
           echo "::error::Failed to restore dependencies"
           exit 1
@@ -233,7 +229,7 @@ jobs:
     - name: Build
       id: build
       run: |
-        dotnet build --no-restore src/OtChaim.GUI/OtChaim.GUI.csproj
+        dotnet build --no-restore ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj
         if [ $? -ne 0 ]; then
           echo "::error::Build failed"
           exit 1
@@ -241,7 +237,7 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test src/OtChaim.GUI/OtChaim.GUI.csproj --logger "trx" --no-build --verbosity normal \
+        dotnet test ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj --logger "trx" --no-build --verbosity normal \
           /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
           /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
           /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
