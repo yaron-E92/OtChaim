@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace OtChaim.Domain.Common;
 
 /// <summary>
@@ -44,4 +46,14 @@ public class Location : ValueObject
     /// Returns a copy of this location.
     /// </summary>
     public Location Clone() => new(Latitude, Longitude, Description);
+
+    public override string? ToString()
+    {
+        StringBuilder sb = new StringBuilder($"[{Latitude},{Longitude}]");
+        if ( !string.IsNullOrWhiteSpace(Description) )
+        {
+            sb.Append($": {Description}");
+        }
+        return sb.ToString();
+    }
 }
