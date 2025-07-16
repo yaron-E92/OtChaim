@@ -11,31 +11,31 @@ public class EmergencyStarted(Guid emergencyId, Guid initiatorId, EmergencyType 
                               DateTime occurred = default, Guid eventId = default) : DomainEventBase(occurred, eventId)
 {
     /// <summary>
-    /// Gets the ID of the emergency.
+    /// The ID of the emergency.
     /// </summary>
     public Guid EmergencyId { get; } = emergencyId;
     /// <summary>
-    /// Gets the ID of the user who initiated the emergency.
+    /// The ID of the user who initiated the emergency.
     /// </summary>
     public Guid InitiatorId { get; } = initiatorId;
     /// <summary>
-    /// Gets the type of the emergency.
+    /// The type of the emergency.
     /// </summary>
     public EmergencyType EmergencyType { get; } = emergencyType;
     /// <summary>
-    /// Gets the location of the emergency.
+    /// The location of the emergency.
     /// </summary>
     public Location Location { get; } = location;
     /// <summary>
-    /// Gets the affected area of the emergency.
+    /// The affected area of the emergency.
     /// </summary>
     public IEnumerable<Area> AffectedAreas { get; } = affectedAreas;
     /// <summary>
-    /// Gets the severity of the emergency.
+    /// The severity of the emergency.
     /// </summary>
     public Severity Severity { get; } = severity;
     /// <summary>
-    /// Gets the date and time when the emergency started.
+    /// The date and time when the emergency started.
     /// </summary>
     public DateTime StartedOn => DateTimeOccurredUtc;
 }

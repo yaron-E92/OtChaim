@@ -45,10 +45,11 @@ public class EmergencyEventSubscriberTests
     {
         // Arrange
         IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
-        var emergency = new Emergency(new Location(1, 2));
-        repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(emergency);
+        Guid emergencyId = Guid.NewGuid();
+        var emergency = new Emergency(emergencyId, Guid.NewGuid(), new Location(1, 2));
+        repo.GetByIdAsync(emergencyId, Arg.Any<CancellationToken>()).Returns(emergency);
         var subscriber = new EmergencyEventSubscriber(repo);
-        var evt = new EmergencyEnded(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
+        var evt = new EmergencyEnded(emergencyId, DateTime.UtcNow, Guid.NewGuid());
 
         // Act
         await subscriber.OnNextAsync(evt);
@@ -63,12 +64,13 @@ public class EmergencyEventSubscriberTests
     {
         // Arrange
         IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
-        var emergency = new Emergency(new Location(1, 2));
-        repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(emergency);
+        Guid emergencyId = Guid.NewGuid();
+        var emergency = new Emergency(emergencyId, Guid.NewGuid(), new Location(1, 2));
+        repo.GetByIdAsync(emergencyId, Arg.Any<CancellationToken>()).Returns(emergency);
         var subscriber = new EmergencyEventSubscriber(repo);
         var evt = new UserStatusMarked(
             Guid.NewGuid(),
-            Guid.NewGuid(),
+            emergencyId,
             UserStatus.Safe,
             "I'm safe!",
             DateTime.UtcNow,

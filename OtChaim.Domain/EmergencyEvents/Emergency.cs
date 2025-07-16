@@ -7,6 +7,8 @@ namespace OtChaim.Domain.EmergencyEvents;
 /// </summary>
 public class Emergency : Entity
 {
+    public Guid InitiatorUserId { get; }
+
     /// <summary>
     /// Gets the location of the emergency.
     /// </summary>
@@ -47,10 +49,13 @@ public class Emergency : Entity
     /// <summary>
     /// Initializes a new instance of the <see cref="Emergency"/> class.
     /// </summary>
-    public Emergency(Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium, EmergencyType? emergencyType = null)
+    public Emergency(Guid id, Guid initiatorUserId, Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium,
+                     EmergencyType? emergencyType = null)
     {
         ArgumentNullException.ThrowIfNull(location);
 
+        Id = id != Guid.Empty ? id : Guid.NewGuid();
+        InitiatorUserId = initiatorUserId;
         Location = location;
         EmergencyType = emergencyType;
         _affectedAreas = (affectedAreas == null || !affectedAreas.Any())

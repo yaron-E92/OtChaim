@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Application.EmergencyEvents.EventSubscribers;
 using OtChaim.Application.EmergencyEvents.Handlers;
+using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.EventSubscribers;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.EmergencyEvents.Events;
@@ -31,14 +33,14 @@ public static class EventConfiguration
         // Register event subscribers
         services.AddScoped<SubscriptionEventSubscriber>();
         services.AddScoped<EmergencyEventSubscriber>();
-        services.AddScoped<EndEmergencyHandler>();
 
         // Register command handlers
-        services.AddScoped<RequestSubscriptionHandler>();
-        services.AddScoped<ApproveSubscriptionHandler>();
-        services.AddScoped<RejectSubscriptionHandler>();
-        services.AddScoped<StartEmergencyHandler>();
-        services.AddScoped<MarkUserStatusHandler>();
+        services.AddScoped<ICommandHandler<RequestSubscription>, RequestSubscriptionHandler>();
+        services.AddScoped<ICommandHandler<ApproveSubscription>, ApproveSubscriptionHandler>();
+        services.AddScoped<ICommandHandler<RejectSubscription>, RejectSubscriptionHandler>();
+        services.AddScoped<ICommandHandler<StartEmergency>, StartEmergencyHandler>();
+        services.AddScoped<ICommandHandler<EndEmergency>, EndEmergencyHandler>();
+        services.AddScoped<ICommandHandler<MarkUserStatus>, MarkUserStatusHandler>();
 
         // Register logger
         services.AddSingleton<ILoggerFactory, NullLoggerFactory>(); // TODO: put an actual logger factory
