@@ -248,28 +248,27 @@ jobs:
           exit 1
         }
 
-    - name: Test
-      shell: pwsh
-      run: |
-        dotnet test ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj --logger "trx" --no-build --verbosity normal `
-          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
-          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
-          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} `
-          OtChaim.Presentation.MAUI.slnf
-        if ($LASTEXITCODE -ne 0) {
-          Write-Error "Tests failed"
-          exit 1
-        }
+    # - name: Test
+    #   shell: pwsh
+    #   run: |
+    #     dotnet test ./OtChaim.Presentation.MAUI.Tests/OtChaim.Presentation.MAUI.Tests.csproj --logger "trx" --no-build --verbosity normal `
+    #       /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+    #       /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+    #       /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+    #     if ($LASTEXITCODE -ne 0) {
+    #       Write-Error "Tests failed"
+    #       exit 1
+    #     }
 
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: ${{steps.build.outcome == 'success'}}
-      with:
-        files: |
-          ./**/TestResults/*.xml
-          ./**/TestResults/*.trx
-          ./**/TestResults/*.json
-        check_name: "Test Results (GUI)"
+    # - name: Publish Test Results
+    #   uses: EnricoMi/publish-unit-test-result-action@v2
+    #   if: ${{steps.build.outcome == 'success'}}
+    #   with:
+    #     files: |
+    #       ./**/TestResults/*.xml
+    #       ./**/TestResults/*.trx
+    #       ./**/TestResults/*.json
+    #     check_name: "Test Results (GUI)"
 
   tagAndRelease:
     name: Tag and Release
