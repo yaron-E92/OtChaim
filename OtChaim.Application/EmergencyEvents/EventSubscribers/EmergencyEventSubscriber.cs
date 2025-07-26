@@ -25,7 +25,7 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository) 
     public async Task OnNextAsync(EmergencyStarted domainEvent, CancellationToken cancellationToken = default)
     {
         // Create and persist a new Emergency
-        var emergency = new Emergency(
+        var emergency = new Emergency(domainEvent.EmergencyId, domainEvent.InitiatorId,
             domainEvent.Location.Clone(),
             [.. domainEvent.AffectedAreas],
             domainEvent.Severity,

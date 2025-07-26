@@ -9,7 +9,7 @@ namespace OtChaim.Application.EmergencyEvents.Handlers;
 /// Handles the <see cref="StartEmergency"/> command by publishing an <see cref="EmergencyStarted"/> event.
 /// </summary>
 /// <param name="eventAggregator">The event aggregator to use for publishing events.</param>
-public class StartEmergencyHandler(IEventAggregator eventAggregator) : ICommandHandler<StartEmergency>
+public sealed class StartEmergencyHandler(IEventAggregator eventAggregator) : ICommandHandler<StartEmergency>
 {
     private readonly IEventAggregator _eventAggregator = eventAggregator;
 
@@ -20,15 +20,15 @@ public class StartEmergencyHandler(IEventAggregator eventAggregator) : ICommandH
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     public async Task Handle(StartEmergency command, CancellationToken cancellationToken = default)
     {
-        var emergencySituationId = Guid.NewGuid();
-        var emergencySituationStartedEvent = new EmergencyStarted(
-            emergencySituationId,
+        var emergencyId = Guid.NewGuid();
+        var emergencyStartedEvent = new EmergencyStarted(
+            emergencyId,
             command.InitiatorUserId,
             command.Type,
             command.Location,
             command.AffectedAreas, command.Severity);
 
         // Publish the event through the event aggregator
-        await _eventAggregator.PublishEventAsync(emergencySituationStartedEvent, cancellationToken);
+        await _eventAggregator.PublishEventAsync(emergencyStartedEvent, cancellationToken);
     }
 }

@@ -12,7 +12,7 @@ namespace OtChaim.Application.EmergencyEvents.Handlers;
 /// Initializes a new instance of the <see cref="MarkUserStatusHandler"/> class.
 /// </remarks>
 /// <param name="eventAggregator">The event aggregator to use for publishing events.</param>
-public class MarkUserStatusHandler(IEventAggregator eventAggregator) : ICommandHandler<MarkUserStatus>
+public sealed class MarkUserStatusHandler(IEventAggregator eventAggregator) : ICommandHandler<MarkUserStatus>
 {
     private readonly IEventAggregator _eventAggregator = eventAggregator;
 

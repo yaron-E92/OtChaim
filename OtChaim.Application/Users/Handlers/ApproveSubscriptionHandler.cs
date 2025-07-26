@@ -14,7 +14,7 @@ namespace OtChaim.Application.Users.Handlers;
 /// </remarks>
 /// <param name="userRepository">The user repository to update.</param>
 /// <param name="eventAggregator">The event aggregator to use for publishing events.</param>
-public class ApproveSubscriptionHandler(IUserRepository userRepository, IEventAggregator eventAggregator) : ICommandHandler<ApproveSubscription>
+public sealed class ApproveSubscriptionHandler(IUserRepository userRepository, IEventAggregator eventAggregator) : ICommandHandler<ApproveSubscription>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IEventAggregator _eventAggregator = eventAggregator;

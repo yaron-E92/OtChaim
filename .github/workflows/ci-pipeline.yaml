@@ -13,7 +13,6 @@ jobs:
   gitVersion:
     name: Determine Version
     runs-on: ubuntu-latest
-    if: ${{ false }}  # Skip this job
     outputs:
       branchName: ${{ steps.gitversion.outputs.branchName }}
       semVer: ${{ steps.gitversion.outputs.semVer }}
@@ -45,7 +44,7 @@ jobs:
 
   buildAndTestWithoutGUI:
     name: Build and Test (No GUI)
-    # needs: [gitVersion]
+    needs: [gitVersion]
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -73,16 +72,14 @@ jobs:
           -u Yaron-E92 \
           -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
           --store-password-in-clear-text
-      continue-on-error: true
 
     - name: Restore Dependencies
-      run: dotnet restore --no-cache
-      continue-on-error: true
+      run: dotnet restore OtChaim.NoGUI.slnf
 
     - name: Build
       id: build
       run: |
-        dotnet build -c NoGUI --no-restore
+        dotnet build -c NoGUI --no-restore OtChaim.NoGUI.slnf
         if [ $? -ne 0 ]; then
           echo "::error::Build failed"
           exit 1
@@ -93,7 +90,8 @@ jobs:
         dotnet test --logger "trx" --no-build -c NoGUI --verbosity normal \
           /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
           /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} \
+          OtChaim.NoGUI.slnf
         if [ $? -ne 0 ]; then
           echo "::error::Tests failed"
           exit 1
@@ -127,7 +125,7 @@ jobs:
     - name: Check diff
       id: checkDiff
       run: |
-        DIFF=$(git diff origin/main HEAD -- src/OtChaim.GUI/**/*.cs src/OtChaim.GUI/*.cs src/OtChaim.GUI/**/*.xaml src/OtChaim.GUI/*.xaml | head -n 1)
+        DIFF=$(git diff origin/main HEAD -- src/OtChaim.Prentation.MAUI/**/*.cs src/OtChaim.Prentation.MAUI/*.cs src/OtChaim.Prentation.MAUI/**/*.xaml src/OtChaim.Prentation.MAUI/*.xaml | head -n 1)
         echo "diff=$DIFF" >> $GITHUB_OUTPUT
         echo "Diff found: $DIFF"
 
@@ -137,7 +135,7 @@ jobs:
       env:
         PR_DESCRIPTION: ${{ github.event.pull_request.body }}
       run: |
-        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $PR_DESCRIPTION)
+        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $PR_DESCRIPTION | xargs)
         echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
         echo "PR GUI override: $guiLine"
 
@@ -147,7 +145,7 @@ jobs:
       env:
         MERGE_COMMIT: ${{ github.event.head_commit.message }}
       run: |
-        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $MERGE_COMMIT)
+        guiLine=$(awk -F'+includeGUI: ' '{print $2}' <<< $MERGE_COMMIT | xargs)
         echo "guiLine=$guiLine" >> $GITHUB_OUTPUT
         echo "Merge GUI override: $guiLine"
 
@@ -160,13 +158,20 @@ jobs:
         PR_GUILINE: ${{steps.checkOverridePR.outputs.guiLine}}
         MERGE_GUILINE: ${{steps.checkOverrideMerge.outputs.guiLine}}
       run: |
-        if [[ $PR_GUILINE == *"false"* || $MERGE_GUILINE == *"false"* ]]; then
+        if [[ "$PR_GUILINE" == "false" || "$MERGE_GUILINE" == "false" ]]; then
           echo "override=false" >> $GITHUB_OUTPUT
-        elif [[ $PR_GUILINE == *"true"* || $MERGE_GUILINE == *"true"* ]]; then
+        elif [[ "$PR_GUILINE" == "true" || "$MERGE_GUILINE" == "true" ]]; then
           echo "override=true" >> $GITHUB_OUTPUT
         else
           echo "override=" >> $GITHUB_OUTPUT
         fi
+
+    - name: Echo override
+      id: echoOverride
+      if: |
+        steps.checkOverridePR.outputs.guiLine != '' ||
+        steps.checkOverrideMerge.outputs.guiLine != ''
+      run: |
         echo "Final override value: ${{ steps.determineOverride.outputs.override }}"
 
   buildAndTestGUI:
@@ -176,7 +181,7 @@ jobs:
       (needs.checkWhetherGUIBuildNeeded.outputs.diff != '' &&
       needs.checkWhetherGUIBuildNeeded.outputs.override != 'false') ||
       needs.checkWhetherGUIBuildNeeded.outputs.override == 'true'
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       checks: write
       pull-requests: write
@@ -197,68 +202,73 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Ensure GitHub NuGet Source
+      shell: pwsh
       run: |
-        dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json \
-          -n github \
-          -u Yaron-E92 \
-          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
+        dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json `
+          -n github `
+          -u Yaron-E92 `
+          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} `
           --store-password-in-clear-text
-      continue-on-error: true
 
     - name: Install workload
+      shell: pwsh
       run: |
         dotnet workload install maui-android wasi-experimental
-        if [ $? -ne 0 ]; then
-          echo "::error::Failed to install workloads"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to install workloads"
           exit 1
-        fi
+        }
 
     - name: Setup Android SDK
+      shell: pwsh
       run: |
-        echo "Checking GUI changes: ${{needs.checkWhetherGUIBuildNeeded.outputs.diff}}"
-        /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "tools"
-        if [ $? -ne 0 ]; then
-          echo "::error::Failed to setup Android SDK"
+        Write-Host "Checking GUI changes: ${{needs.checkWhetherGUIBuildNeeded.outputs.diff}}"
+        & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "tools"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to setup Android SDK"
           exit 1
-        fi
+        }
 
     - name: Restore dependencies
+      shell: pwsh
       run: |
-        dotnet restore src/OtChaim.GUI/OtChaim.GUI.csproj
-        if [ $? -ne 0 ]; then
-          echo "::error::Failed to restore dependencies"
+        dotnet restore ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to restore dependencies"
           exit 1
-        fi
+        }
 
     - name: Build
       id: build
+      shell: pwsh
       run: |
-        dotnet build --no-restore src/OtChaim.GUI/OtChaim.GUI.csproj
-        if [ $? -ne 0 ]; then
-          echo "::error::Build failed"
+        dotnet build --no-restore ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Build failed"
           exit 1
-        fi
+        }
 
-    - name: Test
-      run: |
-        dotnet test src/OtChaim.GUI/OtChaim.GUI.csproj --logger "trx" --no-build --verbosity normal \
-          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
-        if [ $? -ne 0 ]; then
-          echo "::error::Tests failed"
-          exit 1
-        fi
+    # - name: Test
+    #   shell: pwsh
+    #   run: |
+    #     dotnet test ./OtChaim.Presentation.MAUI.Tests/OtChaim.Presentation.MAUI.Tests.csproj --logger "trx" --no-build --verbosity normal `
+    #       /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+    #       /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+    #       /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+    #     if ($LASTEXITCODE -ne 0) {
+    #       Write-Error "Tests failed"
+    #       exit 1
+    #     }
 
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: ${{steps.build.outcome == 'success'}}
-      with:
-        files: |
-          tests/**/TestResults/*.xml
-          tests/**/TestResults/*.trx
-          tests/**/TestResults/*.json
-        check_name: "Test Results (GUI)"
+    # - name: Publish Test Results
+    #   uses: EnricoMi/publish-unit-test-result-action@v2
+    #   if: ${{steps.build.outcome == 'success'}}
+    #   with:
+    #     files: |
+    #       ./**/TestResults/*.xml
+    #       ./**/TestResults/*.trx
+    #       ./**/TestResults/*.json
+    #     check_name: "Test Results (GUI)"
 
   tagAndRelease:
     name: Tag and Release

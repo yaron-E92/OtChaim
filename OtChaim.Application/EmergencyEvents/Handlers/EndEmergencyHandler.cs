@@ -9,7 +9,7 @@ namespace OtChaim.Application.EmergencyEvents.Handlers;
 /// Handles the <see cref="EndEmergency"/> command by publishing an <see cref="EmergencyEnded"/> event.
 /// </summary>
 /// <param name="eventAggregator">The event aggregator to use for publishing events.</param>
-public class EndEmergencyHandler(IEventAggregator eventAggregator) : ICommandHandler<EndEmergency>
+public sealed class EndEmergencyHandler(IEventAggregator eventAggregator) : ICommandHandler<EndEmergency>
 {
     private readonly IEventAggregator _eventAggregator = eventAggregator;
 
