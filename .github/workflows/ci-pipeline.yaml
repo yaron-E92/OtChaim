@@ -211,7 +211,7 @@ jobs:
 
     - name: Install workload
       run: |
-        dotnet workload install maui-android wasi-experimental
+        dotnet workload install maui-android wasi-experimental ios
         if [ $? -ne 0 ]; then
           echo "::error::Failed to install workloads"
           exit 1
