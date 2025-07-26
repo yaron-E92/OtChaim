@@ -203,10 +203,10 @@ jobs:
 
     - name: Ensure GitHub NuGet Source
       run: |
-        dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json \
-          -n github \
-          -u Yaron-E92 \
-          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
+        dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json `
+          -n github `
+          -u Yaron-E92 `
+          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} `
           --store-password-in-clear-text
 
     - name: Install workload
@@ -245,10 +245,11 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj --logger "trx" --no-build --verbosity normal \
-          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }}
+        dotnet test ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj --logger "trx" --no-build --verbosity normal `
+          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} `
+          OtChaim.Presentation.MAUI.slnf
         if [ $? -ne 0 ]; then
           echo "::error::Tests failed"
           exit 1
