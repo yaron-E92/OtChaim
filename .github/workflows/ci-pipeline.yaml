@@ -202,6 +202,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Ensure GitHub NuGet Source
+      shell: pwsh
       run: |
         dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json `
           -n github `
@@ -210,50 +211,55 @@ jobs:
           --store-password-in-clear-text
 
     - name: Install workload
+      shell: pwsh
       run: |
         dotnet workload install maui-android wasi-experimental
-        if [ $? -ne 0 ]; then
-          echo "::error::Failed to install workloads"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to install workloads"
           exit 1
-        fi
+        }
 
     - name: Setup Android SDK
+      shell: pwsh
       run: |
-        echo "Checking GUI changes: ${{needs.checkWhetherGUIBuildNeeded.outputs.diff}}"
-        /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "tools"
-        if [ $? -ne 0 ]; then
-          echo "::error::Failed to setup Android SDK"
+        Write-Host "Checking GUI changes: ${{needs.checkWhetherGUIBuildNeeded.outputs.diff}}"
+        & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "tools"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to setup Android SDK"
           exit 1
-        fi
+        }
 
     - name: Restore dependencies
+      shell: pwsh
       run: |
         dotnet restore ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj
-        if [ $? -ne 0 ]; then
-          echo "::error::Failed to restore dependencies"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to restore dependencies"
           exit 1
-        fi
+        }
 
     - name: Build
       id: build
+      shell: pwsh
       run: |
         dotnet build --no-restore ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj
-        if [ $? -ne 0 ]; then
-          echo "::error::Build failed"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Build failed"
           exit 1
-        fi
+        }
 
     - name: Test
+      shell: pwsh
       run: |
         dotnet test ./OtChaim.Presentation.MAUI/OtChaim.Presentation.MAUI.csproj --logger "trx" --no-build --verbosity normal `
           /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
           /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
           /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} `
           OtChaim.Presentation.MAUI.slnf
-        if [ $? -ne 0 ]; then
-          echo "::error::Tests failed"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Tests failed"
           exit 1
-        fi
+        }
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
