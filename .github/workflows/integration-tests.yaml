@@ -30,6 +30,14 @@ jobs:
             --store-password-in-clear-text
         continue-on-error: true
 
+      - name: Install workload
+        run: |
+          dotnet workload install maui-android wasi-experimental
+
+      - name: Setup Android SDK
+        run: |
+          /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "tools"
+
       - name: Restore dependencies
         run: dotnet restore
 
