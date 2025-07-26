@@ -207,7 +207,12 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
             IsCreatePopupVisible = true;
         });
         HideCreatePopupCommand = new Command(() => IsCreatePopupVisible = false);
-        SelectedEmergencyChanged = new Command<SelectionChangedEventArgs>((SelectionChangedEventArgs scea) => SelectedEmergency = scea?.CurrentSelection?[0] as Emergency ?? null);
+        SelectedEmergencyChanged = new Command<SelectionChangedEventArgs>((SelectionChangedEventArgs scea) =>
+        {
+            SelectedEmergency = scea?.CurrentSelection != null && scea.CurrentSelection.Count > 0
+                                ? scea.CurrentSelection[0] as Emergency
+                                : null;
+        });
 
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
         SelectedSeverity = Severities.FirstOrDefault();
