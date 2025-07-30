@@ -2,6 +2,9 @@ using System.Globalization;
 
 namespace OtChaim.Presentation.MAUI.Converters;
 
+/// <summary>
+/// Converter that returns true if the value is not null, false otherwise.
+/// </summary>
 public class NotNullConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -15,6 +18,9 @@ public class NotNullConverter : IValueConverter
     }
 }
 
+/// <summary>
+/// Converter that returns true if the value is null, false otherwise.
+/// </summary>
 public class NullConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -28,6 +34,9 @@ public class NullConverter : IValueConverter
     }
 }
 
+/// <summary>
+/// Converter that inverts a boolean value.
+/// </summary>
 public class InverseBoolConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -36,7 +45,7 @@ public class InverseBoolConverter : IValueConverter
         {
             return !boolValue;
         }
-        return true;
+        return value;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -45,6 +54,6 @@ public class InverseBoolConverter : IValueConverter
         {
             return !boolValue;
         }
-        return false;
+        return value;
     }
 } 
