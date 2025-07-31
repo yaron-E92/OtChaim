@@ -4,9 +4,9 @@ namespace OtChaim.Presentation.MAUI.Pages.Settings;
 
 public partial class EmergencyContactsPage : ContentView
 {
-    public EmergencyContactsPage()
+    public EmergencyContactsPage(EmergencyContactsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new EmergencyContactsViewModel();
+        BindingContext = viewModel;
     }
 }

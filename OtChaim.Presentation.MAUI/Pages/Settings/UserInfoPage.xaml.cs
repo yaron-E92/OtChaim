@@ -4,9 +4,9 @@ namespace OtChaim.Presentation.MAUI.Pages.Settings;
 
 public partial class UserInfoPage : ContentView
 {
-    public UserInfoPage()
+    public UserInfoPage(UserInfoViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new UserInfoViewModel();
+        BindingContext = viewModel;
     }
 }

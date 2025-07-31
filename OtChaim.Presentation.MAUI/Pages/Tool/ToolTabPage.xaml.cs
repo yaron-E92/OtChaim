@@ -4,9 +4,9 @@ namespace OtChaim.Presentation.MAUI.Pages.Tool;
 
 public partial class ToolTabPage : ContentPage
 {
-    public ToolTabPage()
+    public ToolTabPage(ToolTabViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new ToolTabViewModel();
+        BindingContext = viewModel;
     }
 }

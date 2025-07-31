@@ -30,14 +30,14 @@ public class SettingsTabViewModel : INotifyPropertyChanged
         }
     }
 
-    public SettingsTabViewModel()
+    public SettingsTabViewModel(UserInfoPage userInfoPage, MedicalInfoPage medicalInfoPage, EmergencyContactsPage emergencyContactsPage)
     {
-        // Initialize the settings pages
+        // Initialize the settings pages using injected dependencies
         SettingsPages =
         [
-            new UserInfoPage(),
-            new MedicalInfoPage(),
-            new EmergencyContactsPage()
+            userInfoPage,
+            medicalInfoPage,
+            emergencyContactsPage
         ];
 
         // Set the first page as current

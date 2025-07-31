@@ -30,13 +30,13 @@ public class ToolTabViewModel : INotifyPropertyChanged
         }
     }
 
-    public ToolTabViewModel()
+    public ToolTabViewModel(EmergencyPage emergencyPage, GroupStatusPage groupStatusPage)
     {
-        // Initialize the tool pages
+        // Initialize the tool pages using injected dependencies
         ToolPages =
         [
-            new EmergencyPage(),
-            new GroupStatusPage()
+            emergencyPage,
+            groupStatusPage
         ];
 
         // Set the first page as current

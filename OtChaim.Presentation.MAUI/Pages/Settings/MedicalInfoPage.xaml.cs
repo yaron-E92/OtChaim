@@ -4,9 +4,9 @@ namespace OtChaim.Presentation.MAUI.Pages.Settings;
 
 public partial class MedicalInfoPage : ContentView
 {
-    public MedicalInfoPage()
+    public MedicalInfoPage(MedicalInfoViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new MedicalInfoViewModel();
+        BindingContext = viewModel;
     }
 }

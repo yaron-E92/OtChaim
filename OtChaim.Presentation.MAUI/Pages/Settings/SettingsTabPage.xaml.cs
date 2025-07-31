@@ -4,9 +4,9 @@ namespace OtChaim.Presentation.MAUI.Pages.Settings;
 
 public partial class SettingsTabPage : ContentPage
 {
-    public SettingsTabPage()
+    public SettingsTabPage(SettingsTabViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new SettingsTabViewModel();
+        BindingContext = viewModel;
     }
 }

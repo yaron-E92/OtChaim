@@ -4,9 +4,9 @@ namespace OtChaim.Presentation.MAUI.Pages.Tool;
 
 public partial class GroupStatusPage : ContentView
 {
-    public GroupStatusPage()
+    public GroupStatusPage(GroupStatusViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new GroupStatusViewModel();
+        BindingContext = viewModel;
     }
 }
