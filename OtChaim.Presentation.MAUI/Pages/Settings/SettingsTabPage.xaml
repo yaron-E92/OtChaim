@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:settings="clr-namespace:OtChaim.Presentation.MAUI.Pages.Settings"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Settings.SettingsTabPage"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header with COM-MIT branding and mood indicator -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="20,40,20,10" BackgroundColor="{StaticResource Secondary}">
+            <!-- COM-MIT Logo -->
+            <Image Grid.Column="0" Source="commit_logo.png" HeightRequest="40" WidthRequest="120" HorizontalOptions="Start" />
+            
+            <!-- Title -->
+            <Label Grid.Column="1" Text="Settings" Style="{StaticResource PrimaryHeadline}" HorizontalOptions="Center" />
+            
+            <!-- Mood Indicator (Sad Face) -->
+            <Image Grid.Column="2" Source="sad_face.png" HeightRequest="40" WidthRequest="40" HorizontalOptions="End" />
+        </Grid>
+
+        <!-- Swipe Navigation Container -->
+        <CarouselView Grid.Row="1" x:Name="SettingsCarousel" 
+                      ItemsSource="{Binding SettingsPages}"
+                      CurrentItem="{Binding CurrentPage}"
+                      Loop="False"
+                      IndicatorView="{x:Reference SettingsIndicators}">
+            
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <ContentView Content="{Binding}" />
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <!-- Navigation Indicators -->
+        <IndicatorView Grid.Row="1" x:Name="SettingsIndicators" 
+                       IndicatorColor="{StaticResource Gray400}"
+                       SelectedIndicatorColor="{StaticResource Primary}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="End"
+                       Margin="0,0,0,20" />
+    </Grid>
+
+</ContentPage>

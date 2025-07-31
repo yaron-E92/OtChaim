@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Settings.EmergencyContactsPage"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            
+            <!-- Contact Selection -->
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                <Button Grid.Column="0" Text="‹" FontSize="24" 
+                        Command="{Binding PreviousContactCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        WidthRequest="50" HeightRequest="50" />
+                
+                <Label Grid.Column="1" Text="{Binding SelectedContact}" 
+                       Style="{StaticResource SecondaryHeadline}" 
+                       HorizontalOptions="Center" />
+                
+                <Button Grid.Column="2" Text="›" FontSize="24" 
+                        Command="{Binding NextContactCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        WidthRequest="50" HeightRequest="50" />
+            </Grid>
+
+            <!-- Contact Information Form -->
+            <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Emergency Contact Information" FontSize="18" FontFamily="OpenSansSemibold" />
+                    
+                    <!-- Profile Picture -->
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="profile_picture.png" HeightRequest="80" WidthRequest="80" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    
+                    <!-- First Name -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="First name:" FontSize="16" />
+                        <Entry Text="{Binding FirstName}" Placeholder="Enter first name" FontSize="18" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Last Name -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Last Name:" FontSize="16" />
+                        <Entry Text="{Binding LastName}" Placeholder="Enter last name" FontSize="18" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Birthday -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Birthday:" FontSize="16" />
+                        <DatePicker Date="{Binding Birthday}" FontSize="18" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Blood Type -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Bloodtype:" FontSize="16" />
+                        <Picker Title="Select blood type" SelectedItem="{Binding SelectedBloodType}" 
+                                ItemsSource="{Binding BloodTypes}" FontSize="18" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Contact Details Display -->
+            <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Contact Details" FontSize="18" FontFamily="OpenSansSemibold" />
+                    
+                    <!-- Address -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Address:" FontSize="16" />
+                        <Label Text="{Binding Address}" FontSize="18" TextColor="{StaticResource Gray600}" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Phone -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Phone:" FontSize="16" />
+                        <Label Text="{Binding Phone}" FontSize="18" TextColor="{StaticResource Gray600}" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Email -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Mail:" FontSize="16" />
+                        <Label Text="{Binding Email}" FontSize="18" TextColor="{StaticResource Gray600}" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Management Buttons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="+" 
+                        Command="{Binding AddContactCommand}"
+                        StyleClass="MessageButton" />
+                <Button Grid.Column="1" Text="-" 
+                        Command="{Binding RemoveContactCommand}"
+                        StyleClass="MessageButton" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>
