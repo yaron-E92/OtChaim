@@ -90,10 +90,10 @@
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <Button Grid.Column="0" Text="+" 
                         Command="{Binding AddInfoCommand}"
-                        StyleClass="MessageButton" />
+                        Style="{StaticResource MessageButton}" />
                 <Button Grid.Column="1" Text="-" 
                         Command="{Binding RemoveInfoCommand}"
-                        StyleClass="MessageButton" />
+                        Style="{StaticResource MessageButton}" />
             </Grid>
 
         </VerticalStackLayout>

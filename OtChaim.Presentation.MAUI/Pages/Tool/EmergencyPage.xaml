@@ -36,19 +36,19 @@
             <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
                 <Button Grid.Column="0" Text="Pic" 
                         Command="{Binding AddPictureCommand}"
-                        StyleClass="AttachmentButton" />
+                        Style="{StaticResource AttachmentButton}" />
                 <Button Grid.Column="1" Text="Pers Info" 
                         Command="{Binding AddPersonalInfoCommand}"
-                        StyleClass="AttachmentButton" />
+                        Style="{StaticResource AttachmentButton}" />
                 <Button Grid.Column="2" Text="Med Info" 
                         Command="{Binding AddMedicalInfoCommand}"
-                        StyleClass="AttachmentButton" />
+                        Style="{StaticResource AttachmentButton}" />
                 <Button Grid.Column="3" Text="GPS" 
                         Command="{Binding AddGpsCommand}"
-                        StyleClass="AttachmentButton" />
+                        Style="{StaticResource AttachmentButton}" />
                 <Button Grid.Column="4" Text="Docu" 
                         Command="{Binding AddDocumentCommand}"
-                        StyleClass="AttachmentButton" />
+                        Style="{StaticResource AttachmentButton}" />
             </Grid>
 
             <!-- Emergency Message -->
@@ -64,10 +64,10 @@
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,8,0,0">
                         <Button Grid.Column="0" Text="+" 
                                 Command="{Binding AddMessageCommand}"
-                                StyleClass="MessageButton" />
+                                Style="{StaticResource MessageButton}" />
                         <Button Grid.Column="1" Text="-" 
                                 Command="{Binding RemoveMessageCommand}"
-                                StyleClass="MessageButton" />
+                                Style="{StaticResource MessageButton}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -75,7 +75,7 @@
             <!-- Large Emergency Button -->
             <Button Text="EMERGENCY!" 
                     Command="{Binding TriggerEmergencyCommand}"
-                    StyleClass="EmergencyButton"
+                    Style="{StaticResource EmergencyButton}"
                     Margin="20,40,20,20" />
 
         </VerticalStackLayout>
