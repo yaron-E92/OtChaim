@@ -19,10 +19,5 @@ public partial class AppShell : Shell
         // Register routes for tabbed navigation
         Routing.RegisterRoute(nameof(ToolTabPage), typeof(ToolTabPage));
         Routing.RegisterRoute(nameof(SettingsTabPage), typeof(SettingsTabPage));
-        Routing.RegisterRoute(nameof(EmergencyPage), typeof(EmergencyPage));
-        Routing.RegisterRoute(nameof(GroupStatusPage), typeof(GroupStatusPage));
-        Routing.RegisterRoute(nameof(UserInfoPage), typeof(UserInfoPage));
-        Routing.RegisterRoute(nameof(MedicalInfoPage), typeof(MedicalInfoPage));
-        Routing.RegisterRoute(nameof(EmergencyContactsPage), typeof(EmergencyContactsPage));
     }
 }

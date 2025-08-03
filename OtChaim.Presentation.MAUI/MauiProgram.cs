@@ -50,7 +50,7 @@ public static class MauiProgram
         builder.Services.AddTransient<EmergencyContactsViewModel>();
 
         // Register pages
-        builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<EmergencyDashboardPage>();
         builder.Services.AddTransient<ToolTabPage>();
         builder.Services.AddTransient<SettingsTabPage>();
         builder.Services.AddTransient<EmergencyPage>();
