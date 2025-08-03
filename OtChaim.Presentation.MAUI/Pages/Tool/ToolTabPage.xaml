@@ -22,11 +22,11 @@
 
         <!-- Platform-Specific Navigation -->
         <Grid Grid.Row="1">
-        <OnPlatform x:TypeArguments="View">
-          <On Platform="Android,iOS">
-            <!-- Non-Windows: CarouselView -->
-            <Grid x:Name="CarouselContainer">
-                <CarouselView x:Name="ToolCarousel"
+            <OnPlatform x:TypeArguments="View">
+                <On Platform="Android,iOS">
+                    <!-- Non-Windows: CarouselView -->
+                    <Grid x:Name="CarouselContainer">
+                        <CarouselView x:Name="ToolCarousel"
                               ItemsSource="{Binding ToolPages}"
                               CurrentItem="{Binding CurrentPage, Mode=TwoWay}"
                               Loop="False"
@@ -34,47 +34,54 @@
                               HorizontalScrollBarVisibility="Never"
                               VerticalScrollBarVisibility="Never">
 
-                    <CarouselView.ItemTemplate>
-                        <DataTemplate>
-                            <ContentView Content="{Binding}"
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentView Content="{Binding}"
                                         HorizontalOptions="FillAndExpand"
                                         VerticalOptions="FillAndExpand" />
-                        </DataTemplate>
-                    </CarouselView.ItemTemplate>
-                </CarouselView>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
 
-                <!-- Navigation Indicators -->
-                <IndicatorView x:Name="ToolIndicators"
+                        <!-- Navigation Indicators -->
+                        <IndicatorView x:Name="ToolIndicators"
                                IndicatorColor="{StaticResource Gray400}"
                                SelectedIndicatorColor="{StaticResource Primary}"
                                HorizontalOptions="Center"
                                VerticalOptions="End"
                                Margin="0,0,0,20" />
-            </Grid>
-          </On>
-          <On Platform="WinUI">
-            <!-- Windows: Button Navigation -->
-            <Grid x:Name="ButtonContainer" RowDefinitions="*,Auto">
-                <!-- Page Content -->
-                <ContentView Grid.Row="0" Content="{Binding CurrentPage, Mode=TwoWay}" />
+                    </Grid>
+                </On>
+                <On Platform="WinUI">
+                    <!-- Windows: Button Navigation -->
+                    <Grid x:Name="ButtonContainer"
+                            RowDefinitions="*,Auto"
+                            ColumnDefinitions="Auto,*,Auto">
 
-                <!-- Navigation Controls -->
-                    <Button Grid.Row="1" Grid.Column="0" Text="‹ Previous"
-                            Command="{Binding PreviousPageCommand}"
-                            Style="{StaticResource MessageButton}"
-                            HorizontalOptions="Start" />
+                        <!-- Page Content spans all three columns -->
+                        <ContentView Grid.Row="0"
+                                    Grid.ColumnSpan="3"
+                                    Content="{Binding CurrentPage, Mode=TwoWay}" />
 
-                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding CurrentPageTitle, Mode=TwoWay}"
-                           Style="{StaticResource SecondaryHeadline}"
-                           HorizontalOptions="Center" />
+                        <!-- Navigation Controls -->
+                        <Button Grid.Row="1" Grid.Column="0"
+                                Text="‹ Previous"
+                                Command="{Binding PreviousPageCommand}"
+                                Style="{StaticResource MessageButton}" />
 
-                    <Button Grid.Row="1" Grid.Column="2" Text="Next ›"
-                            Command="{Binding NextPageCommand}"
-                            Style="{StaticResource MessageButton}"
-                            HorizontalOptions="End" />
-            </Grid>
-          </On>
-        </OnPlatform>
+                        <Label Grid.Row="1" Grid.Column="1"
+                               Text="{Binding CurrentPageTitle}"
+                               Style="{StaticResource SecondaryHeadline}"
+                               HorizontalOptions="Center" />
+
+                        <Button Grid.Row="1" Grid.Column="2"
+                                Text="Next ›"
+                                Command="{Binding NextPageCommand}"
+                                Style="{StaticResource MessageButton}" />
+                    </Grid>
+
+                </On>
+            </OnPlatform>
 
         </Grid>
     </Grid>
