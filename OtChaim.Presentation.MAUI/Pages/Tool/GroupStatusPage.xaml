@@ -33,7 +33,7 @@
 
                     <CollectionView ItemsSource="{Binding Contacts}" HeightRequest="300">
                         <CollectionView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="viewModels:ContactStatus">
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="8" Margin="0,4">
                                     <!-- Profile Picture -->
                                     <Image Grid.Column="0" Source="profile_picture.png"
