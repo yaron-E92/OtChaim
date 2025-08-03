@@ -1,34 +1,25 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OtChaim.Presentation.MAUI.Pages.Settings;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Settings;
 
-public class SettingsTabViewModel : INotifyPropertyChanged
+public partial class SettingsTabViewModel : ObservableObject
 {
+    [ObservableProperty]
     private ObservableCollection<ContentView> _settingsPages;
+
+    [ObservableProperty]
     private ContentView _currentPage;
 
-    public ObservableCollection<ContentView> SettingsPages
-    {
-        get => _settingsPages;
-        set
-        {
-            _settingsPages = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    private int _currentPageIndex;
 
-    public ContentView CurrentPage
-    {
-        get => _currentPage;
-        set
-        {
-            _currentPage = value;
-            OnPropertyChanged();
-        }
-    }
+    private readonly string[] _pageTitles = ["User Info", "Medical Info", "Emergency Contacts"];
+
+    [ObservableProperty]
+    private string _currentPageTitle;
 
     public SettingsTabViewModel(UserInfoPage userInfoPage, MedicalInfoPage medicalInfoPage, EmergencyContactsPage emergencyContactsPage)
     {
@@ -41,13 +32,33 @@ public class SettingsTabViewModel : INotifyPropertyChanged
         ];
 
         // Set the first page as current
+        CurrentPageIndex = 0;
         CurrentPage = SettingsPages.FirstOrDefault();
+        CurrentPageTitle = _pageTitles[CurrentPageIndex];
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    [RelayCommand]
+    private void PreviousPage()
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        if (CanGoPrevious())
+        {
+            CurrentPageIndex--;
+            CurrentPage = SettingsPages[CurrentPageIndex];
+            CurrentPageTitle = _pageTitles[CurrentPageIndex];
+        }
     }
+
+    [RelayCommand]
+    private void NextPage()
+    {
+        if (CanGoNext())
+        {
+            CurrentPageIndex++;
+            CurrentPage = SettingsPages[CurrentPageIndex];
+            CurrentPageTitle = _pageTitles[CurrentPageIndex];
+        }
+    }
+
+    private bool CanGoPrevious() => CurrentPageIndex > 0;
+    private bool CanGoNext() => CurrentPageIndex < SettingsPages.Count - 1;
 }

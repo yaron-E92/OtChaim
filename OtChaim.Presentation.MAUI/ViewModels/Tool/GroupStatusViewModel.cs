@@ -1,13 +1,14 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
-public class GroupStatusViewModel : INotifyPropertyChanged
+public partial class GroupStatusViewModel : ObservableObject
 {
+    [ObservableProperty]
     private string _selectedGroup = "Family";
+
     private int _currentGroupIndex = 0;
 
     private readonly List<string> _groups =
@@ -18,23 +19,7 @@ public class GroupStatusViewModel : INotifyPropertyChanged
         "Emergency Contacts"
     ];
 
-    public string SelectedGroup
-    {
-        get => _selectedGroup;
-        set
-        {
-            _selectedGroup = value;
-            OnPropertyChanged();
-        }
-    }
-
     public ObservableCollection<ContactStatus> Contacts { get; }
-
-    public ICommand PreviousGroupCommand { get; }
-    public ICommand NextGroupCommand { get; }
-    public ICommand AddContactCommand { get; }
-    public ICommand RemoveContactCommand { get; }
-    public ICommand AreYouOkCommand { get; }
 
     public GroupStatusViewModel()
     {
@@ -45,14 +30,9 @@ public class GroupStatusViewModel : INotifyPropertyChanged
             new ContactStatus { Name = "Pappa", StatusText = ":D", StatusColor = Color.FromArgb("#F44336") },
             new ContactStatus { Name = "Finn", StatusText = "!", StatusColor = Color.FromArgb("#F44336") }
         ];
-
-        PreviousGroupCommand = new Command(PreviousGroup);
-        NextGroupCommand = new Command(NextGroup);
-        AddContactCommand = new Command(AddContact);
-        RemoveContactCommand = new Command(RemoveContact);
-        AreYouOkCommand = new Command(AreYouOk);
     }
 
+    [RelayCommand]
     private void PreviousGroup()
     {
         _currentGroupIndex--;
@@ -62,6 +42,7 @@ public class GroupStatusViewModel : INotifyPropertyChanged
         SelectedGroup = _groups[_currentGroupIndex];
     }
 
+    [RelayCommand]
     private void NextGroup()
     {
         _currentGroupIndex++;
@@ -71,28 +52,24 @@ public class GroupStatusViewModel : INotifyPropertyChanged
         SelectedGroup = _groups[_currentGroupIndex];
     }
 
+    [RelayCommand]
     private void AddContact()
     {
         // TODO: Implement contact addition
         System.Diagnostics.Debug.WriteLine("Add Contact");
     }
 
+    [RelayCommand]
     private void RemoveContact()
     {
         // TODO: Implement contact removal
         System.Diagnostics.Debug.WriteLine("Remove Contact");
     }
 
+    [RelayCommand]
     private void AreYouOk()
     {
         // TODO: Implement "Are you ok?" functionality with priority overlay
         System.Diagnostics.Debug.WriteLine("Are you ok?");
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
