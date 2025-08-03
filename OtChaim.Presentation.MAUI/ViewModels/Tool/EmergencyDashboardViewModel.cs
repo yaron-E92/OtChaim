@@ -182,8 +182,8 @@ public partial class EmergencyDashboardViewModel : ObservableObject
             IsLoading = true;
 
             var userId = Guid.NewGuid(); // TODO: Replace with actual user ID from auth
-            var status = isSafe ? UserStatus.Safe : UserStatus.HelpNeeded;
-            var message = isSafe ? "I am safe" : "I need help";
+            UserStatus status = isSafe ? UserStatus.Safe : UserStatus.HelpNeeded;
+            string message = isSafe ? "I am safe" : "I need help";
 
             var command = new MarkUserStatus(
                 userId,
