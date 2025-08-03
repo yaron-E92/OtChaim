@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Tool"
              x:Class="OtChaim.Presentation.MAUI.Pages.Tool.GroupStatusPage"
+             x:DataType="viewModels:GroupStatusViewModel"
              BackgroundColor="{StaticResource Secondary}">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
-            
+
             <!-- Group Selection -->
             <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
-                <Button Grid.Column="0" Text="‹" FontSize="24" 
+                <Button Grid.Column="0" Text="‹" FontSize="24"
                         Command="{Binding PreviousGroupCommand}"
                         BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
                         WidthRequest="50" HeightRequest="50" />
-                
-                <Label Grid.Column="1" Text="{Binding SelectedGroup}" 
-                       Style="{StaticResource SecondaryHeadline}" 
+
+                <Label Grid.Column="1" Text="{Binding SelectedGroup}"
+                       Style="{StaticResource SecondaryHeadline}"
                        HorizontalOptions="Center" />
-                
-                <Button Grid.Column="2" Text="›" FontSize="24" 
+
+                <Button Grid.Column="2" Text="›" FontSize="24"
                         Command="{Binding NextGroupCommand}"
                         BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
                         WidthRequest="50" HeightRequest="50" />
@@ -28,42 +30,42 @@
             <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
                 <VerticalStackLayout Spacing="16">
                     <Label Text="Contacts:" FontSize="18" FontFamily="OpenSansSemibold" />
-                    
+
                     <CollectionView ItemsSource="{Binding Contacts}" HeightRequest="300">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="8" Margin="0,4">
                                     <!-- Profile Picture -->
-                                    <Image Grid.Column="0" Source="profile_picture.png" 
-                                           HeightRequest="50" WidthRequest="50" 
+                                    <Image Grid.Column="0" Source="profile_picture.png"
+                                           HeightRequest="50" WidthRequest="50"
                                            HorizontalOptions="Start" />
-                                    
+
                                     <!-- Contact Name -->
-                                    <Label Grid.Column="1" Text="{Binding Name}" 
+                                    <Label Grid.Column="1" Text="{Binding Name}"
                                            FontSize="18" FontFamily="OpenSansSemibold"
                                            VerticalOptions="Center" Margin="12,0,0,0" />
-                                    
+
                                     <!-- Status Indicator -->
-                                    <Frame Grid.Column="2" BackgroundColor="{Binding StatusColor}" 
+                                    <Frame Grid.Column="2" BackgroundColor="{Binding StatusColor}"
                                            CornerRadius="25" WidthRequest="50" HeightRequest="50"
                                            HorizontalOptions="End">
-                                        <Label Text="{Binding StatusText}" 
+                                        <Label Text="{Binding StatusText}"
                                                FontSize="16" FontFamily="OpenSansSemibold"
                                                TextColor="{StaticResource White}"
-                                               HorizontalOptions="Center" 
+                                               HorizontalOptions="Center"
                                                VerticalOptions="Center" />
                                     </Frame>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                    
+
                     <!-- Contact Management Buttons -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,8,0,0">
-                        <Button Grid.Column="0" Text="+" 
+                        <Button Grid.Column="0" Text="+"
                                 Command="{Binding AddContactCommand}"
                                 Style="{StaticResource MessageButton}" />
-                        <Button Grid.Column="1" Text="-" 
+                        <Button Grid.Column="1" Text="-"
                                 Command="{Binding RemoveContactCommand}"
                                 Style="{StaticResource MessageButton}" />
                     </Grid>
@@ -71,7 +73,7 @@
             </Frame>
 
             <!-- Are you ok? Button -->
-            <Button Text="Are you ok?" 
+            <Button Text="Are you ok?"
                     Command="{Binding AreYouOkCommand}"
                     Style="{StaticResource AreYouOkButton}"
                     Margin="20,40,20,20" />

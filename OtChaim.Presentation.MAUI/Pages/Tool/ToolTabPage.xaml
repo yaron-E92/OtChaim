@@ -33,7 +33,7 @@
                               IndicatorView="{x:Reference ToolIndicators}"
                               HorizontalScrollBarVisibility="Never"
                               VerticalScrollBarVisibility="Never">
-                    
+
                     <CarouselView.ItemTemplate>
                         <DataTemplate>
                             <ContentView Content="{Binding}"
@@ -44,7 +44,7 @@
                 </CarouselView>
 
                 <!-- Navigation Indicators -->
-                <IndicatorView x:Name="ToolIndicators" 
+                <IndicatorView x:Name="ToolIndicators"
                                IndicatorColor="{StaticResource Gray400}"
                                SelectedIndicatorColor="{StaticResource Primary}"
                                HorizontalOptions="Center"
@@ -57,17 +57,17 @@
             <Grid x:Name="ButtonContainer" RowDefinitions="*,Auto">
                 <!-- Page Content -->
                 <ContentView Grid.Row="0" Content="{Binding CurrentPage, Mode=TwoWay}" />
-                
+
                 <!-- Navigation Controls -->
-                    <Button Grid.Row="1" Grid.Column="0" Text="‹ Previous" 
+                    <Button Grid.Row="1" Grid.Column="0" Text="‹ Previous"
                             Command="{Binding PreviousPageCommand}"
                             Style="{StaticResource MessageButton}"
                             HorizontalOptions="Start" />
-                    
+
                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding CurrentPageTitle, Mode=TwoWay}"
-                           Style="{StaticResource SecondaryHeadline}" 
+                           Style="{StaticResource SecondaryHeadline}"
                            HorizontalOptions="Center" />
-                    
+
                     <Button Grid.Row="1" Grid.Column="2" Text="Next ›"
                             Command="{Binding NextPageCommand}"
                             Style="{StaticResource MessageButton}"
