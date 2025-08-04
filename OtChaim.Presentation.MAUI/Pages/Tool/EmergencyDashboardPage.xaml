@@ -17,7 +17,7 @@
         <!-- Main Content -->
         <Grid Grid.Row="1" ColumnDefinitions="2*,3*" Padding="20" RowSpacing="20" ColumnSpacing="20">
             <!-- Left Panel: Emergency Creation + List -->
-                <Frame CornerRadius="16" BackgroundColor="{StaticResource Secondary}" Padding="0" HasShadow="True">
+                <Frame CornerRadius="16" BackgroundColor="{StaticResource Secondary}" Padding="0" HasShadow="True" Grid.Column="0">
                     <Grid Padding="20" RowDefinitions="Auto,32,Auto,*" ColumnDefinitions="*">
                         <!-- Start New Emergency Button -->
                         <Button Grid.Row="0" Text="Start New Emergency" Command="{Binding ShowCreatePopupCommand}" StyleClass="Primary" Margin="0,0,0,16" />
