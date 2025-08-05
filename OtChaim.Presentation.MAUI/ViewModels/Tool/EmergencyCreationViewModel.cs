@@ -4,16 +4,14 @@ using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Application.Common;
-using OtChaim.Presentation.MAUI.Pages.Tool;
 using System.Collections.ObjectModel;
 using Location = OtChaim.Domain.Common.Location;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
-public partial class EmergencyViewModel : ObservableObject
+public partial class EmergencyCreationViewModel : ObservableObject
 {
     private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
-    private readonly ICommandHandler<MarkUserStatus> _markUserStatusHandler;
 
     [ObservableProperty]
     private EmergencyType _selectedEmergencyType = EmergencyType.BloodSugarLow;
@@ -22,19 +20,16 @@ public partial class EmergencyViewModel : ObservableObject
     private string _emergencyMessage = "I need immediate assistance. Please help.";
 
     [ObservableProperty]
-    private bool _isEmergencyDialogVisible = false;
-
-    [ObservableProperty]
-    private string _confirmationMessage = "";
-
-    [ObservableProperty]
-    private bool _isCreatePopupVisible = false;
-
-    [ObservableProperty]
-    private ContentView? _emergencyCreationPopup;
-
-    [ObservableProperty]
     private bool _isLoading = false;
+
+    [ObservableProperty]
+    private string _locationDescription = "Current Location";
+
+    [ObservableProperty]
+    private double _latitude = 0;
+
+    [ObservableProperty]
+    private double _longitude = 0;
 
     // Contact selection properties
     [ObservableProperty]
@@ -75,6 +70,10 @@ public partial class EmergencyViewModel : ObservableObject
     [ObservableProperty]
     private int _selectedMessageTemplateIndex = -1;
 
+    // Events for popup management
+    public event EventHandler? EmergencyCreated;
+    public event EventHandler? Cancelled;
+
     private readonly Dictionary<EmergencyType, string> _emergencyTypeMessages = new()
     {
         { EmergencyType.BloodSugarLow, "My blood sugar is dangerously low. I need immediate assistance with glucose or medical help." },
@@ -100,19 +99,10 @@ public partial class EmergencyViewModel : ObservableObject
         { EmergencyType.LocalIncident, "Local incident requiring emergency assistance." }
     };
 
-    public EmergencyViewModel(ICommandHandler<StartEmergency> startEmergencyHandler, ICommandHandler<MarkUserStatus> markUserStatusHandler, EmergencyCreationPopup emergencyCreationPopup)
+    public EmergencyCreationViewModel(ICommandHandler<StartEmergency> startEmergencyHandler)
     {
         _startEmergencyHandler = startEmergencyHandler;
-        _markUserStatusHandler = markUserStatusHandler;
-        EmergencyCreationPopup = emergencyCreationPopup;
         
-        // Subscribe to popup events
-        if (EmergencyCreationPopup?.BindingContext is EmergencyCreationViewModel creationViewModel)
-        {
-            creationViewModel.EmergencyCreated += OnEmergencyPopUpFinished;
-            creationViewModel.Cancelled += OnEmergencyPopUpFinished;
-        }
-
         // Initialize message templates
         _messageTemplates = new ObservableCollection<string>
         {
@@ -177,7 +167,6 @@ public partial class EmergencyViewModel : ObservableObject
         {
             if (IsPictureAttached)
             {
-                // Toggle off
                 IsPictureAttached = false;
                 await Shell.Current.DisplayAlert("Removed", "Picture removed", "OK");
             }
@@ -204,13 +193,11 @@ public partial class EmergencyViewModel : ObservableObject
         {
             if (IsPersonalInfoAttached)
             {
-                // Toggle off
                 IsPersonalInfoAttached = false;
                 await Shell.Current.DisplayAlert("Removed", "Personal information removed", "OK");
             }
             else
             {
-                // In a real implementation, this would load personal info from user settings
                 IsPersonalInfoAttached = true;
                 await Shell.Current.DisplayAlert("Success", "Personal information attached", "OK");
             }
@@ -228,13 +215,11 @@ public partial class EmergencyViewModel : ObservableObject
         {
             if (IsMedicalInfoAttached)
             {
-                // Toggle off
                 IsMedicalInfoAttached = false;
                 await Shell.Current.DisplayAlert("Removed", "Medical information removed", "OK");
             }
             else
             {
-                // In a real implementation, this would load medical info from user settings
                 IsMedicalInfoAttached = true;
                 await Shell.Current.DisplayAlert("Success", "Medical information attached", "OK");
             }
@@ -252,7 +237,6 @@ public partial class EmergencyViewModel : ObservableObject
         {
             if (IsGpsAttached)
             {
-                // Toggle off
                 IsGpsAttached = false;
                 await Shell.Current.DisplayAlert("Removed", "GPS location removed", "OK");
             }
@@ -276,7 +260,6 @@ public partial class EmergencyViewModel : ObservableObject
         {
             if (IsDocumentAttached)
             {
-                // Toggle off
                 IsDocumentAttached = false;
                 await Shell.Current.DisplayAlert("Removed", "Document removed", "OK");
             }
@@ -312,28 +295,24 @@ public partial class EmergencyViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task TriggerEmergency()
-    {
-        // Show the unified emergency creation popup
-        IsCreatePopupVisible = true;
-    }
-
-    private void OnEmergencyPopUpFinished(object? sender, EventArgs e)
-    {
-        IsCreatePopupVisible = false;
-    }
-
-    [RelayCommand]
-    private async Task ConfirmEmergency()
+    private async Task CreateEmergency()
     {
         try
         {
             IsLoading = true;
-            IsEmergencyDialogVisible = false;
 
-            // Create location (in real implementation, get from GPS)
-            var location = new Location(0, 0, "Current Location");
+            // Create location
+            var location = new Location(Latitude, Longitude, LocationDescription);
             var affectedAreas = new List<Area> { Area.FromLocation(location, emergencyType: SelectedEmergencyType) };
+
+            // Create attachments
+            var attachments = new EmergencyAttachments(
+                hasPicture: IsPictureAttached,
+                hasPersonalInfo: IsPersonalInfoAttached,
+                hasMedicalInfo: IsMedicalInfoAttached,
+                hasGpsLocation: IsGpsAttached,
+                hasDocument: IsDocumentAttached
+            );
 
             // Create the emergency command
             var command = new StartEmergency(
@@ -342,18 +321,22 @@ public partial class EmergencyViewModel : ObservableObject
                 location: location,
                 affectedAreas: affectedAreas,
                 severity: Severity.High,
-                description: EmergencyMessage
+                description: EmergencyMessage,
+                attachments: attachments
             );
 
             // Execute the command
             await _startEmergencyHandler.Handle(command, CancellationToken.None);
 
-            await Shell.Current.DisplayAlert("Emergency Triggered", 
-                $"Emergency of type {SelectedEmergencyType} has been triggered successfully. Help is on the way.", "OK");
+            await Shell.Current.DisplayAlert("Emergency Created", 
+                $"Emergency of type {SelectedEmergencyType} has been created successfully. Help is on the way.", "OK");
+
+            // Notify that emergency was created
+            EmergencyCreated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"Failed to trigger emergency: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlert("Error", $"Failed to create emergency: {ex.Message}", "OK");
         }
         finally
         {
@@ -362,9 +345,9 @@ public partial class EmergencyViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void CancelEmergency()
+    private void Cancel()
     {
-        IsEmergencyDialogVisible = false;
+        Cancelled?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -408,4 +391,4 @@ public partial class EmergencyViewModel : ObservableObject
             EmergencyMessage = MessageTemplates[value];
         }
     }
-}
+} 

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using OtChaim.Application.Common;
+using OtChaim.Application;
 using OtChaim.Persistence;
 using OtChaim.Presentation.MAUI.ViewModels;
 using OtChaim.Presentation.MAUI.Services;
@@ -8,6 +8,7 @@ using OtChaim.Presentation.MAUI.Pages.Settings;
 using OtChaim.Presentation.MAUI.ViewModels.Settings;
 using OtChaim.Presentation.MAUI.ViewModels.Tool;
 using OtChaim.Presentation.MAUI.Abstractions;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Presentation.MAUI;
 
@@ -31,12 +32,12 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // Register services
+        // Register serviceProvider
         builder.Services.AddPersistence(useInMemory: true);
         builder.Services.AddEventAggregator();
 
-        // Register application services
-        builder.Services.AddTransient<EmergencyDataService>();
+        // Register application serviceProvider
+        builder.Services.AddSingleton<EmergencyDataService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         // Register view models
@@ -44,6 +45,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ToolTabViewModel>();
         builder.Services.AddTransient<SettingsTabViewModel>();
         builder.Services.AddTransient<EmergencyViewModel>();
+        builder.Services.AddTransient<EmergencyCreationViewModel>();
         builder.Services.AddTransient<GroupStatusViewModel>();
         builder.Services.AddTransient<UserInfoViewModel>();
         builder.Services.AddTransient<MedicalInfoViewModel>();
@@ -54,6 +56,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ToolTabPage>();
         builder.Services.AddTransient<SettingsTabPage>();
         builder.Services.AddTransient<EmergencyPage>();
+        builder.Services.AddTransient<EmergencyCreationPopup>();
         builder.Services.AddTransient<GroupStatusPage>();
         builder.Services.AddTransient<UserInfoPage>();
         builder.Services.AddTransient<MedicalInfoPage>();
@@ -63,6 +66,12 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+        MauiApp app = builder.Build();
+
+        // Subscribe event handlers AFTER the full graph is built
+        ApplicationDI.SubscribeEventHandlers(app.Services);
+
+        return app;
+
     }
 }

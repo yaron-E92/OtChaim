@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Tool"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Tool.EmergencyCreationPopup"
+             x:DataType="viewModels:EmergencyCreationViewModel"
+             BackgroundColor="{StaticResource Gray100}">
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,20,20,10" Spacing="8">
+            <Label Text="🚨 Create Emergency" Style="{StaticResource Headline}" />
+            <Label Text="Configure emergency details and attachments" Style="{StaticResource PrimaryHeadline}" />
+        </VerticalStackLayout>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1" Padding="20">
+            <VerticalStackLayout Spacing="20">
+                <!-- Emergency Type Selection -->
+                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Emergency Type" FontSize="18" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                        
+                        <!-- Emergency Type Navigation -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="‹" 
+                                    Command="{Binding PreviousEmergencyTypeCommand}"
+                                    Style="{StaticResource MessageButton}" />
+                            
+                            <Label Grid.Column="1" Text="{Binding SelectedEmergencyType}" 
+                                   Style="{StaticResource SecondaryHeadline}"
+                                   HorizontalOptions="Center" />
+                            
+                            <Button Grid.Column="2" Text="›" 
+                                    Command="{Binding NextEmergencyTypeCommand}"
+                                    Style="{StaticResource MessageButton}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Location Configuration -->
+                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Location" FontSize="18" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                        
+                        <Entry Placeholder="Location Description" 
+                               Text="{Binding LocationDescription}" />
+                        
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Entry Grid.Column="0" Placeholder="Latitude" 
+                                   Text="{Binding Latitude}" Keyboard="Numeric" />
+                            <Entry Grid.Column="1" Placeholder="Longitude" 
+                                   Text="{Binding Longitude}" Keyboard="Numeric" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Contact Options -->
+                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Contact Options" FontSize="18" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                        
+                        <!-- Group/Single Selection -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="Group" 
+                                    Command="{Binding ToggleGroupCommand}"
+                                    BackgroundColor="{Binding IsGroupSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsGroupSelected, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource MessageButton}" />
+                            <Button Grid.Column="1" Text="Single" 
+                                    Command="{Binding ToggleSingleCommand}"
+                                    BackgroundColor="{Binding IsSingleSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsSingleSelected, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource MessageButton}" />
+                        </Grid>
+                        
+                        <!-- Contact Methods -->
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="Email" 
+                                    Command="{Binding ToggleEmailCommand}"
+                                    BackgroundColor="{Binding IsEmailSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsEmailSelected, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource MessageButton}" />
+                            <Button Grid.Column="1" Text="SMS" 
+                                    Command="{Binding ToggleSmsCommand}"
+                                    BackgroundColor="{Binding IsSmsSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsSmsSelected, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource MessageButton}" />
+                            <Button Grid.Column="2" Text="Messenger" 
+                                    Command="{Binding ToggleMessengerCommand}"
+                                    BackgroundColor="{Binding IsMessengerSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsMessengerSelected, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource MessageButton}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Attachments -->
+                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Attachments" FontSize="18" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                        
+                        <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="Picture" 
+                                    Command="{Binding AddPictureCommand}"
+                                    BackgroundColor="{Binding IsPictureAttached, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsPictureAttached, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource AttachmentButton}" />
+                            <Button Grid.Column="1" Text="Personal Info" 
+                                    Command="{Binding AddPersonalInfoCommand}"
+                                    BackgroundColor="{Binding IsPersonalInfoAttached, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsPersonalInfoAttached, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource AttachmentButton}" />
+                            <Button Grid.Column="2" Text="Medical Info" 
+                                    Command="{Binding AddMedicalInfoCommand}"
+                                    BackgroundColor="{Binding IsMedicalInfoAttached, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsMedicalInfoAttached, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource AttachmentButton}" />
+                            <Button Grid.Column="3" Text="GPS" 
+                                    Command="{Binding AddGpsCommand}"
+                                    BackgroundColor="{Binding IsGpsAttached, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsGpsAttached, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource AttachmentButton}" />
+                            <Button Grid.Column="4" Text="Document" 
+                                    Command="{Binding AddDocumentCommand}"
+                                    BackgroundColor="{Binding IsDocumentAttached, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="{Binding IsDocumentAttached, Converter={StaticResource BoolToTextColorConverter}}"
+                                    Style="{StaticResource AttachmentButton}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Emergency Message -->
+                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Emergency Message" FontSize="18" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
+                        
+                        <Editor Placeholder="Enter emergency message..." 
+                                Text="{Binding EmergencyMessage}"
+                                HeightRequest="100"
+                                AutoSize="TextChanges" />
+                        
+                        <!-- Message Management Buttons -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="+" 
+                                    Command="{Binding AddMessageCommand}"
+                                    Style="{StaticResource MessageButton}" />
+                            <Button Grid.Column="1" Text="-" 
+                                    Command="{Binding RemoveMessageCommand}"
+                                    Style="{StaticResource MessageButton}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Action Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="Cancel" 
+                            Command="{Binding CancelCommand}"
+                            Style="{StaticResource MessageButton}" />
+                    <Button Grid.Column="1" Text="Create Emergency" 
+                            Command="{Binding CreateEmergencyCommand}"
+                            Style="{StaticResource EmergencyButton}" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <Grid Grid.RowSpan="2" 
+              BackgroundColor="{StaticResource Black}" 
+              Opacity="0.5"
+              IsVisible="{Binding IsLoading}">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                              Color="{StaticResource White}"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentView> 

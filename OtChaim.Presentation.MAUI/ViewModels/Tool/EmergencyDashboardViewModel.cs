@@ -5,8 +5,11 @@ using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
+using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Domain.Users;
+using OtChaim.Presentation.MAUI.Pages.Tool;
 using OtChaim.Presentation.MAUI.Services;
+using Yaref92.Events.Abstractions;
 using Location = OtChaim.Domain.Common.Location;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
@@ -14,7 +17,7 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 /// <summary>
 /// ViewModel for the emergency dashboard, managing emergencies and user interactions.
 /// </summary>
-public partial class EmergencyDashboardViewModel : ObservableObject
+public partial class EmergencyDashboardViewModel : ObservableObject, IDisposable, IAsyncEventSubscriber<EmergencyPersisted>
 {
     /// <summary>
     /// The collection of active emergencies.
@@ -42,6 +45,7 @@ public partial class EmergencyDashboardViewModel : ObservableObject
     private readonly ICommandHandler<MarkUserStatus> _markUserStatusHandler;
     private readonly ICommandHandler<EndEmergency> _endEmergencyHandler;
     private readonly EmergencyDataService _dataService;
+    private readonly IEventAggregator _eventAggregator;
 
     /// <summary>
     /// The available emergency types.
@@ -90,30 +94,63 @@ public partial class EmergencyDashboardViewModel : ObservableObject
     private bool _isCreatePopupVisible;
 
     /// <summary>
+    /// The emergency creation popup content.
+    /// </summary>
+    [ObservableProperty]
+    private ContentView? _emergencyCreationPopup;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EmergencyDashboardViewModel"/> class.
     /// </summary>
     /// <param name="startEmergencyHandler">Handler for starting emergencies.</param>
     /// <param name="markUserStatusHandler">Handler for marking user status.</param>
     /// <param name="endEmergencyHandler">Handler for ending emergencies.</param>
     /// <param name="dataService">Service for loading emergency and user data.</param>
+    /// <param name="eventAggregator">The event aggregator for subscribing to events.</param>
+    /// <param name="emergencyCreationPopup">The emergency creation popup.</param>
     public EmergencyDashboardViewModel(
         ICommandHandler<StartEmergency> startEmergencyHandler,
         ICommandHandler<MarkUserStatus> markUserStatusHandler,
         ICommandHandler<EndEmergency> endEmergencyHandler,
-        EmergencyDataService dataService)
+        EmergencyDataService dataService,
+        IEventAggregator eventAggregator,
+        EmergencyCreationPopup emergencyCreationPopup)
     {
         _startEmergencyHandler = startEmergencyHandler;
         _markUserStatusHandler = markUserStatusHandler;
         _endEmergencyHandler = endEmergencyHandler;
         _dataService = dataService;
+        _eventAggregator = eventAggregator;
 
         Emergencies = new ObservableCollection<Emergency>();
         Users = new ObservableCollection<User>();
+        EmergencyCreationPopup = emergencyCreationPopup;
 
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
         SelectedSeverity = Severities.FirstOrDefault();
 
-        _ = LoadDataAsync();
+        // Subscribe to EmergencyStarted events
+        _eventAggregator.SubscribeToEventType(this);
+
+        // Subscribe to popup events
+        if (EmergencyCreationPopup?.BindingContext is EmergencyCreationViewModel creationViewModel)
+        {
+            creationViewModel.EmergencyCreated += OnEmergencyPopUpFinished;
+            creationViewModel.Cancelled += OnEmergencyPopUpFinished;
+        }
+
+        // Initialize data loading with proper error handling
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in initial data loading: {ex.Message}");
+            }
+        });
     }
 
     private void ResetCreateEmergencyFields()
@@ -125,41 +162,41 @@ public partial class EmergencyDashboardViewModel : ObservableObject
         Longitude = 0;
     }
 
-    [RelayCommand]
-    private async Task StartEmergencyAsync()
-    {
-        try
-        {
-            IsLoading = true;
+    //[RelayCommand]
+    //private async Task StartEmergencyAsync()
+    //{
+    //    try
+    //    {
+    //        IsLoading = true;
 
-            var location = new Location(Latitude, Longitude, LocationDescription);
-            var affectedAreas = new List<Area>
-            {
-                new Area(location, 5000) // TODO: allow user to specify radius/areas
-            };
+    //        var location = new Location(Latitude, Longitude, LocationDescription);
+    //        var affectedAreas = new List<Area>
+    //        {
+    //            new Area(location, 5000) // TODO: allow user to specify radius/areas
+    //        };
 
-            var command = new StartEmergency(
-                Guid.NewGuid(), // TODO: Replace with actual user ID from auth
-                SelectedEmergencyType,
-                location,
-                affectedAreas,
-                SelectedSeverity
-            );
+    //        var command = new StartEmergency(
+    //            Guid.NewGuid(), // TODO: Replace with actual user ID from auth
+    //            SelectedEmergencyType,
+    //            location,
+    //            affectedAreas,
+    //            SelectedSeverity
+    //        );
 
-            await _startEmergencyHandler.Handle(command);
-            IsCreatePopupVisible = false;
-            await LoadDataAsync();
-        }
-        catch (Exception ex)
-        {
-            // In a real app, you'd want proper error handling and user notification
-            System.Diagnostics.Debug.WriteLine($"Error starting emergency: {ex.Message}");
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
+    //        await _startEmergencyHandler.Handle(command);
+    //        IsCreatePopupVisible = false;
+    //        await LoadDataAsync();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        // In a real app, you'd want proper error handling and user notification
+    //        System.Diagnostics.Debug.WriteLine($"Error starting emergency: {ex.Message}");
+    //    }
+    //    finally
+    //    {
+    //        IsLoading = false;
+    //    }
+    //}
 
     [RelayCommand]
     private async Task MarkAsSafeAsync()
@@ -235,8 +272,12 @@ public partial class EmergencyDashboardViewModel : ObservableObject
     [RelayCommand]
     private void ShowCreatePopup()
     {
-        ResetCreateEmergencyFields();
         IsCreatePopupVisible = true;
+    }
+
+    private void OnEmergencyPopUpFinished(object? sender, EventArgs e)
+    {
+        IsCreatePopupVisible = false;
     }
 
     [RelayCommand]
@@ -256,10 +297,31 @@ public partial class EmergencyDashboardViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error loading data: {ex.Message}");
+            // Ensure UI is not stuck in loading state
+            IsLoading = false;
         }
         finally
         {
             IsLoading = false;
         }
+    }
+
+    public async Task OnNextAsync(EmergencyPersisted domainEvent, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Refresh the emergency list when a new emergency is persisted
+            await LoadDataAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error handling EmergencyPersisted event: {ex.Message}");
+        }
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from the event aggregator to prevent memory leaks
+        _eventAggregator.UnsubscribeFromEventType(this);
     }
 }
