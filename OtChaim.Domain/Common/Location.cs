@@ -20,6 +20,11 @@ public class Location : ValueObject
     /// </summary>
     public string Description { get; private set; }
 
+    /// <summary>
+    /// Gets an empty location instance.
+    /// </summary>
+    public static Location Empty => new(0, 0, "");
+
     private Location() { } // For EF Core
 
     /// <summary>

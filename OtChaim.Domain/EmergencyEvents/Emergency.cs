@@ -44,13 +44,23 @@ public class Emergency : Entity
     /// </summary>
     public EmergencyType? EmergencyType { get; private set; }
 
+    /// <summary>
+    /// Gets the emergency message/description.
+    /// </summary>
+    public string Description { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the attachment information for the emergency.
+    /// </summary>
+    public EmergencyAttachments Attachments { get; private set; } = new();
+
     private Emergency() { } // For EF Core
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Emergency"/> class.
     /// </summary>
     public Emergency(Guid id, Guid initiatorUserId, Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium,
-                     EmergencyType? emergencyType = null)
+                     EmergencyType? emergencyType = null, string description = "", EmergencyAttachments? attachments = null)
     {
         ArgumentNullException.ThrowIfNull(location);
 
@@ -58,6 +68,8 @@ public class Emergency : Entity
         InitiatorUserId = initiatorUserId;
         Location = location;
         EmergencyType = emergencyType;
+        Description = description ?? string.Empty;
+        Attachments = attachments ?? new EmergencyAttachments();
         _affectedAreas = (affectedAreas == null || !affectedAreas.Any())
             ? [Area.FromLocation(location.Clone(), emergencyType: emergencyType)]
             : new List<Area>(affectedAreas);

@@ -8,6 +8,7 @@ namespace OtChaim.Domain.EmergencyEvents.Events;
 /// </summary>
 public class EmergencyStarted(Guid emergencyId, Guid initiatorId, EmergencyType emergencyType,
                               Location location, IEnumerable<Area> affectedAreas, Severity severity,
+                              string description = "", EmergencyAttachments? attachments = null,
                               DateTime occurred = default, Guid eventId = default) : DomainEventBase(occurred, eventId)
 {
     /// <summary>
@@ -34,6 +35,14 @@ public class EmergencyStarted(Guid emergencyId, Guid initiatorId, EmergencyType 
     /// The severity of the emergency.
     /// </summary>
     public Severity Severity { get; } = severity;
+    /// <summary>
+    /// The description of the emergency.
+    /// </summary>
+    public string Description { get; } = description;
+    /// <summary>
+    /// The attachments for the emergency.
+    /// </summary>
+    public EmergencyAttachments? Attachments { get; } = attachments;
     /// <summary>
     /// The date and time when the emergency started.
     /// </summary>
