@@ -11,13 +11,15 @@ namespace OtChaim.Application.EmergencyEvents.EventSubscribers;
 /// Initializes a new instance of the <see cref="EmergencyEventSubscriber"/> class.
 /// </remarks>
 /// <param name="emergencyRepository">The emergency repository to update.</param>
-public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository) :
+/// <param name="eventAggregator">The event aggregator for publishing events.</param>
+public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository, IEventAggregator eventAggregator) :
     IAsyncEventSubscriber<EmergencyStarted>,
     IAsyncEventSubscriber<EmergencyEnded>,
     IAsyncEventSubscriber<UserStatusMarked>,
     IAsyncEventSubscriber<SubscriberNotified>
 {
     private readonly IEmergencyRepository _emergencyRepository = emergencyRepository;
+    private readonly IEventAggregator _eventAggregator = eventAggregator;
 
     /// <summary>
     /// Handles the <see cref="EmergencyStarted"/> event by creating and persisting a new emergency.
@@ -29,9 +31,15 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository) 
             domainEvent.Location.Clone(),
             [.. domainEvent.AffectedAreas],
             domainEvent.Severity,
-            domainEvent.EmergencyType
+            domainEvent.EmergencyType,
+            domainEvent.Description,
+            domainEvent.Attachments
         );
         await _emergencyRepository.AddAsync(emergency, cancellationToken);
+        
+        // Raise EmergencyPersisted event after successful persistence
+        var persistedEvent = new EmergencyPersisted(domainEvent.EmergencyId);
+        await _eventAggregator.PublishEventAsync(persistedEvent, cancellationToken);
     }
 
     /// <summary>

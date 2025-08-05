@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Application.EmergencyEvents.EventSubscribers;
 using OtChaim.Application.EmergencyEvents.Handlers;
@@ -14,14 +15,14 @@ using Yaref92.Events.Abstractions;
 using Yaref92.Events.Serialization;
 using Yaref92.Events.Transports;
 
-namespace OtChaim.Application.Common;
+namespace OtChaim.Application;
 
 /// <summary>
 /// Provides extension methods for configuring event aggregation and dependency injection.
 /// </summary>
-public static class EventConfiguration
+public static class ApplicationDI
 {
-    private const int ListenPort = 9000;
+    private static readonly int ListenPort = 9008;//Random.Shared.Next(9000, 10000);
 
     /// <summary>
     /// Adds and configures the event aggregator and related services to the service collection.
@@ -30,6 +31,50 @@ public static class EventConfiguration
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddEventAggregator(this IServiceCollection services)
     {
+        services.AddSingleton<IEventSerializer, JsonEventSerializer>();
+        services.AddSingleton<IEventTransport, TCPEventTransport>(provider =>
+        {
+            IEventSerializer serializer = provider.GetRequiredService<IEventSerializer>();
+            TCPEventTransport transport = new TCPEventTransport(ListenPort, serializer); // Choose your port
+            return transport;
+        });
+
+        // Register logger
+        services.AddSingleton<ILoggerFactory, NullLoggerFactory>(); // TODO: put an actual logger factory
+        services.AddSingleton<ILogger<EventAggregator>, Logger<EventAggregator>>();
+
+        // Register the networked aggregator as a singleton
+        services.AddSingleton<IEventAggregator>(provider =>
+        {
+            ILogger<EventAggregator>? logger = provider.GetService<ILogger<EventAggregator>>();
+            EventAggregator localAggregator = new EventAggregator(logger);
+            TCPEventTransport transport = (provider.GetRequiredService<IEventTransport>() as TCPEventTransport)!; // Choose your port
+            NetworkedEventAggregator networkedAggregator = new NetworkedEventAggregator(localAggregator, transport!);
+
+            //transport.StartListeningAsync();
+
+            // Start listening asynchronously with error handling
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await transport.StartListeningAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but don't crash the application
+                    System.Diagnostics.Debug.WriteLine($"Failed to start TCP transport on port {ListenPort}: {ex.Message}");
+                }
+            });
+
+            // Optionally connect to peers here, or expose transport for runtime connections
+            // await transport.ConnectToPeerAsync("remotehost", 9000);
+
+            RegisterEventTypes(networkedAggregator);
+
+            return networkedAggregator;
+        });
+
         // Register event subscribers
         services.AddScoped<SubscriptionEventSubscriber>();
         services.AddScoped<EmergencyEventSubscriber>();
@@ -42,60 +87,33 @@ public static class EventConfiguration
         services.AddScoped<ICommandHandler<EndEmergency>, EndEmergencyHandler>();
         services.AddScoped<ICommandHandler<MarkUserStatus>, MarkUserStatusHandler>();
 
-        // Register logger
-        services.AddSingleton<ILoggerFactory, NullLoggerFactory>(); // TODO: put an actual logger factory
-        services.AddSingleton<ILogger<EventAggregator>, Logger<EventAggregator>>();
-
-        // Register the networked aggregator as a singleton
-        services.AddSingleton<IEventAggregator>(provider =>
-        {
-            ILogger<EventAggregator>? logger = provider.GetService<ILogger<EventAggregator>>();
-            EventAggregator localAggregator = new EventAggregator(logger);
-            JsonEventSerializer serializer = new JsonEventSerializer();
-            TCPEventTransport transport = new TCPEventTransport(ListenPort, serializer); // Choose your port
-            NetworkedEventAggregator networkedAggregator = new NetworkedEventAggregator(localAggregator, transport);
-            transport.StartListeningAsync();
-
-            // Optionally connect to peers here, or expose transport for runtime connections
-            // await transport.ConnectToPeerAsync("remotehost", 9000);
-
-            ConfigureEventAggregator(networkedAggregator, provider);
-
-            return networkedAggregator;
-        });
-
         return services;
     }
-
-    /// <summary>
-    /// Registers event types and subscribes event subscribers to the event aggregator.
-    /// </summary>
-    /// <param name="eventAggregator">The event aggregator to configure.</param>
-    /// <param name="serviceProvider">The service provider for resolving subscribers.</param>
-    /// <returns>The configured event aggregator.</returns>
-    public static IEventAggregator ConfigureEventAggregator(IEventAggregator eventAggregator, IServiceProvider serviceProvider)
+    public static void RegisterEventTypes(IEventAggregator eventAggregator)
     {
-        // Register all event types
         eventAggregator.RegisterEventType<SubscriptionRequested>();
         eventAggregator.RegisterEventType<SubscriptionApproved>();
         eventAggregator.RegisterEventType<SubscriptionRejected>();
         eventAggregator.RegisterEventType<EmergencyStarted>();
         eventAggregator.RegisterEventType<EmergencyEnded>();
+        eventAggregator.RegisterEventType<EmergencyPersisted>();
         eventAggregator.RegisterEventType<UserStatusMarked>();
         eventAggregator.RegisterEventType<SubscriberNotified>();
+    }
 
-        // Subscribe to events
-        SubscriptionEventSubscriber subscriptionSubscriber = serviceProvider.GetRequiredService<SubscriptionEventSubscriber>();
+    public static void SubscribeEventHandlers(IServiceProvider provider)
+    {
+        IEventAggregator eventAggregator = provider.GetRequiredService<IEventAggregator>();
+
+        var subscriptionSubscriber = provider.GetRequiredService<SubscriptionEventSubscriber>();
         eventAggregator.SubscribeToEventType<SubscriptionRequested>(subscriptionSubscriber);
         eventAggregator.SubscribeToEventType<SubscriptionApproved>(subscriptionSubscriber);
         eventAggregator.SubscribeToEventType<SubscriptionRejected>(subscriptionSubscriber);
 
-        EmergencyEventSubscriber emergencySubscriber = serviceProvider.GetRequiredService<EmergencyEventSubscriber>();
+        var emergencySubscriber = provider.GetRequiredService<EmergencyEventSubscriber>();
         eventAggregator.SubscribeToEventType<EmergencyStarted>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<EmergencyEnded>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<UserStatusMarked>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<SubscriberNotified>(emergencySubscriber);
-
-        return eventAggregator;
     }
 }
