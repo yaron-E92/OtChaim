@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Tool"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Tool.EmergencyPage"
+             x:DataType="viewModels:EmergencyViewModel"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Emergency Type Selection -->
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                <Button Grid.Column="0" Text="‹" FontSize="24"
+                        Command="{Binding PreviousEmergencyTypeCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        WidthRequest="50" HeightRequest="50" />
+
+                <Label Grid.Column="1" Text="{Binding SelectedEmergencyType}"
+                       Style="{StaticResource SecondaryHeadline}"
+                       HorizontalOptions="Center" />
+
+                <Button Grid.Column="2" Text="›" FontSize="24"
+                        Command="{Binding NextEmergencyTypeCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        WidthRequest="50" HeightRequest="50" />
+            </Grid>
+
+            <!-- Contact List Section -->
+            <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="List of contacts:" FontSize="18" FontFamily="OpenSansSemibold" />
+                    <Label Text="Group Single / Email / SMS / Messenger" FontSize="16" TextColor="{StaticResource Gray600}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Attachment Buttons -->
+            <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="Pic"
+                        Command="{Binding AddPictureCommand}"
+                        Style="{StaticResource AttachmentButton}" />
+                <Button Grid.Column="1" Text="Pers Info"
+                        Command="{Binding AddPersonalInfoCommand}"
+                        Style="{StaticResource AttachmentButton}" />
+                <Button Grid.Column="2" Text="Med Info"
+                        Command="{Binding AddMedicalInfoCommand}"
+                        Style="{StaticResource AttachmentButton}" />
+                <Button Grid.Column="3" Text="GPS"
+                        Command="{Binding AddGpsCommand}"
+                        Style="{StaticResource AttachmentButton}" />
+                <Button Grid.Column="4" Text="Docu"
+                        Command="{Binding AddDocumentCommand}"
+                        Style="{StaticResource AttachmentButton}" />
+            </Grid>
+
+            <!-- Emergency Message -->
+            <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Message:" FontSize="18" FontFamily="OpenSansSemibold" />
+                    <Editor Text="{Binding EmergencyMessage}"
+                            Placeholder="Enter emergency message..."
+                            HeightRequest="80" 
+                            FontSize="16" />
+
+                    <!-- Message Management Buttons -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,8,0,0">
+                        <Button Grid.Column="0" Text="+"
+                                Command="{Binding AddMessageCommand}"
+                                Style="{StaticResource MessageButton}" />
+                        <Button Grid.Column="1" Text="-"
+                                Command="{Binding RemoveMessageCommand}"
+                                Style="{StaticResource MessageButton}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Large Emergency Button -->
+            <Button Text="EMERGENCY!"
+                    Command="{Binding TriggerEmergencyCommand}"
+                    Style="{StaticResource EmergencyButton}"
+                    Margin="20,40,20,20" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

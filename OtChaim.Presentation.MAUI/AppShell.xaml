@@ -4,12 +4,25 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:OtChaim.Presentation.MAUI"
+    xmlns:tool="clr-namespace:OtChaim.Presentation.MAUI.Pages.Tool"
+    xmlns:settings="clr-namespace:OtChaim.Presentation.MAUI.Pages.Settings"
     Shell.FlyoutBehavior="Disabled"
-    Title="OtChaim.Presentation.MAUI">
+    Title="OtChaim">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab Title="Tool" Icon="emergency_icon.png">
+            <ShellContent
+                Title="Tool"
+                ContentTemplate="{DataTemplate tool:ToolTabPage}"
+                Route="ToolTab" />
+        </Tab>
+
+        <Tab Title="Settings" Icon="settings_icon.png">
+            <ShellContent
+                Title="Settings"
+                ContentTemplate="{DataTemplate settings:SettingsTabPage}"
+                Route="SettingsTab" />
+        </Tab>
+    </TabBar>
 
 </Shell>

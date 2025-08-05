@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Settings"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Settings.MedicalInfoPage"
+             x:DataType="viewModels:MedicalInfoViewModel"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            
+            <!-- Medical Condition Selection -->
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                <Button Grid.Column="0" Text="‹" FontSize="24" 
+                        Command="{Binding PreviousConditionCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        WidthRequest="50" HeightRequest="50" />
+                
+                <Label Grid.Column="1" Text="{Binding SelectedCondition}" 
+                       Style="{StaticResource SecondaryHeadline}" 
+                       HorizontalOptions="Center" />
+                
+                <Button Grid.Column="2" Text="›" FontSize="24" 
+                        Command="{Binding NextConditionCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                        WidthRequest="50" HeightRequest="50" />
+            </Grid>
+
+            <!-- Medical Information Form -->
+            <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Medical Information" FontSize="18" FontFamily="OpenSansSemibold" />
+                    
+                    <!-- Condition -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Condition:" FontSize="16" />
+                        <Entry Text="{Binding Condition}" Placeholder="Enter medical condition" FontSize="18" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Medication -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Medication:" FontSize="16" />
+                        <Entry Text="{Binding Medication}" Placeholder="Enter medication" FontSize="18" />
+                    </VerticalStackLayout>
+                    
+                    <!-- Information Text Area -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Information:" FontSize="16" />
+                        <Editor Text="{Binding Information}" 
+                                Placeholder="Enter additional medical information..."
+                                HeightRequest="120" 
+                                FontSize="18" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Management Buttons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="+" 
+                        Command="{Binding AddMedicalInfoCommand}"
+                        Style="{StaticResource MessageButton}" />
+                <Button Grid.Column="1" Text="-" 
+                        Command="{Binding RemoveMedicalInfoCommand}"
+                        Style="{StaticResource MessageButton}" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

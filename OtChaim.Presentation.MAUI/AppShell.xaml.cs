@@ -1,3 +1,6 @@
+using OtChaim.Presentation.MAUI.Pages.Tool;
+using OtChaim.Presentation.MAUI.Pages.Settings;
+
 namespace OtChaim.Presentation.MAUI;
 
 /// <summary>
@@ -12,5 +15,9 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
+
+        // Register routes for tabbed navigation
+        Routing.RegisterRoute(nameof(ToolTabPage), typeof(ToolTabPage));
+        Routing.RegisterRoute(nameof(SettingsTabPage), typeof(SettingsTabPage));
     }
 }

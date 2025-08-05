@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:settings="clr-namespace:OtChaim.Presentation.MAUI.Pages.Settings"
+             xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Settings"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Settings.SettingsTabPage"
+             x:DataType="viewModels:SettingsTabViewModel"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,*,Auto" Padding="20,40,20,10" BackgroundColor="{StaticResource Secondary}">
+        <!-- Header with COM-MIT branding and mood indicator -->
+        <!-- COM-MIT Logo -->
+        <Image Grid.Row="0" Grid.Column="0" Source="commit_logo.png" HeightRequest="40" WidthRequest="120" />
+
+        <!-- Title -->
+        <Label Grid.Row="0" Grid.Column="1" Text="Settings" Style="{StaticResource PrimaryHeadline}" />
+
+        <!-- Mood Indicator (Sad Face) -->
+        <Image Grid.Row="0" Grid.Column="2" Source="sad_face.png" HeightRequest="40" WidthRequest="40" />
+
+        <!-- Platform-Specific Navigation -->
+        <OnPlatform x:TypeArguments="View">
+            <On Platform="Android,iOS">
+                <!-- Non-Windows: CarouselView -->
+                <Grid x:Name="CarouselContainer" Grid.Row="1" Grid.ColumnSpan="3">
+                    <CarouselView x:Name="SettingsCarousel"
+                                      ItemsSource="{Binding SettingsPages}"
+                                      CurrentItem="{Binding CurrentPage}"
+                                      Loop="False"
+                                      IndicatorView="{x:Reference SettingsIndicators}"
+                                      HorizontalScrollBarVisibility="Never"
+                                      VerticalScrollBarVisibility="Never">
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <ContentView Content="{Binding}"
+                                                HorizontalOptions="FillAndExpand"
+                                                VerticalOptions="FillAndExpand" />
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+
+                    <!-- Navigation Indicators -->
+                    <IndicatorView x:Name="SettingsIndicators"
+                                       IndicatorColor="{StaticResource Gray400}"
+                                       SelectedIndicatorColor="{StaticResource Primary}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="End"
+                                       Margin="0,0,0,20" />
+                </Grid>
+            </On>
+            <On Platform="WinUI">
+                <!-- Windows: Button Navigation -->
+                <Grid x:Name="ButtonContainer" Grid.Row="1" Grid.ColumnSpan="3"
+                            RowDefinitions="*,Auto"
+                            ColumnDefinitions="Auto,*,Auto">
+                    <!-- Page Content -->
+                    <ContentView Grid.Row="0"
+                                    Grid.ColumnSpan="3"
+                                    Content="{Binding CurrentPage}" />
+
+                    <!-- Navigation Controls -->
+                    <Button Grid.Row="1" Grid.Column="0"
+                                Text="‹ Previous"
+                                Command="{Binding PreviousPageCommand}"
+                                Style="{StaticResource MessageButton}"
+                                HorizontalOptions="Start" />
+
+                    <Label Grid.Row="1" Grid.Column="1"
+                                Text="{Binding CurrentPageTitle}"
+                                Style="{StaticResource SecondaryHeadline}"
+                                HorizontalOptions="Center" />
+
+                    <Button Grid.Row="1" Grid.Column="2"
+                                Text="Next ›"
+                                Command="{Binding NextPageCommand}"
+                                Style="{StaticResource MessageButton}"
+                                HorizontalOptions="End" />
+                </Grid>
+            </On>
+        </OnPlatform>
+    </Grid>
+
+</ContentPage>

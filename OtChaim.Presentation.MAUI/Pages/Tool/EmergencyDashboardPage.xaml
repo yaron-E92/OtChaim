@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels"
+             xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Tool"
              xmlns:emergencyEvents="clr-namespace:OtChaim.Domain.EmergencyEvents;assembly=OtChaim.Domain"
-             x:Class="OtChaim.Presentation.MAUI.MainPage"
-             x:DataType="viewmodels:EmergencyDashboardViewModel"
+             x:Class="OtChaim.Presentation.MAUI.Pages.Tool.EmergencyDashboardPage"
+             x:DataType="viewModels:EmergencyDashboardViewModel"
              BackgroundColor="{StaticResource Gray100}">
 
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
         <!-- Header -->
-        <VerticalStackLayout Grid.Row="0" Padding="20,40,20,10" Spacing="8">
+        <VerticalStackLayout Grid.Row="0" Padding="20,20,20,10" Spacing="8">
             <Label Text="🚨 Emergency Dashboard" Style="{StaticResource Headline}" />
             <Label Text="Monitor and manage emergencies in real time" Style="{StaticResource PrimaryHeadline}" />
         </VerticalStackLayout>
@@ -17,8 +17,7 @@
         <!-- Main Content -->
         <Grid Grid.Row="1" ColumnDefinitions="2*,3*" Padding="20" RowSpacing="20" ColumnSpacing="20">
             <!-- Left Panel: Emergency Creation + List -->
-            <ScrollView Grid.Column="0">
-                <Frame CornerRadius="16" BackgroundColor="{StaticResource Secondary}" Padding="0" HasShadow="True">
+                <Frame CornerRadius="16" BackgroundColor="{StaticResource Secondary}" Padding="0" HasShadow="True" Grid.Column="0">
                     <Grid Padding="20" RowDefinitions="Auto,32,Auto,*" ColumnDefinitions="*">
                         <!-- Start New Emergency Button -->
                         <Button Grid.Row="0" Text="Start New Emergency" Command="{Binding ShowCreatePopupCommand}" StyleClass="Primary" Margin="0,0,0,16" />
@@ -34,7 +33,7 @@
                                        Margin="0,8,0,0" SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="emergencyEvents:Emergency">
-                                    <Frame Margin="0,4" Padding="12" CornerRadius="8" BackgroundColor="{StaticResource Secondary}">
+                                    <Frame Margin="0,4" Padding="12" CornerRadius="8" BackgroundColor="{StaticResource Secondary}" InputTransparent="True">
                                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                             <Label Grid.Column="0" Grid.Row="0" Text="{Binding EmergencyType}" FontFamily="OpenSansSemibold" />
                                             <Label Grid.Column="1" Grid.Row="0" Text="{Binding Severity}" FontSize="12" TextColor="{StaticResource Gray600}" />
@@ -50,13 +49,12 @@
                         </CollectionView>
                     </Grid>
                 </Frame>
-            </ScrollView>
 
             <!-- Right Panel: Emergency Details & Actions -->
             <Frame Grid.Column="1" CornerRadius="16" BackgroundColor="{StaticResource Secondary}" Padding="0" HasShadow="True">
                 <VerticalStackLayout Padding="16" Spacing="16">
                     <Label Text="Emergency Details" FontSize="20" FontFamily="OpenSansSemibold" TextColor="{StaticResource Primary}" />
-                    
+
                     <!-- Emergency Details -->
                     <VerticalStackLayout IsVisible="{Binding SelectedEmergency, Converter={StaticResource NotNullConverter}}" Spacing="8">
                         <Label Text="{Binding SelectedEmergency.EmergencyType, StringFormat='Type: {0}'}" FontFamily="OpenSansSemibold" />
@@ -65,12 +63,12 @@
                         <Label Text="{Binding SelectedEmergency.Status, StringFormat='Status: {0}'}" />
                         <Label Text="{Binding SelectedEmergency.Responses.Count, StringFormat='Responses: {0}'}" />
                     </VerticalStackLayout>
-                    
+
                     <!-- Placeholder when no emergency selected -->
                     <Label Text="Select an emergency to view details." 
                            TextColor="{StaticResource Gray400}"
                            IsVisible="{Binding SelectedEmergency, Converter={StaticResource NullConverter}}" />
-                    
+
                     <!-- Action Buttons -->
                     <HorizontalStackLayout Spacing="12" IsVisible="{Binding SelectedEmergency, Converter={StaticResource NotNullConverter}}">
                         <Button Text="Mark as Safe" 
@@ -115,7 +113,7 @@
                 </Grid>
             </Frame>
         </ContentView>
-        
+
         <!-- Loading Overlay -->
         <Grid Grid.RowSpan="2" 
               BackgroundColor="{StaticResource Black}" 
@@ -127,4 +125,4 @@
                               VerticalOptions="Center" />
         </Grid>
     </Grid>
-</ContentPage>
+</ContentView>

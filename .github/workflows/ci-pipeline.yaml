@@ -125,7 +125,7 @@ jobs:
     - name: Check diff
       id: checkDiff
       run: |
-        DIFF=$(git diff origin/main HEAD -- src/OtChaim.Prentation.MAUI/**/*.cs src/OtChaim.Prentation.MAUI/*.cs src/OtChaim.Prentation.MAUI/**/*.xaml src/OtChaim.Prentation.MAUI/*.xaml | head -n 1)
+        DIFF=$(git diff origin/main HEAD -- OtChaim.Presentation.MAUI/**/*.cs OtChaim.Presentation.MAUI/*.cs OtChaim.Presentation.MAUI/**/*.xaml OtChaim.Presentation.MAUI/*.xaml | head -n 1)
         echo "diff=$DIFF" >> $GITHUB_OUTPUT
         echo "Diff found: $DIFF"
 

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Domain.Common;
@@ -9,12 +9,12 @@ using OtChaim.Domain.Users;
 using OtChaim.Presentation.MAUI.Services;
 using Location = OtChaim.Domain.Common.Location;
 
-namespace OtChaim.Presentation.MAUI.ViewModels;
+namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
 /// <summary>
 /// ViewModel for the emergency dashboard, managing emergencies and user interactions.
 /// </summary>
-public class EmergencyDashboardViewModel : INotifyPropertyChanged
+public partial class EmergencyDashboardViewModel : ObservableObject
 {
     /// <summary>
     /// The collection of active emergencies.
@@ -29,61 +29,19 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     /// <summary>
     /// The currently selected emergency.
     /// </summary>
-    public Emergency? SelectedEmergency
-    {
-        get => _selectedEmergency;
-        set
-        {
-            _selectedEmergency = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    private Emergency? _selectedEmergency;
 
     /// <summary>
     /// A value indicating whether data is loading.
     /// </summary>
-    public bool IsLoading
-    {
-        get => _isLoading;
-        set
-        {
-            _isLoading = value;
-            OnPropertyChanged();
-        }
-    }
-
-    /// <summary>
-    /// Command to start a new emergency.
-    /// </summary>
-    public Command StartEmergencyCommand { get; }
-
-    /// <summary>
-    /// Command to mark a user as safe.
-    /// </summary>
-    public Command MarkAsSafeCommand { get; }
-
-    /// <summary>
-    /// Command to mark a user as not safe.
-    /// </summary>
-    public Command MarkAsNotSafeCommand { get; }
-
-    /// <summary>
-    /// Command to resolve an emergency.
-    /// </summary>
-    public Command ResolveEmergencyCommand { get; }
-
-    /// <summary>
-    /// Command to refresh emergency data.
-    /// </summary>
-    public Command RefreshCommand { get; }
+    [ObservableProperty]
+    private bool _isLoading;
 
     private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
     private readonly ICommandHandler<MarkUserStatus> _markUserStatusHandler;
     private readonly ICommandHandler<EndEmergency> _endEmergencyHandler;
     private readonly EmergencyDataService _dataService;
-
-    private Emergency? _selectedEmergency;
-    private bool _isLoading;
 
     /// <summary>
     /// The available emergency types.
@@ -95,80 +53,41 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
     /// </summary>
     public ObservableCollection<Severity> Severities { get; } = new(Enum.GetValues(typeof(Severity)).Cast<Severity>());
 
-    private EmergencyType _selectedEmergencyType;
     /// <summary>
     /// The selected emergency type.
     /// </summary>
-    public EmergencyType SelectedEmergencyType
-    {
-        get => _selectedEmergencyType;
-        set { _selectedEmergencyType = value; OnPropertyChanged(); }
-    }
+    [ObservableProperty]
+    private EmergencyType _selectedEmergencyType;
 
-    private Severity _selectedSeverity;
     /// <summary>
     /// The selected severity.
     /// </summary>
-    public Severity SelectedSeverity
-    {
-        get => _selectedSeverity;
-        set { _selectedSeverity = value; OnPropertyChanged(); }
-    }
+    [ObservableProperty]
+    private Severity _selectedSeverity;
 
-    private string _locationDescription = string.Empty;
     /// <summary>
     /// The location description for a new emergency.
     /// </summary>
-    public string LocationDescription
-    {
-        get => _locationDescription;
-        set { _locationDescription = value; OnPropertyChanged(); }
-    }
+    [ObservableProperty]
+    private string _locationDescription = string.Empty;
 
-    private double _latitude;
     /// <summary>
     /// The latitude for a new emergency.
     /// </summary>
-    public double Latitude
-    {
-        get => _latitude;
-        set { _latitude = value; OnPropertyChanged(); }
-    }
+    [ObservableProperty]
+    private double _latitude;
 
-    private double _longitude;
     /// <summary>
     /// The longitude for a new emergency.
     /// </summary>
-    public double Longitude
-    {
-        get => _longitude;
-        set { _longitude = value; OnPropertyChanged(); }
-    }
+    [ObservableProperty]
+    private double _longitude;
 
-    private bool _isCreatePopupVisible;
     /// <summary>
     /// A value indicating whether the create emergency popup is visible.
     /// </summary>
-    public bool IsCreatePopupVisible
-    {
-        get => _isCreatePopupVisible;
-        set { _isCreatePopupVisible = value; OnPropertyChanged(); }
-    }
-
-    /// <summary>
-    /// Command to show the create emergency popup.
-    /// </summary>
-    public Command ShowCreatePopupCommand { get; }
-
-    /// <summary>
-    /// Command to hide the create emergency popup.
-    /// </summary>
-    public Command HideCreatePopupCommand { get; }
-
-    /// <summary>
-    /// Command triggered when the selected emergency changes.
-    /// </summary>
-    public Command<SelectionChangedEventArgs> SelectedEmergencyChanged { get; }
+    [ObservableProperty]
+    private bool _isCreatePopupVisible;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EmergencyDashboardViewModel"/> class.
@@ -191,29 +110,6 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         Emergencies = new ObservableCollection<Emergency>();
         Users = new ObservableCollection<User>();
 
-        StartEmergencyCommand = new Command(async () =>
-        {
-            Task startEmergency = StartEmergencyAsync();
-            IsCreatePopupVisible = false;
-            await startEmergency;
-        });
-        MarkAsSafeCommand = new Command(async () => await MarkUserStatusAsync(true));
-        MarkAsNotSafeCommand = new Command(async () => await MarkUserStatusAsync(false));
-        ResolveEmergencyCommand = new Command(async () => await ResolveEmergencyAsync());
-        RefreshCommand = new Command(async () => await LoadDataAsync());
-        ShowCreatePopupCommand = new Command(() =>
-        {
-            ResetCreateEmergencyFields();
-            IsCreatePopupVisible = true;
-        });
-        HideCreatePopupCommand = new Command(() => IsCreatePopupVisible = false);
-        SelectedEmergencyChanged = new Command<SelectionChangedEventArgs>((SelectionChangedEventArgs scea) =>
-        {
-            SelectedEmergency = scea?.CurrentSelection != null && scea.CurrentSelection.Count > 0
-                                ? scea.CurrentSelection[0] as Emergency
-                                : null;
-        });
-
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
         SelectedSeverity = Severities.FirstOrDefault();
 
@@ -229,6 +125,7 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         Longitude = 0;
     }
 
+    [RelayCommand]
     private async Task StartEmergencyAsync()
     {
         try
@@ -250,6 +147,8 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
             );
 
             await _startEmergencyHandler.Handle(command);
+            IsCreatePopupVisible = false;
+            await LoadDataAsync();
         }
         catch (Exception ex)
         {
@@ -259,8 +158,19 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         finally
         {
             IsLoading = false;
-            RefreshCommand.Execute(null!);
         }
+    }
+
+    [RelayCommand]
+    private async Task MarkAsSafeAsync()
+    {
+        await MarkUserStatusAsync(true);
+    }
+
+    [RelayCommand]
+    private async Task MarkAsNotSafeAsync()
+    {
+        await MarkUserStatusAsync(false);
     }
 
     private async Task MarkUserStatusAsync(bool isSafe)
@@ -272,8 +182,8 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
             IsLoading = true;
 
             var userId = Guid.NewGuid(); // TODO: Replace with actual user ID from auth
-            var status = isSafe ? UserStatus.Safe : UserStatus.HelpNeeded;
-            var message = isSafe ? "I am safe" : "I need help";
+            UserStatus status = isSafe ? UserStatus.Safe : UserStatus.HelpNeeded;
+            string message = isSafe ? "I am safe" : "I need help";
 
             var command = new MarkUserStatus(
                 userId,
@@ -294,6 +204,7 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         }
     }
 
+    [RelayCommand]
     private async Task ResolveEmergencyAsync()
     {
         if (SelectedEmergency is null) return;
@@ -315,6 +226,25 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         }
     }
 
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    [RelayCommand]
+    private void ShowCreatePopup()
+    {
+        ResetCreateEmergencyFields();
+        IsCreatePopupVisible = true;
+    }
+
+    [RelayCommand]
+    private void HideCreatePopup()
+    {
+        IsCreatePopupVisible = false;
+    }
+
     private async Task LoadDataAsync()
     {
         try
@@ -331,12 +261,5 @@ public class EmergencyDashboardViewModel : INotifyPropertyChanged
         {
             IsLoading = false;
         }
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
