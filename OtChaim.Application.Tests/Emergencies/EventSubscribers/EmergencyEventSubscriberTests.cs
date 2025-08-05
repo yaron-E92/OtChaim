@@ -5,18 +5,28 @@ using OtChaim.Application.EmergencyEvents.EventSubscribers;
 using OtChaim.Domain.Users;
 using OtChaim.Domain.Common;
 using FluentAssertions;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.Tests.Emergencies.EventSubscribers;
 
 [TestFixture]
 public class EmergencyEventSubscriberTests
 {
+    private IEmergencyRepository _repo;
+    private IEventAggregator _eventAggregator;
+
+    [SetUp]
+    public void Setup()
+    {
+        _repo = Substitute.For<IEmergencyRepository>();
+        _eventAggregator = Substitute.For<IEventAggregator>();
+    }
+
     [Test]
     public async Task OnNextAsync_EmergencyStarted_CreatesAndPersistsEmergency()
     {
         // Arrange
-        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
-        EmergencyEventSubscriber subscriber = new(repo);
+        EmergencyEventSubscriber subscriber = new(_repo, _eventAggregator);
         Location location = new(1, 2);
         Area area = new(location, 100);
         EmergencyStarted evt = new(
@@ -25,15 +35,15 @@ public class EmergencyEventSubscriberTests
             EmergencyType.WeatherAlert,
             location,
             [area], Severity.High,
-            DateTime.UtcNow,
-            Guid.NewGuid()
+            occurred: DateTime.UtcNow,
+            eventId: Guid.NewGuid()
         );
 
         // Act
         await subscriber.OnNextAsync(evt);
 
         // Assert
-        await repo.Received(1).AddAsync(Arg.Is<Emergency>(e =>
+        await _repo.Received(1).AddAsync(Arg.Is<Emergency>(e =>
             e.Location == evt.Location &&
             e.EmergencyType == evt.EmergencyType &&
             e.AffectedAreas.SequenceEqual(evt.AffectedAreas)
@@ -44,11 +54,10 @@ public class EmergencyEventSubscriberTests
     public async Task OnNextAsync_EmergencyEnded_ResolvesEmergency()
     {
         // Arrange
-        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
         Guid emergencyId = Guid.NewGuid();
         var emergency = new Emergency(emergencyId, Guid.NewGuid(), new Location(1, 2));
-        repo.GetByIdAsync(emergencyId, Arg.Any<CancellationToken>()).Returns(emergency);
-        var subscriber = new EmergencyEventSubscriber(repo);
+        _repo.GetByIdAsync(emergencyId, Arg.Any<CancellationToken>()).Returns(emergency);
+        var subscriber = new EmergencyEventSubscriber(_repo, _eventAggregator);
         var evt = new EmergencyEnded(emergencyId, DateTime.UtcNow, Guid.NewGuid());
 
         // Act
@@ -56,18 +65,17 @@ public class EmergencyEventSubscriberTests
 
         // Assert
         emergency.Status.Should().Be(EmergencyStatus.Resolved);
-        await repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());
+        await _repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());
     }
 
     [Test]
     public async Task OnNextAsync_UserStatusMarked_AddsResponse()
     {
         // Arrange
-        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
         Guid emergencyId = Guid.NewGuid();
         var emergency = new Emergency(emergencyId, Guid.NewGuid(), new Location(1, 2));
-        repo.GetByIdAsync(emergencyId, Arg.Any<CancellationToken>()).Returns(emergency);
-        var subscriber = new EmergencyEventSubscriber(repo);
+        _repo.GetByIdAsync(emergencyId, Arg.Any<CancellationToken>()).Returns(emergency);
+        var subscriber = new EmergencyEventSubscriber(_repo, _eventAggregator);
         var evt = new UserStatusMarked(
             Guid.NewGuid(),
             emergencyId,
@@ -86,32 +94,30 @@ public class EmergencyEventSubscriberTests
             r.IsSafe == true &&
             r.Message == evt.Message
         );
-        await repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());
+        await _repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());
     }
 
     [Test]
     public async Task OnNextAsync_EmergencyEnded_DoesNothingIfEmergencyNotFound()
     {
         // Arrange
-        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
-        repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((Emergency?)null);
-        var subscriber = new EmergencyEventSubscriber(repo);
+        _repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((Emergency?)null);
+        var subscriber = new EmergencyEventSubscriber(_repo, _eventAggregator);
         var evt = new EmergencyEnded(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
 
         // Act
         await subscriber.OnNextAsync(evt);
 
         // Assert
-        await repo.DidNotReceive().SaveAsync(Arg.Any<Emergency>(), Arg.Any<CancellationToken>());
+        await _repo.DidNotReceive().SaveAsync(Arg.Any<Emergency>(), Arg.Any<CancellationToken>());
     }
 
     [Test]
     public async Task OnNextAsync_UserStatusMarked_DoesNothingIfEmergencyNotFound()
     {
         // Arrange
-        IEmergencyRepository repo = Substitute.For<IEmergencyRepository>();
-        repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((Emergency?)null);
-        var subscriber = new EmergencyEventSubscriber(repo);
+        _repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((Emergency?)null);
+        var subscriber = new EmergencyEventSubscriber(_repo, _eventAggregator);
         var evt = new UserStatusMarked(
             Guid.NewGuid(),
             Guid.NewGuid(),
@@ -125,6 +131,6 @@ public class EmergencyEventSubscriberTests
         await subscriber.OnNextAsync(evt);
 
         // Assert
-        await repo.DidNotReceive().SaveAsync(Arg.Any<Emergency>(), Arg.Any<CancellationToken>());
+        await _repo.DidNotReceive().SaveAsync(Arg.Any<Emergency>(), Arg.Any<CancellationToken>());
     }
 }

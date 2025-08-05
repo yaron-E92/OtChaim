@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using OtChaim.Persistence;
-using OtChaim.Application.Common;
+using OtChaim.Application;
 
 namespace OtChaim.IntegrationTests;
 
