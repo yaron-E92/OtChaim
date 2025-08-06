@@ -37,6 +37,13 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Ensure GitHub NuGet Source
+        run: |
+          dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json `
+            -n github `
+            -u Yaron-E92 `
+            -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} `
+            --store-password-in-clear-text
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
