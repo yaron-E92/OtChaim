@@ -367,39 +367,7 @@ public partial class EmergencyViewModel : ObservableObject
         IsEmergencyDialogVisible = false;
     }
 
-    [RelayCommand]
-    private void ToggleGroup()
-    {
-        IsGroupSelected = !IsGroupSelected;
-        if (IsGroupSelected)
-            IsSingleSelected = false;
-    }
 
-    [RelayCommand]
-    private void ToggleSingle()
-    {
-        IsSingleSelected = !IsSingleSelected;
-        if (IsSingleSelected)
-            IsGroupSelected = false;
-    }
-
-    [RelayCommand]
-    private void ToggleEmail()
-    {
-        IsEmailSelected = !IsEmailSelected;
-    }
-
-    [RelayCommand]
-    private void ToggleSms()
-    {
-        IsSmsSelected = !IsSmsSelected;
-    }
-
-    [RelayCommand]
-    private void ToggleMessenger()
-    {
-        IsMessengerSelected = !IsMessengerSelected;
-    }
 
     partial void OnSelectedMessageTemplateIndexChanged(int value)
     {

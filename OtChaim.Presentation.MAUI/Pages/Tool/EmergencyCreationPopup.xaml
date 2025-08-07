@@ -38,6 +38,24 @@
                     </VerticalStackLayout>
                 </Frame>
 
+                <!-- Severity Selection -->
+                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Severity Level"
+                               FontSize="18"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource Primary}"
+                               SemanticProperties.Description="Choose severity level" />
+
+                        <Picker Title="Select Severity"
+                                ItemsSource="{Binding Severities}"
+                                SelectedItem="{Binding SelectedSeverity}"
+                                FontSize="16"
+                                HorizontalOptions="Fill"
+                                TextColor="{StaticResource Primary}" />
+                    </VerticalStackLayout>
+                </Frame>
+
                 <!-- Location Configuration -->
                 <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
                     <VerticalStackLayout Spacing="12">
@@ -102,27 +120,27 @@
                         
                         <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
                             <Button Grid.Column="0" Text="Picture" 
-                                    Command="{Binding AddPictureCommand}"
+                                    Command="{Binding TogglePictureCommand}"
                                     BackgroundColor="{Binding IsPictureAttached, Converter={StaticResource BoolToColorConverter}}"
                                     TextColor="{Binding IsPictureAttached, Converter={StaticResource BoolToTextColorConverter}}"
                                     Style="{StaticResource AttachmentButton}" />
                             <Button Grid.Column="1" Text="Personal Info" 
-                                    Command="{Binding AddPersonalInfoCommand}"
+                                    Command="{Binding TogglePersonalInfoCommand}"
                                     BackgroundColor="{Binding IsPersonalInfoAttached, Converter={StaticResource BoolToColorConverter}}"
                                     TextColor="{Binding IsPersonalInfoAttached, Converter={StaticResource BoolToTextColorConverter}}"
                                     Style="{StaticResource AttachmentButton}" />
                             <Button Grid.Column="2" Text="Medical Info" 
-                                    Command="{Binding AddMedicalInfoCommand}"
+                                    Command="{Binding ToggleMedicalInfoCommand}"
                                     BackgroundColor="{Binding IsMedicalInfoAttached, Converter={StaticResource BoolToColorConverter}}"
                                     TextColor="{Binding IsMedicalInfoAttached, Converter={StaticResource BoolToTextColorConverter}}"
                                     Style="{StaticResource AttachmentButton}" />
                             <Button Grid.Column="3" Text="GPS" 
-                                    Command="{Binding AddGpsCommand}"
+                                    Command="{Binding ToggleGpsCommand}"
                                     BackgroundColor="{Binding IsGpsAttached, Converter={StaticResource BoolToColorConverter}}"
                                     TextColor="{Binding IsGpsAttached, Converter={StaticResource BoolToTextColorConverter}}"
                                     Style="{StaticResource AttachmentButton}" />
                             <Button Grid.Column="4" Text="Document" 
-                                    Command="{Binding AddDocumentCommand}"
+                                    Command="{Binding ToggleDocumentCommand}"
                                     BackgroundColor="{Binding IsDocumentAttached, Converter={StaticResource BoolToColorConverter}}"
                                     TextColor="{Binding IsDocumentAttached, Converter={StaticResource BoolToTextColorConverter}}"
                                     Style="{StaticResource AttachmentButton}" />
