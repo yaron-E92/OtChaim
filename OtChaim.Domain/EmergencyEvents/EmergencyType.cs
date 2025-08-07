@@ -5,6 +5,23 @@ namespace OtChaim.Domain.EmergencyEvents;
 /// </summary>
 public enum EmergencyType
 {
+    // Medical Emergencies
+    BloodSugarLow,
+    HeartAttack,
+    Stroke,
+    Fall,
+    MedicalEmergency,
+    AllergicReaction,
+    Seizure,
+    BreathingDifficulty,
+    
+    // Personal Emergencies
+    PersonalEmergency,
+    Fire,
+    BreakIn,
+    CarAccident,
+    LostOrDisoriented,
+    
     // Natural Events
     NaturalDisaster,
     WeatherAlert,
@@ -17,10 +34,6 @@ public enum EmergencyType
     // Social & Security
     SecurityThreat,
     CivilUnrest,
-
-    // Personal & Health
-    PersonalEmergency,
-    MedicalEmergency,
 
     // General
     LocalIncident
