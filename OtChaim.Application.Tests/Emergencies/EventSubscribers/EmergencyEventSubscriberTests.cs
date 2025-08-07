@@ -35,8 +35,9 @@ public class EmergencyEventSubscriberTests
             EmergencyType.WeatherAlert,
             location,
             [area], Severity.High,
-            occurred: DateTime.UtcNow,
-            eventId: Guid.NewGuid()
+            "", null,
+            DateTime.UtcNow,
+            Guid.NewGuid()
         );
 
         // Act
@@ -45,7 +46,7 @@ public class EmergencyEventSubscriberTests
         // Assert
         await _repo.Received(1).AddAsync(Arg.Is<Emergency>(e =>
             e.Location == evt.Location &&
-            e.EmergencyType == evt.EmergencyType &&
+            e.EmergencyType == evt.Type &&
             e.AffectedAreas.SequenceEqual(evt.AffectedAreas)
         ), Arg.Any<CancellationToken>());
     }
