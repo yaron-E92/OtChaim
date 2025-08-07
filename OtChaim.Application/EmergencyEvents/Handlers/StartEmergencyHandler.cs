@@ -27,7 +27,9 @@ public sealed class StartEmergencyHandler(IEventAggregator eventAggregator) : IC
             command.Type,
             command.Location,
             command.AffectedAreas,
-            command.Severity);
+            command.Severity,
+            command.Description,
+            command.Attachments);
 
         // Publish the event through the event aggregator
         await _eventAggregator.PublishEventAsync(emergencyStartedEvent, cancellationToken);

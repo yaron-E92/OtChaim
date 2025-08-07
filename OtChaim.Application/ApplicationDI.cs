@@ -97,6 +97,8 @@ public static class ApplicationDI
         eventAggregator.RegisterEventType<EmergencyStarted>();
         eventAggregator.RegisterEventType<EmergencyEnded>();
         eventAggregator.RegisterEventType<EmergencyPersisted>();
+        eventAggregator.RegisterEventType<EmergencyAltered>();
+        eventAggregator.RegisterEventType<EmergencyAlterationPersisted>();
         eventAggregator.RegisterEventType<UserStatusMarked>();
         eventAggregator.RegisterEventType<SubscriberNotified>();
     }
