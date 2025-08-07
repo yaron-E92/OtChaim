@@ -45,16 +45,14 @@ public class OtChaimDbContext(DbContextOptions<OtChaimDbContext> options) : DbCo
             });
             builder.OwnsOne(e => e.Attachments, attachments =>
             {
-                attachments.Property(a => a.HasPicture);
-                attachments.Property(a => a.HasPersonalInfo);
-                attachments.Property(a => a.HasMedicalInfo);
-                attachments.Property(a => a.HasGpsLocation);
-                attachments.Property(a => a.HasDocument);
+                attachments.Property(a => a.IncludePersonalInfo);
+                attachments.Property(a => a.IncludeMedicalInfo);
+                attachments.Property(a => a.IncludeGpsLocation);
                 attachments.Property(a => a.PicturePath);
                 attachments.Property(a => a.DocumentPath);
-                attachments.OwnsOne(a => a.GpsLocation, ConfigureLocation);
-                attachments.Property(a => a.PersonalInfoContent);
-                attachments.Property(a => a.MedicalInfoContent);
+                attachments.Property(a => a.SendEmail);
+                attachments.Property(a => a.SendSms);
+                attachments.Property(a => a.SendMessenger);
             });
         });
 
