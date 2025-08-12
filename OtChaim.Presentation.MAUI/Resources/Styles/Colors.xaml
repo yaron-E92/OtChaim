@@ -11,10 +11,10 @@
     <Color x:Key="PrimaryDarkText">#242424</Color>
     <Color x:Key="Secondary">#ffc44e</Color>
     <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <Color x:Key="Tertiary">#FFF352</Color>
 
     <Color x:Key="White">White</Color>
-    <Color x:Key="Black">Black</Color>
+    <Color x:Key="Black">#252627</Color>
     <Color x:Key="Olive">Olive</Color>
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>

@@ -21,14 +21,14 @@ public partial class ToolTabViewModel : ObservableObject
     [ObservableProperty]
     private string _currentPageTitle;
 
-    public ToolTabViewModel(EmergencyDashboardPage emergencyDashboardPage, EmergencyPage emergencyPage, GroupStatusPage groupStatusPage)
+    public ToolTabViewModel(EmergencyDashboardViewModel emergencyDashboardViewModel, EmergencyViewModel emergencyViewModel, GroupStatusViewModel groupStatusViewModel)
     {
-        // Initialize the tool pages using injected dependencies
+        // Create fresh ContentView instances to avoid parent-child conflicts
         ToolPages =
         [
-            emergencyDashboardPage,
-            emergencyPage,
-            groupStatusPage
+            new EmergencyDashboardPage(emergencyDashboardViewModel),
+            new EmergencyPage(emergencyViewModel),
+            new GroupStatusPage(groupStatusViewModel)
         ];
 
         // Set the first page as current
@@ -57,6 +57,13 @@ public partial class ToolTabViewModel : ObservableObject
             CurrentPage = ToolPages[CurrentPageIndex];
             CurrentPageTitle = _pageTitles[CurrentPageIndex];
         }
+    }
+
+    [RelayCommand]
+    private void RefreshCurrentPage()
+    {
+        // Optional: Show current page info or refresh
+        // For now, just a placeholder
     }
 
     private bool CanGoPrevious() => CurrentPageIndex > 0;

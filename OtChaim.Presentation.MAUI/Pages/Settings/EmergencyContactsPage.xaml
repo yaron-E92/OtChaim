@@ -9,23 +9,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
             
-            <!-- Contact Selection -->
-            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
-                <Button Grid.Column="0" Text="‹" FontSize="24" 
-                        Command="{Binding PreviousContactCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                        WidthRequest="50" HeightRequest="50" />
-                
-                <Label Grid.Column="1" Text="{Binding SelectedContact}" 
-                       Style="{StaticResource SecondaryHeadline}" 
-                       HorizontalOptions="Center" />
-                
-                <Button Grid.Column="2" Text="›" FontSize="24" 
-                        Command="{Binding NextContactCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                        WidthRequest="50" HeightRequest="50" />
-            </Grid>
-
             <!-- Contact Information Form -->
             <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
                 <VerticalStackLayout Spacing="16">

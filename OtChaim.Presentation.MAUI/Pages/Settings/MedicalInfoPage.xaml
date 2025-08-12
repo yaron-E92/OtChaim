@@ -9,23 +9,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
             
-            <!-- Medical Condition Selection -->
-            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
-                <Button Grid.Column="0" Text="‹" FontSize="24" 
-                        Command="{Binding PreviousConditionCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                        WidthRequest="50" HeightRequest="50" />
-                
-                <Label Grid.Column="1" Text="{Binding SelectedCondition}" 
-                       Style="{StaticResource SecondaryHeadline}" 
-                       HorizontalOptions="Center" />
-                
-                <Button Grid.Column="2" Text="›" FontSize="24" 
-                        Command="{Binding NextConditionCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                        WidthRequest="50" HeightRequest="50" />
-            </Grid>
-
             <!-- Medical Information Form -->
             <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
                 <VerticalStackLayout Spacing="16">

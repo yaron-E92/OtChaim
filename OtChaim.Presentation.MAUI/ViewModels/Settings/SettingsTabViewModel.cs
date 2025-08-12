@@ -21,14 +21,14 @@ public partial class SettingsTabViewModel : ObservableObject
     [ObservableProperty]
     private string _currentPageTitle;
 
-    public SettingsTabViewModel(UserInfoPage userInfoPage, MedicalInfoPage medicalInfoPage, EmergencyContactsPage emergencyContactsPage)
+    public SettingsTabViewModel(UserInfoViewModel userInfoViewModel, MedicalInfoViewModel medicalInfoViewModel, EmergencyContactsViewModel emergencyContactsViewModel)
     {
-        // Initialize the settings pages using injected dependencies
+        // Create new Page instances with injected ViewModels to avoid parent-child conflicts
         SettingsPages =
         [
-            userInfoPage,
-            medicalInfoPage,
-            emergencyContactsPage
+            new UserInfoPage(userInfoViewModel),
+            new MedicalInfoPage(medicalInfoViewModel),
+            new EmergencyContactsPage(emergencyContactsViewModel)
         ];
 
         // Set the first page as current

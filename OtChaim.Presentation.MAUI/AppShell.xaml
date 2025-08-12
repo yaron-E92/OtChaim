@@ -6,20 +6,17 @@
     xmlns:local="clr-namespace:OtChaim.Presentation.MAUI"
     xmlns:tool="clr-namespace:OtChaim.Presentation.MAUI.Pages.Tool"
     xmlns:settings="clr-namespace:OtChaim.Presentation.MAUI.Pages.Settings"
-    Shell.FlyoutBehavior="Disabled"
-    Title="OtChaim">
+    Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-        <Tab Title="Tool" Icon="emergency_icon.png">
+        <Tab Icon="emergency_icon.png">
             <ShellContent
-                Title="Tool"
                 ContentTemplate="{DataTemplate tool:ToolTabPage}"
                 Route="ToolTab" />
         </Tab>
 
-        <Tab Title="Settings" Icon="settings_icon.png">
+        <Tab Icon="settings_icon.png">
             <ShellContent
-                Title="Settings"
                 ContentTemplate="{DataTemplate settings:SettingsTabPage}"
                 Route="SettingsTab" />
         </Tab>

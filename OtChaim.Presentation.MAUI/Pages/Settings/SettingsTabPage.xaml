@@ -3,82 +3,142 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:settings="clr-namespace:OtChaim.Presentation.MAUI.Pages.Settings"
              xmlns:viewModels="clr-namespace:OtChaim.Presentation.MAUI.ViewModels.Settings"
+             xmlns:controls="clr-namespace:OtChaim.Presentation.MAUI.Controls"
              x:Class="OtChaim.Presentation.MAUI.Pages.Settings.SettingsTabPage"
              x:DataType="viewModels:SettingsTabViewModel"
-             BackgroundColor="{StaticResource Secondary}">
+             BackgroundColor="Orange">
 
-    <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,*,Auto" Padding="20,40,20,10" BackgroundColor="{StaticResource Secondary}">
-        <!-- Header with COM-MIT branding and mood indicator -->
-        <!-- COM-MIT Logo -->
-        <Image Grid.Row="0" Grid.Column="0" Source="commit_logo.png" HeightRequest="40" WidthRequest="120" />
+    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*" Padding="0,0,0,10">
+        
+                    <!-- Main Header (Primary Background) -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" 
+                  BackgroundColor="{StaticResource Primary}"
+                  Padding="15,10,15,10"
+                  HeightRequest="80">
+            
+            <!-- COM-MIT Logo (Left) -->
+            <StackLayout Grid.Column="0" 
+                         Orientation="Vertical"
+                         HorizontalOptions="Start"
+                         VerticalOptions="Center"
+                         Spacing="2">
+                
+                <!-- Comet Icon -->
+                <Label Text="☄️"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+                
+                <!-- COM-MIT Text -->
+                <StackLayout Orientation="Horizontal" 
+                             HorizontalOptions="Center"
+                             Spacing="0">
+                    <Label Text="COM"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                    <Label Text="-"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"
+                           Margin="2,0,2,0" />
+                    <Label Text="MIT"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                </StackLayout>
+            </StackLayout>
+            
+            <!-- Title (Center) -->
+            <Label Grid.Column="1" 
+                   Text="Settings"
+                   TextColor="White"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+            
+                            <!-- Profile Picture (Right) -->
+                <Frame Grid.Column="2" 
+                       BackgroundColor="{StaticResource Magenta}"
+                       CornerRadius="25"
+                       WidthRequest="50"
+                       HeightRequest="50"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"
+                       Padding="0">
+                
+                <Label Text=":("
+                       TextColor="White"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Frame>
+        </Grid>
+        
+        <!-- Navigation Bar (White Background) -->
+        <Frame Grid.Row="1" 
+               BackgroundColor="White"
+               CornerRadius="5"
+               Margin="15,10,15,0"
+               HeightRequest="40"
+               Padding="0"
+               BorderColor="LightGray">
+            
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                
+                <!-- Left Arrow -->
+                <Frame Grid.Column="0" 
+                       BackgroundColor="{StaticResource Secondary}"
+                       CornerRadius="20"
+                       WidthRequest="40"
+                       HeightRequest="40"
+                       Padding="0"
+                       BorderColor="Transparent">
+                    <Label Text="‹"
+                           TextColor="Black"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Frame>
+                
+                <!-- Center Title -->
+                <Label Grid.Column="1" 
+                       Text="User Info"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="Black"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+                
+                <!-- Right Arrow -->
+                <Frame Grid.Column="2" 
+                       BackgroundColor="Yellow"
+                       CornerRadius="20"
+                       WidthRequest="40"
+                       HeightRequest="40"
+                       Padding="0"
+                       BorderColor="Transparent">
+                    <Label Text="›"
+                           TextColor="Black"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Frame>
+            </Grid>
+        </Frame>
+        
+        <!-- Content Area with Current Page -->
+        <Grid Grid.Row="2" 
+              x:Name="ContentGrid"
+              VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand" />
 
-        <!-- Title -->
-        <Label Grid.Row="0" Grid.Column="1" Text="Settings" Style="{StaticResource PrimaryHeadline}" />
-
-        <!-- Mood Indicator (Sad Face) -->
-        <Image Grid.Row="0" Grid.Column="2" Source="sad_face.png" HeightRequest="40" WidthRequest="40" />
-
-        <!-- Platform-Specific Navigation -->
-        <OnPlatform x:TypeArguments="View">
-            <On Platform="Android,iOS">
-                <!-- Non-Windows: CarouselView -->
-                <Grid x:Name="CarouselContainer" Grid.Row="1" Grid.ColumnSpan="3">
-                    <CarouselView x:Name="SettingsCarousel"
-                                      ItemsSource="{Binding SettingsPages}"
-                                      CurrentItem="{Binding CurrentPage}"
-                                      Loop="False"
-                                      IndicatorView="{x:Reference SettingsIndicators}"
-                                      HorizontalScrollBarVisibility="Never"
-                                      VerticalScrollBarVisibility="Never">
-
-                        <CarouselView.ItemTemplate>
-                            <DataTemplate>
-                                <ContentView Content="{Binding}"
-                                                HorizontalOptions="FillAndExpand"
-                                                VerticalOptions="FillAndExpand" />
-                            </DataTemplate>
-                        </CarouselView.ItemTemplate>
-                    </CarouselView>
-
-                    <!-- Navigation Indicators -->
-                    <IndicatorView x:Name="SettingsIndicators"
-                                       IndicatorColor="{StaticResource Gray400}"
-                                       SelectedIndicatorColor="{StaticResource Primary}"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="End"
-                                       Margin="0,0,0,20" />
-                </Grid>
-            </On>
-            <On Platform="WinUI">
-                <!-- Windows: Button Navigation -->
-                <Grid x:Name="ButtonContainer" Grid.Row="1" Grid.ColumnSpan="3"
-                            RowDefinitions="*,Auto"
-                            ColumnDefinitions="Auto,*,Auto">
-                    <!-- Page Content -->
-                    <ContentView Grid.Row="0"
-                                    Grid.ColumnSpan="3"
-                                    Content="{Binding CurrentPage}" />
-
-                    <!-- Navigation Controls -->
-                    <Button Grid.Row="1" Grid.Column="0"
-                                Text="‹ Previous"
-                                Command="{Binding PreviousPageCommand}"
-                                Style="{StaticResource MessageButton}"
-                                HorizontalOptions="Start" />
-
-                    <Label Grid.Row="1" Grid.Column="1"
-                                Text="{Binding CurrentPageTitle}"
-                                Style="{StaticResource SecondaryHeadline}"
-                                HorizontalOptions="Center" />
-
-                    <Button Grid.Row="1" Grid.Column="2"
-                                Text="Next ›"
-                                Command="{Binding NextPageCommand}"
-                                Style="{StaticResource MessageButton}"
-                                HorizontalOptions="End" />
-                </Grid>
-            </On>
-        </OnPlatform>
     </Grid>
 
 </ContentPage>

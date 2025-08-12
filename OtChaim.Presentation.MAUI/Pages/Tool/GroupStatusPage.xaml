@@ -9,23 +9,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Group Selection -->
-            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
-                <Button Grid.Column="0" Text="‹" FontSize="24"
-                        Command="{Binding PreviousGroupCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                        WidthRequest="50" HeightRequest="50" />
-
-                <Label Grid.Column="1" Text="{Binding SelectedGroup}"
-                       Style="{StaticResource SecondaryHeadline}"
-                       HorizontalOptions="Center" />
-
-                <Button Grid.Column="2" Text="›" FontSize="24"
-                        Command="{Binding NextGroupCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
-                        WidthRequest="50" HeightRequest="50" />
-            </Grid>
-
             <!-- Contact List -->
             <Frame BackgroundColor="{StaticResource White}" CornerRadius="16" Padding="16">
                 <VerticalStackLayout Spacing="16">
