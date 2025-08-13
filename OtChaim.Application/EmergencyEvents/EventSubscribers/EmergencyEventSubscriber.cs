@@ -39,7 +39,7 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository, 
             domainEvent.Attachments
         );
         await _emergencyRepository.AddAsync(emergency, cancellationToken);
-        
+
         // Raise EmergencyAlterationPersisted event after successful persistence
         var persistedEvent = new EmergencyAlterationPersisted(domainEvent.EmergencyId, EmergencyAlterationType.Created);
         await _eventAggregator.PublishEventAsync(persistedEvent, cancellationToken);
@@ -59,7 +59,7 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository, 
         {
             emergency.Resolve();
             await _emergencyRepository.SaveAsync(emergency, cancellationToken);
-            
+
             // Raise EmergencyAlterationPersisted event after successful persistence
             var persistedEvent = new EmergencyAlterationPersisted(domainEvent.EmergencyId, EmergencyAlterationType.Resolved);
             await _eventAggregator.PublishEventAsync(persistedEvent, cancellationToken);
@@ -80,7 +80,7 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository, 
         {
             emergency.AddResponse(domainEvent.UserId, domainEvent.Status == Domain.Users.UserStatus.Safe, domainEvent.Message);
             await _emergencyRepository.SaveAsync(emergency, cancellationToken);
-            
+
             // Raise EmergencyAlterationPersisted event after successful persistence
             var persistedEvent = new EmergencyAlterationPersisted(domainEvent.EmergencyId, EmergencyAlterationType.StatusUpdated);
             await _eventAggregator.PublishEventAsync(persistedEvent, cancellationToken);
