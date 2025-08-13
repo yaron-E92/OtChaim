@@ -45,12 +45,12 @@ jobs:
   buildAndTestWithoutGUI:
     name: Build and Test (No GUI)
     needs: [gitVersion]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
-      checks: write
-      pull-requests: write
       contents: read
       packages: read
+    outputs:
+      build_outcome: ${{ steps.expose.outputs.build_outcome }}
 
     steps:
     - name: Checkout
@@ -67,10 +67,10 @@ jobs:
 
     - name: Ensure GitHub NuGet Source
       run: |
-        dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json \
-          -n github \
-          -u Yaron-E92 \
-          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} \
+        dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json `
+          -n github `
+          -u Yaron-E92 `
+          -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} `
           --store-password-in-clear-text
 
     - name: Restore Dependencies
@@ -78,40 +78,60 @@ jobs:
 
     - name: Build
       id: build
-      run: |
-        dotnet build -c NoGUI --no-restore OtChaim.NoGUI.slnf
-        if [ $? -ne 0 ]; then
-          echo "::error::Build failed"
-          exit 1
-        fi
+      run: dotnet build -c NoGUI --no-restore OtChaim.NoGUI.slnf
 
     - name: Test
       run: |
-        dotnet test --logger "trx" --no-build -c NoGUI --verbosity normal --collect:"XPlat Code Coverage" \
-          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} \
-          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} \
+        dotnet test --logger "trx" --no-build -c NoGUI --verbosity normal --collect:"XPlat Code Coverage;Format=opencover" `
+          /p:AssemblyVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+          /p:FileVersion=${{ needs.gitVersion.outputs.assemblySemFileVer }} `
+          /p:InformationalVersion=${{ needs.gitVersion.outputs.informationalVersion }} `
           OtChaim.NoGUI.slnf
-        if [ $? -ne 0 ]; then
-          echo "::error::Tests failed"
-          exit 1
-        fi
 
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: ${{steps.build.outcome == 'success'}}
+    - name: Expose build outcome
+      id: expose
+      if: ${{ always() }}
+      shell: bash
+      run: echo "build_outcome=${{ steps.build.outcome }}" >> "$GITHUB_OUTPUT"
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
       with:
-        files: |
-          ./**/TestResults/*.xml
-          ./**/TestResults/*.trx
-          ./**/TestResults/*.json
-        check_name: "Test Results (No GUI)"
+        name: test-results
+        path: ./**/TestResults/**/*.trx
 
     - name: Upload Coverage Artifact
       uses: actions/upload-artifact@v4
       with:
         name: code-coverage
-        path: ./**/TestResults/**/coverage.*.xml
+        path: ./**/TestResults/**/coverage*.opencover.xml
+
+  publishTestResults:
+    runs-on: ubuntu-latest
+    name: Publish Test Results (No GUI)
+    needs: [buildAndTestWithoutGUI]
+    if: ${{ needs.buildAndTestWithoutGUI.outputs.build_outcome == 'success' }}
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download Test Results
+      uses: actions/download-artifact@v4
+      with:
+        name: test-results
+        path: ./TestResults/
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        files: |
+          ./**/TestResults/*.trx
+        check_name: "Test Results (No GUI)"
 
   checkWhetherGUIBuildNeeded:
     name: Check GUI Build Requirements
@@ -314,3 +334,86 @@ jobs:
         done
       env:
         GITHUB_TOKEN: ${{ secrets.YARE92_NUGET_PUSH_TOKEN_EXP_29JUN2026 }}
+
+  sonar:
+    name: SonarCloud - Build and analyze
+    runs-on: windows-latest
+    needs: [buildAndTestWithoutGUI, checkWhetherGUIBuildNeeded]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Download Coverage Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: code-coverage
+          path: coverage
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~\.sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarQube Cloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path .\.sonar\scanner
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Ensure GitHub NuGet Source
+        run: |
+          dotnet nuget add source https://nuget.pkg.github.com/yaron-E92/index.json `
+            -n github `
+            -u Yaron-E92 `
+            -p ${{ secrets.YARE92_NUGET_TOKEN_EXP_17JUN2026 }} `
+            --store-password-in-clear-text
+      - name: Build and analyze No GUI
+        if: |
+          (needs.checkWhetherGUIBuildNeeded.outputs.diff == '' &&
+          needs.checkWhetherGUIBuildNeeded.outputs.override != 'true') ||
+          needs.checkWhetherGUIBuildNeeded.outputs.override == 'false'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: pwsh
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+            /k:"com-mit-group_OtChaim" `
+            /o:"com-mit-group" `
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.host.url="https://sonarcloud.io" `
+            /d:sonar.projectBaseDir="${{ github.workspace }}" `
+            /d:sonar.cs.opencover.reportsPaths=coverage/**/coverage*.opencover.xml
+          dotnet build -c Release OtChaim.NoGUI.slnf
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Build and analyze With GUI
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: |
+          (needs.checkWhetherGUIBuildNeeded.outputs.diff != '' &&
+          needs.checkWhetherGUIBuildNeeded.outputs.override != 'false') ||
+          needs.checkWhetherGUIBuildNeeded.outputs.override == 'true'
+        shell: pwsh
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+            /k:"com-mit-group_OtChaim" `
+            /o:"com-mit-group" `
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.host.url="https://sonarcloud.io" `
+            /d:sonar.projectBaseDir="${{ github.workspace }}" `
+            /d:sonar.cs.opencover.reportsPaths=coverage/**/coverage*.opencover.xml
+          dotnet build -c Release
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
