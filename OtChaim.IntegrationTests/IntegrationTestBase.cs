@@ -15,5 +15,6 @@ public abstract class IntegrationTestBase
         services.AddPersistence();
         services.AddEventAggregator();
         Provider = services.BuildServiceProvider();
+        ApplicationDI.SubscribeEventHandlers(Provider);
     }
 }
