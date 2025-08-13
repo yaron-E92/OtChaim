@@ -2,10 +2,10 @@ using System.Collections.ObjectModel;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Users;
 
-namespace OtChaim.Presentation.MAUI.Services;
+namespace OtChaim.Application.Services;
 
 /// <summary>
-/// Provides data operations for emergencies and users in the OtChaim MAUI application.
+/// Provides data operations for emergencies and users in the OtChaim application.
 /// </summary>
 public class EmergencyDataService
 {
