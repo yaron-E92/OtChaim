@@ -3,14 +3,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
-using OtChaim.Domain.Common;
+using OtChaim.Application.Services;
+using OtChaim.Application.ViewModels;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Domain.Users;
 using OtChaim.Presentation.MAUI.Pages.Tool;
-using OtChaim.Presentation.MAUI.Services;
 using Yaref92.Events.Abstractions;
-using Location = OtChaim.Domain.Common.Location;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -24,8 +23,8 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 /// emergency state changes. It manages both the emergency list display and the emergency
 /// creation popup functionality.
 /// </remarks>
-    public partial class EmergencyDashboardViewModel : ObservableObject, IDisposable, IAsyncEventSubscriber<EmergencyAlterationPersisted>
-{
+    public sealed partial class EmergencyDashboardViewModel : BaseEmergencyViewModel, IDisposable, IAsyncEventSubscriber<EmergencyAlterationPersisted>
+    {
     /// <summary>
     /// The currently selected emergency.
     /// </summary>
@@ -226,7 +225,7 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
     /// This method is called when either an emergency is created or the popup is cancelled.
     /// It hides the popup and refreshes the emergency list if an emergency was created.
     /// </remarks>
-    private void OnEmergencyPopUpFinished(object? sender, EventArgs e)
+    internal void OnEmergencyPopUpFinished(object? sender, EventArgs e)
     {
         IsCreatePopupVisible = false;
     }

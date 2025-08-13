@@ -6,7 +6,8 @@ using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.EmergencyEvents.Events;
-using OtChaim.Presentation.MAUI.Services;
+using OtChaim.Application.Services;
+using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -21,7 +22,7 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 /// a single, user-friendly interface. It handles file attachments, location services,
 /// contact method preferences, and provides real-time validation and feedback to users.
 /// </remarks>
-public partial class EmergencyCreationViewModel : ObservableObject
+public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
 {
     private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
     private readonly EmergencyDataService _dataService;
@@ -44,24 +45,6 @@ public partial class EmergencyCreationViewModel : ObservableObject
     /// process, allowing the parent ViewModel to close the popup without any action.
     /// </remarks>
     public event EventHandler? Cancelled;
-
-    /// <summary>
-    /// Gets the available emergency types that can be selected.
-    /// </summary>
-    /// <remarks>
-    /// This array contains all values from the EmergencyType enum, providing users
-    /// with a complete list of emergency categories to choose from.
-    /// </remarks>
-    public EmergencyType[] EmergencyTypes { get; } = Enum.GetValues(typeof(EmergencyType)).Cast<EmergencyType>().ToArray();
-
-    /// <summary>
-    /// Gets the available severities that can be selected.
-    /// </summary>
-    /// <remarks>
-    /// This array contains all values from the Severity enum, allowing users
-    /// to specify the urgency level of the emergency.
-    /// </remarks>
-    public Severity[] Severities { get; } = Enum.GetValues(typeof(Severity)).Cast<Severity>().ToArray();
 
     /// <summary>
     /// Gets or sets the currently selected emergency type.
@@ -611,4 +594,4 @@ public partial class EmergencyCreationViewModel : ObservableObject
             _ => "Emergency situation requiring immediate attention"
         };
     }
-} 
+}

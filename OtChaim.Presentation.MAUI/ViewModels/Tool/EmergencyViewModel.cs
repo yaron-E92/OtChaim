@@ -7,10 +7,11 @@ using OtChaim.Application.Common;
 using OtChaim.Presentation.MAUI.Pages.Tool;
 using System.Collections.ObjectModel;
 using Location = OtChaim.Domain.Common.Location;
+using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
-public partial class EmergencyViewModel : ObservableObject
+public partial class EmergencyViewModel : BaseEmergencyViewModel
 {
     private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
     private readonly ICommandHandler<MarkUserStatus> _markUserStatusHandler;
