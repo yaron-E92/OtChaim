@@ -5,7 +5,6 @@ using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
-using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Application.Services;
 using OtChaim.Application.ViewModels;
 
@@ -55,16 +54,6 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     /// </remarks>
     [ObservableProperty]
     private EmergencyType _selectedEmergencyType;
-
-    /// <summary>
-    /// Gets or sets the currently selected severity level.
-    /// </summary>
-    /// <remarks>
-    /// This property determines the urgency level of the emergency being created.
-    /// It affects how the emergency is prioritized and processed.
-    /// </remarks>
-    [ObservableProperty]
-    private Severity _selectedSeverity;
 
     /// <summary>
     /// Gets or sets the custom emergency message.
@@ -266,13 +255,11 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
         _startEmergencyHandler = startEmergencyHandler;
         _dataService = dataService;
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
-        SelectedSeverity = Severities.FirstOrDefault();
     }
 
     private void ResetCreateEmergencyFields()
     {
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
-        SelectedSeverity = Severities.FirstOrDefault();
         EmergencyMessage = string.Empty;
         LocationDescription = string.Empty;
         Latitude = 0;
@@ -523,7 +510,6 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
                 SelectedEmergencyType,
                 location,
                 affectedAreas,
-                SelectedSeverity,
                 message,
                 attachments
             );

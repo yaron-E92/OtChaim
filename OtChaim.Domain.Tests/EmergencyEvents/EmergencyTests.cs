@@ -34,25 +34,22 @@ public class EmergencyTests
         emergency.AffectedAreas.Should().HaveCount(1);
         emergency.CreatedAt.Should().NotBe(default);
         emergency.Status.Should().Be(EmergencyStatus.Active);
-        emergency.Severity.Should().Be(Severity.Medium);
         emergency.EmergencyType.Should().BeNull();
     }
 
     [Test]
-    public void CanCreateEmergency_WithLocationAndTypeAndSeverity()
+    public void CanCreateEmergency_WithLocationAndType()
     {
         // Arrange
         var location = new Location(32.0853, 34.7818);
         var type = EmergencyType.WeatherAlert;
-        var severity = Severity.High;
 
         // Act
-        var emergency = new Emergency(Guid.Empty, Guid.Empty, location, null, severity, type);
+        var emergency = new Emergency(Guid.Empty, Guid.Empty, location, null, type);
 
         // Assert
         emergency.Location.Should().Be(location);
         emergency.EmergencyType.Should().Be(type);
-        emergency.Severity.Should().Be(severity);
         emergency.Status.Should().Be(EmergencyStatus.Active);
     }
 

@@ -342,7 +342,6 @@ public partial class EmergencyViewModel : BaseEmergencyViewModel
                 type: SelectedEmergencyType,
                 location: location,
                 affectedAreas: affectedAreas,
-                severity: Severity.High,
                 description: EmergencyMessage
             );
 

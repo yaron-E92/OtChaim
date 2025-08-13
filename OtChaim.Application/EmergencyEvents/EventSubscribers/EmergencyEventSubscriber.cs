@@ -34,7 +34,6 @@ public class EmergencyEventSubscriber(IEmergencyRepository emergencyRepository, 
         var emergency = new Emergency(domainEvent.EmergencyId, domainEvent.InitiatorUserId,
             domainEvent.Location.Clone(),
             [.. domainEvent.AffectedAreas],
-            domainEvent.Severity,
             domainEvent.Type,
             domainEvent.Description,
             domainEvent.Attachments

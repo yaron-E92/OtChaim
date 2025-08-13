@@ -19,10 +19,6 @@ public class Emergency : Entity
     public IReadOnlyList<Area> AffectedAreas => _affectedAreas.AsReadOnly();
     private readonly List<Area> _affectedAreas = new();
     /// <summary>
-    /// Gets the severity of the emergency.
-    /// </summary>
-    public Severity Severity { get; private set; }
-    /// <summary>
     /// Gets the creation time of the emergency.
     /// </summary>
     public DateTime CreatedAt { get; private set; }
@@ -59,7 +55,7 @@ public class Emergency : Entity
     /// <summary>
     /// Initializes a new instance of the <see cref="Emergency"/> class.
     /// </summary>
-    public Emergency(Guid id, Guid initiatorUserId, Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium,
+    public Emergency(Guid id, Guid initiatorUserId, Location location, IEnumerable<Area>? affectedAreas = null,
                      EmergencyType? emergencyType = null, string description = "", EmergencyAttachments? attachments = null)
     {
         ArgumentNullException.ThrowIfNull(location);
@@ -73,7 +69,6 @@ public class Emergency : Entity
         _affectedAreas = (affectedAreas == null || !affectedAreas.Any())
             ? [Area.FromLocation(location.Clone(), emergencyType: emergencyType)]
             : new List<Area>(affectedAreas);
-        Severity = severity;
         CreatedAt = DateTime.UtcNow;
         Status = EmergencyStatus.Active;
     }

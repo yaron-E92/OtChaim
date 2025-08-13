@@ -27,7 +27,6 @@ public sealed class StartEmergencyHandler(IEventAggregator eventAggregator) : IC
             command.Type,
             command.Location,
             command.AffectedAreas,
-            command.Severity,
             command.Description,
             command.Attachments);
 

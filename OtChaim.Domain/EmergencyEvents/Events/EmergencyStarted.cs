@@ -20,7 +20,7 @@ public class EmergencyStarted(
     Guid initiatorUserId,
     EmergencyType type,
     Location location,
-    IEnumerable<Area> affectedAreas, Severity severity,
+    IEnumerable<Area> affectedAreas,
     string description = "",
     EmergencyAttachments? attachments = null,
     DateTime occurredAt = default,
@@ -71,10 +71,6 @@ public class EmergencyStarted(
     /// to be notified about the emergency situation.
     /// </remarks>
     public IEnumerable<Area> AffectedAreas { get; } = affectedAreas;
-    /// <summary>
-    /// The severity of the emergency.
-    /// </summary>
-    public Severity Severity { get; } = severity;
 
     /// <summary>
     /// The description of the emergency provided by the user.

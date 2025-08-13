@@ -38,24 +38,6 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Severity Selection -->
-                <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
-                    <VerticalStackLayout Spacing="12">
-                        <Label Text="Severity Level"
-                               FontSize="18"
-                               FontFamily="OpenSansSemibold"
-                               TextColor="{StaticResource Primary}"
-                               SemanticProperties.Description="Choose severity level" />
-
-                        <Picker Title="Select Severity"
-                                ItemsSource="{Binding Severities}"
-                                SelectedItem="{Binding SelectedSeverity}"
-                                FontSize="16"
-                                HorizontalOptions="Fill"
-                                TextColor="{StaticResource Primary}" />
-                    </VerticalStackLayout>
-                </Frame>
-
                 <!-- Location Configuration -->
                 <Frame CornerRadius="12" BackgroundColor="{StaticResource Secondary}" Padding="16">
                     <VerticalStackLayout Spacing="12">

@@ -12,9 +12,6 @@ public abstract partial class BaseEmergencyViewModel : ObservableObject
     private string _emergencyMessage = string.Empty;
 
     [ObservableProperty]
-    private Severity _selectedSeverity = Severity.Low;
-
-    [ObservableProperty]
     private string _locationDescription = string.Empty;
 
     [ObservableProperty]
@@ -62,15 +59,6 @@ public abstract partial class BaseEmergencyViewModel : ObservableObject
     /// </remarks>
     public EmergencyType[] EmergencyTypes { get; } = [.. Enum.GetValues(typeof(EmergencyType)).Cast<EmergencyType>()];
 
-    /// <summary>
-    /// Gets the available severities that can be selected.
-    /// </summary>
-    /// <remarks>
-    /// This array contains all values from the Severity enum, allowing users
-    /// to specify the urgency level of the emergency.
-    /// </remarks>
-    public Severity[] Severities { get; } = [.. Enum.GetValues(typeof(Severity)).Cast<Severity>()];
-
     public bool IsPictureAttached => !string.IsNullOrEmpty(AttachedPicturePath);
     public bool IsPersonalInfoAttached => AttachPersonalInfo;
     public bool IsMedicalInfoAttached => AttachMedicalInfo;
@@ -109,7 +97,6 @@ public abstract partial class BaseEmergencyViewModel : ObservableObject
     protected void ResetCreateEmergencyFields()
     {
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
-        SelectedSeverity = Severities.FirstOrDefault();
         EmergencyMessage = GetDefaultMessage(SelectedEmergencyType);
         LocationDescription = string.Empty;
         Latitude = 0;

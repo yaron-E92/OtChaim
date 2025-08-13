@@ -34,7 +34,7 @@ public class EmergencyEventSubscriberTests
             Guid.NewGuid(),
             EmergencyType.WeatherAlert,
             location,
-            [area], Severity.High,
+            [area],
             "", null,
             DateTime.UtcNow,
             Guid.NewGuid()
