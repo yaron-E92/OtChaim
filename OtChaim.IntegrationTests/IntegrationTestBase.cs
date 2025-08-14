@@ -6,7 +6,7 @@ namespace OtChaim.IntegrationTests;
 
 public abstract class IntegrationTestBase
 {
-    protected ServiceProvider Provider { get; private set; }
+    protected ServiceProvider? Provider { get; private set; }
 
     [OneTimeSetUp]
     public void OneTimeSetUp()

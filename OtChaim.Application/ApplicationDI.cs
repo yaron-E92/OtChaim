@@ -22,7 +22,7 @@ namespace OtChaim.Application;
 /// </summary>
 public static class ApplicationDI
 {
-    private static readonly int ListenPort = 9008;//Random.Shared.Next(9000, 10000);
+    private static readonly int ListenPort = 9008;
 
     /// <summary>
     /// Adds and configures the event aggregator and related services to the service collection.
@@ -51,8 +51,6 @@ public static class ApplicationDI
             TCPEventTransport transport = (provider.GetRequiredService<IEventTransport>() as TCPEventTransport)!; // Choose your port
             NetworkedEventAggregator networkedAggregator = new NetworkedEventAggregator(localAggregator, transport!);
 
-            //transport.StartListeningAsync();
-
             // Start listening asynchronously with error handling
             Task.Run(async () =>
             {
@@ -68,7 +66,6 @@ public static class ApplicationDI
             });
 
             // Optionally connect to peers here, or expose transport for runtime connections
-            // await transport.ConnectToPeerAsync("remotehost", 9000);
 
             RegisterEventTypes(networkedAggregator);
 
@@ -107,12 +104,12 @@ public static class ApplicationDI
     {
         IEventAggregator eventAggregator = provider.GetRequiredService<IEventAggregator>();
 
-        var subscriptionSubscriber = provider.GetRequiredService<SubscriptionEventSubscriber>();
+        SubscriptionEventSubscriber subscriptionSubscriber = provider.GetRequiredService<SubscriptionEventSubscriber>();
         eventAggregator.SubscribeToEventType<SubscriptionRequested>(subscriptionSubscriber);
         eventAggregator.SubscribeToEventType<SubscriptionApproved>(subscriptionSubscriber);
         eventAggregator.SubscribeToEventType<SubscriptionRejected>(subscriptionSubscriber);
 
-        var emergencySubscriber = provider.GetRequiredService<EmergencyEventSubscriber>();
+        EmergencyEventSubscriber emergencySubscriber = provider.GetRequiredService<EmergencyEventSubscriber>();
         eventAggregator.SubscribeToEventType<EmergencyStarted>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<EmergencyEnded>(emergencySubscriber);
         eventAggregator.SubscribeToEventType<UserStatusMarked>(emergencySubscriber);

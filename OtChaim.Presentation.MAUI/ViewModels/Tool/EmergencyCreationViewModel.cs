@@ -1,11 +1,9 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
-using OtChaim.Application.Services;
 using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
@@ -24,7 +22,6 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
 {
     private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
-    private readonly EmergencyDataService _dataService;
 
     /// <summary>
     /// Event raised when an emergency is successfully created.
@@ -177,16 +174,6 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     private string _attachedDocumentPath = string.Empty;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the ViewModel is currently loading.
-    /// </summary>
-    /// <remarks>
-    /// This property is used to show loading indicators in the UI during
-    /// emergency creation operations.
-    /// </remarks>
-    [ObservableProperty]
-    private bool _isLoading;
-
-    /// <summary>
     /// Gets or sets a value indicating whether group contacts are selected.
     /// </summary>
     [ObservableProperty]
@@ -245,15 +232,13 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     /// Initializes a new instance of the <see cref="EmergencyCreationViewModel"/> class.
     /// </summary>
     /// <param name="startEmergencyHandler">The command handler for starting emergencies.</param>
-    /// <param name="dataService">The service for loading emergency data.</param>
     /// <remarks>
     /// The constructor initializes the ViewModel with default values and sets up
     /// the emergency type to the first available option.
     /// </remarks>
-    public EmergencyCreationViewModel(ICommandHandler<StartEmergency> startEmergencyHandler, EmergencyDataService dataService)
+    public EmergencyCreationViewModel(ICommandHandler<StartEmergency> startEmergencyHandler)
     {
         _startEmergencyHandler = startEmergencyHandler;
-        _dataService = dataService;
         SelectedEmergencyType = EmergencyTypes.FirstOrDefault();
     }
 
@@ -479,7 +464,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
             IsLoading = true;
 
             // Create location object
-            var location = new OtChaim.Domain.Common.Location(Latitude, Longitude, LocationDescription);
+            var location = new Domain.Common.Location(Latitude, Longitude, LocationDescription);
 
             // Create affected areas (default 5km radius)
             var affectedAreas = new List<Area>
@@ -501,7 +486,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
             };
 
             // Use custom message or default based on emergency type
-            var message = string.IsNullOrWhiteSpace(EmergencyMessage) 
+            string message = string.IsNullOrWhiteSpace(EmergencyMessage) 
                 ? GetDefaultMessage(SelectedEmergencyType) 
                 : EmergencyMessage;
 
@@ -526,6 +511,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
         finally
         {
             IsLoading = false;
+            ResetCreateEmergencyFields();
         }
     }
 
@@ -540,44 +526,5 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     private void Cancel()
     {
         Cancelled?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>
-    /// Gets a default message based on the selected emergency type.
-    /// </summary>
-    /// <param name="emergencyType">The type of emergency to get a default message for.</param>
-    /// <returns>A default message string appropriate for the emergency type.</returns>
-    /// <remarks>
-    /// This method provides contextually appropriate default messages for different
-    /// emergency types, ensuring that even if users don't provide a custom message,
-    /// the emergency notification will still be meaningful and informative.
-    /// </remarks>
-    private static string GetDefaultMessage(EmergencyType emergencyType)
-    {
-        return emergencyType switch
-        {
-            EmergencyType.BloodSugarLow => "My blood sugar is dangerously low. I need immediate assistance with glucose or medical help.",
-            EmergencyType.HeartAttack => "I'm experiencing chest pain and shortness of breath. Possible heart attack.",
-            EmergencyType.Stroke => "I'm showing stroke symptoms. Need immediate medical attention.",
-            EmergencyType.Fall => "I've fallen and cannot get up. Please send help.",
-            EmergencyType.MedicalEmergency => "I'm experiencing a medical emergency and need immediate assistance.",
-            EmergencyType.AllergicReaction => "I'm having a severe allergic reaction. Need emergency help.",
-            EmergencyType.Seizure => "I'm having a seizure. Please call emergency services.",
-            EmergencyType.BreathingDifficulty => "I'm having trouble breathing. Need immediate medical help.",
-            EmergencyType.PersonalEmergency => "I'm in a personal emergency situation. Please help.",
-            EmergencyType.Fire => "There's a fire in my home. Need immediate evacuation assistance.",
-            EmergencyType.BreakIn => "Someone has broken into my home. Need police assistance.",
-            EmergencyType.CarAccident => "I've been in a car accident. Need emergency services.",
-            EmergencyType.LostOrDisoriented => "I'm lost and disoriented. Need help finding my way.",
-            EmergencyType.NaturalDisaster => "Natural disaster occurring. Need emergency assistance.",
-            EmergencyType.WeatherAlert => "Severe weather conditions. Need shelter assistance.",
-            EmergencyType.InfrastructureFailure => "Infrastructure failure in my area. Need assistance.",
-            EmergencyType.UtilityOutage => "Utility outage affecting my home. Need emergency support.",
-            EmergencyType.TransportationDisruption => "Transportation disruption. Need alternative assistance.",
-            EmergencyType.SecurityThreat => "Security threat in my area. Need immediate assistance.",
-            EmergencyType.CivilUnrest => "Civil unrest in my area. Need evacuation assistance.",
-            EmergencyType.LocalIncident => "Local incident requiring emergency assistance.",
-            _ => "Emergency situation requiring immediate attention"
-        };
     }
 }

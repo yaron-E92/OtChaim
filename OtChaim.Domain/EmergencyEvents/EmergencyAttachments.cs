@@ -1,5 +1,3 @@
-using OtChaim.Domain.Common;
-
 namespace OtChaim.Domain.EmergencyEvents;
 
 /// <summary>
@@ -135,23 +133,21 @@ public class EmergencyAttachments
     /// attachments and contact methods are enabled for the emergency.
     /// </remarks>
     public EmergencyAttachments(
+        WhichContactMethods contactMethods,
         bool includePersonalInfo = true,
         bool includeMedicalInfo = true,
         bool includeGpsLocation = true,
         string picturePath = "",
-        string documentPath = "",
-        bool sendEmail = true,
-        bool sendSms = true,
-        bool sendMessenger = false)
+        string documentPath = "")
     {
         IncludePersonalInfo = includePersonalInfo;
         IncludeMedicalInfo = includeMedicalInfo;
         IncludeGpsLocation = includeGpsLocation;
         PicturePath = picturePath;
         DocumentPath = documentPath;
-        SendEmail = sendEmail;
-        SendSms = sendSms;
-        SendMessenger = sendMessenger;
+        SendEmail = contactMethods.Email;
+        SendSms = contactMethods.Sms;
+        SendMessenger = contactMethods.Messenger;
     }
 
     /// <summary>
@@ -186,4 +182,17 @@ public class EmergencyAttachments
     /// are enabled, the emergency notification may not be delivered.
     /// </remarks>
     public bool HasContactMethods => SendEmail || SendSms || SendMessenger;
+}
+
+public record WhichContactMethods
+{
+    public bool Email { get; set; }
+    public bool Sms { get; set; }
+    public bool Messenger { get; set; }
+    public WhichContactMethods(bool email = true, bool sms = true, bool messenger = false)
+    {
+        Email = email;
+        Sms = sms;
+        Messenger = messenger;
+    }
 }

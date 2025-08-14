@@ -263,10 +263,10 @@ public class EmergencyRepositoryTests
         // Act
         emergency.AddResponse(Guid.NewGuid(), true);
         await _repository.SaveAsync(emergency);
-        var loaded = await _repository.GetByIdAsync(emergency.Id);
+        Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        loaded.EmergencyType.Should().Be(originalType);
+        loaded?.EmergencyType.Should().Be(originalType);
     }
 
     [Test]

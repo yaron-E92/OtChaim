@@ -47,7 +47,7 @@ public class UserRepository(OtChaimDbContext context) : IUserRepository
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         User user = await _context.Users.FindAsync([id], cancellationToken) ?? User.None;
-        if (user != User.None)
+        if (!user.Equals(User.None))
         {
             _context.Users.Remove(user);
             await _context.SaveChangesAsync(cancellationToken);

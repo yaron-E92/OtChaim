@@ -12,12 +12,12 @@ public class Emergency : Entity
     /// <summary>
     /// Gets the location of the emergency.
     /// </summary>
-    public Location Location { get; private set; }
+    public Location Location { get; private set; } = Location.Empty;
     /// <summary>
     /// Gets the affected areas of the emergency.
     /// </summary>
     public IReadOnlyList<Area> AffectedAreas => _affectedAreas.AsReadOnly();
-    private readonly List<Area> _affectedAreas = new();
+    private readonly List<Area> _affectedAreas = [];
     /// <summary>
     /// Gets the creation time of the emergency.
     /// </summary>
@@ -30,7 +30,7 @@ public class Emergency : Entity
     /// Gets the status of the emergency.
     /// </summary>
     public EmergencyStatus Status { get; private set; }
-    private readonly List<EmergencyResponse> _responses = new();
+    private readonly List<EmergencyResponse> _responses = [];
     /// <summary>
     /// Gets the responses to the emergency.
     /// </summary>
@@ -68,7 +68,7 @@ public class Emergency : Entity
         Attachments = attachments ?? new EmergencyAttachments();
         _affectedAreas = (affectedAreas == null || !affectedAreas.Any())
             ? [Area.FromLocation(location.Clone(), emergencyType: emergencyType)]
-            : new List<Area>(affectedAreas);
+            : [.. affectedAreas];
         CreatedAt = DateTime.UtcNow;
         Status = EmergencyStatus.Active;
     }
@@ -80,12 +80,6 @@ public class Emergency : Entity
     {
         var response = new EmergencyResponse(userId, isSafe, message ?? "");
         _responses.Add(response);
-
-        // If all subscribers have responded, mark the event as resolved
-        if (AreAllSubscribersResponded())
-        {
-            Resolve();
-        }
     }
 
     /// <summary>
@@ -98,12 +92,5 @@ public class Emergency : Entity
             Status = EmergencyStatus.Resolved;
             ResolvedAt = DateTime.UtcNow;
         }
-    }
-
-    private bool AreAllSubscribersResponded()
-    {
-        // This would need to be implemented based on your business logic
-        // You might want to compare against a list of expected responders
-        return false;
     }
 }

@@ -32,7 +32,6 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
     private Emergency? _selectedEmergency;
 
     private readonly EmergencyDataService _dataService;
-    private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
     private readonly ICommandHandler<MarkUserStatus> _markUserStatusHandler;
     private readonly ICommandHandler<EndEmergency> _endEmergencyHandler;
     private readonly IEventAggregator _eventAggregator;
@@ -59,15 +58,6 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
     private ObservableCollection<User> _users = [];
 
     /// <summary>
-    /// Gets or sets a value indicating whether the dashboard is currently loading data.
-    /// </summary>
-    /// <remarks>
-    /// This property is used to show loading indicators in the UI during data operations.
-    /// </remarks>
-    [ObservableProperty]
-    private bool _isLoading;
-
-    /// <summary>
     /// Gets or sets a value indicating whether the emergency creation popup is visible.
     /// </summary>
     /// <remarks>
@@ -88,25 +78,23 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
     /// <summary>
     /// Initializes a new instance of the <see cref="EmergencyDashboardViewModel"/> class.
     /// </summary>
-    /// <param name="startEmergencyHandler">Handler for starting emergencies.</param>
     /// <param name="markUserStatusHandler">Handler for marking user status.</param>
     /// <param name="endEmergencyHandler">Handler for ending emergencies.</param>
     /// <param name="dataService">The service for loading emergency and user data.</param>
     /// <param name="eventAggregator">The event aggregator for subscribing to domain events.</param>
     /// <param name="emergencyCreationPopup">The popup for creating new emergencies.</param>
+    /// 
     /// <remarks>
     /// The constructor sets up event subscriptions and initializes the data loading process.
     /// It subscribes to EmergencyPersisted events to keep the dashboard synchronized.
     /// </remarks>
     public EmergencyDashboardViewModel(
-        ICommandHandler<StartEmergency> startEmergencyHandler,
         ICommandHandler<MarkUserStatus> markUserStatusHandler,
         ICommandHandler<EndEmergency> endEmergencyHandler,
         EmergencyDataService dataService,
         IEventAggregator eventAggregator,
         EmergencyCreationPopup emergencyCreationPopup)
     {
-        _startEmergencyHandler = startEmergencyHandler;
         _markUserStatusHandler = markUserStatusHandler;
         _endEmergencyHandler = endEmergencyHandler;
         _dataService = dataService;
