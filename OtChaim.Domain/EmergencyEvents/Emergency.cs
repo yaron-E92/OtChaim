@@ -12,16 +12,12 @@ public class Emergency : Entity
     /// <summary>
     /// Gets the location of the emergency.
     /// </summary>
-    public Location Location { get; private set; }
+    public Location Location { get; private set; } = Location.Empty;
     /// <summary>
     /// Gets the affected areas of the emergency.
     /// </summary>
     public IReadOnlyList<Area> AffectedAreas => _affectedAreas.AsReadOnly();
-    private readonly List<Area> _affectedAreas = new();
-    /// <summary>
-    /// Gets the severity of the emergency.
-    /// </summary>
-    public Severity Severity { get; private set; }
+    private readonly List<Area> _affectedAreas = [];
     /// <summary>
     /// Gets the creation time of the emergency.
     /// </summary>
@@ -34,7 +30,7 @@ public class Emergency : Entity
     /// Gets the status of the emergency.
     /// </summary>
     public EmergencyStatus Status { get; private set; }
-    private readonly List<EmergencyResponse> _responses = new();
+    private readonly List<EmergencyResponse> _responses = [];
     /// <summary>
     /// Gets the responses to the emergency.
     /// </summary>
@@ -44,13 +40,23 @@ public class Emergency : Entity
     /// </summary>
     public EmergencyType? EmergencyType { get; private set; }
 
+    /// <summary>
+    /// Gets the emergency message/description.
+    /// </summary>
+    public string Description { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the attachment information for the emergency.
+    /// </summary>
+    public EmergencyAttachments Attachments { get; private set; } = new();
+
     private Emergency() { } // For EF Core
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Emergency"/> class.
     /// </summary>
-    public Emergency(Guid id, Guid initiatorUserId, Location location, IEnumerable<Area>? affectedAreas = null, Severity severity = Severity.Medium,
-                     EmergencyType? emergencyType = null)
+    public Emergency(Guid id, Guid initiatorUserId, Location location, IEnumerable<Area>? affectedAreas = null,
+                     EmergencyType? emergencyType = null, string description = "", EmergencyAttachments? attachments = null)
     {
         ArgumentNullException.ThrowIfNull(location);
 
@@ -58,10 +64,11 @@ public class Emergency : Entity
         InitiatorUserId = initiatorUserId;
         Location = location;
         EmergencyType = emergencyType;
+        Description = description ?? string.Empty;
+        Attachments = attachments ?? new EmergencyAttachments();
         _affectedAreas = (affectedAreas == null || !affectedAreas.Any())
             ? [Area.FromLocation(location.Clone(), emergencyType: emergencyType)]
-            : new List<Area>(affectedAreas);
-        Severity = severity;
+            : [.. affectedAreas];
         CreatedAt = DateTime.UtcNow;
         Status = EmergencyStatus.Active;
     }
@@ -73,12 +80,6 @@ public class Emergency : Entity
     {
         var response = new EmergencyResponse(userId, isSafe, message ?? "");
         _responses.Add(response);
-
-        // If all subscribers have responded, mark the event as resolved
-        if (AreAllSubscribersResponded())
-        {
-            Resolve();
-        }
     }
 
     /// <summary>
@@ -91,12 +92,5 @@ public class Emergency : Entity
             Status = EmergencyStatus.Resolved;
             ResolvedAt = DateTime.UtcNow;
         }
-    }
-
-    private bool AreAllSubscribersResponded()
-    {
-        // This would need to be implemented based on your business logic
-        // You might want to compare against a list of expected responders
-        return false;
     }
 }

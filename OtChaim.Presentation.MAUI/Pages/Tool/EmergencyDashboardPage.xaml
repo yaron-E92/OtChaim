@@ -35,8 +35,7 @@
                                 <DataTemplate x:DataType="emergencyEvents:Emergency">
                                     <Frame Margin="0,4" Padding="12" CornerRadius="8" BackgroundColor="{StaticResource Secondary}" InputTransparent="True">
                                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                            <Label Grid.Column="0" Grid.Row="0" Text="{Binding EmergencyType}" FontFamily="OpenSansSemibold" />
-                                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding Severity}" FontSize="12" TextColor="{StaticResource Gray600}" />
+                                            <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="{Binding EmergencyType}" FontFamily="OpenSansSemibold" HorizontalTextAlignment="Center" />
                                             <Label Grid.Column="0" Grid.Row="1" Text="{Binding Location}" FontSize="12" TextColor="{StaticResource Gray600}" />
                                             <Label Grid.Column="1" Grid.Row="1" Text="{Binding Status}" FontSize="12" TextColor="{StaticResource Gray600}" />
                                         </Grid>
@@ -58,7 +57,6 @@
                     <!-- Emergency Details -->
                     <VerticalStackLayout IsVisible="{Binding SelectedEmergency, Converter={StaticResource NotNullConverter}}" Spacing="8">
                         <Label Text="{Binding SelectedEmergency.EmergencyType, StringFormat='Type: {0}'}" FontFamily="OpenSansSemibold" />
-                        <Label Text="{Binding SelectedEmergency.Severity, StringFormat='Severity: {0}'}" />
                         <Label Text="{Binding SelectedEmergency.Location, StringFormat='Location: {0}'}" />
                         <Label Text="{Binding SelectedEmergency.Status, StringFormat='Status: {0}'}" />
                         <Label Text="{Binding SelectedEmergency.Responses.Count, StringFormat='Responses: {0}'}" />
@@ -95,23 +93,17 @@
             </Frame>
         </Grid>
 
-        <!-- Popup Overlay for Create Emergency -->
-        <ContentView IsVisible="{Binding IsCreatePopupVisible}" BackgroundColor="#80000000" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" Grid.RowSpan="5" Grid.ColumnSpan="1">
-            <Frame Style="{StaticResource SecondaryBackgroundFrame}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="400">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*">
-                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                            Text="Create New Emergency" Style="{StaticResource PrimaryHeadline}" />
-                    <Picker Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Title="Type" ItemsSource="{Binding EmergencyTypes}" SelectedItem="{Binding SelectedEmergencyType}" />
-                    <Picker Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Title="Severity" ItemsSource="{Binding Severities}" SelectedItem="{Binding SelectedSeverity}" />
-                    <Entry Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Placeholder="Location Description" Text="{Binding LocationDescription}" />
-                    <Label Grid.Row="4" Grid.Column="0" Text="Latitude" FontSize="12" TextColor="Gray" VerticalOptions="End" />
-                    <Entry Grid.Row="5" Grid.Column="0" Placeholder="Latitude" Text="{Binding Latitude}" Keyboard="Numeric" />
-                    <Label Grid.Row="4" Grid.Column="1" Text="Longitude" FontSize="12" TextColor="Gray" VerticalOptions="End" />
-                    <Entry Grid.Row="5" Grid.Column="1" Placeholder="Longitude" Text="{Binding Longitude}" Keyboard="Numeric" />
-                    <Button Grid.Row="6" Grid.Column="0" Text="Cancel" Command="{Binding HideCreatePopupCommand}" StyleClass="Secondary" Margin="0,10,8,0" />
-                    <Button Grid.Row="6" Grid.Column="1" Text="Create" Command="{Binding StartEmergencyCommand}" StyleClass="Primary" Margin="8,10,0,0" />
-                </Grid>
-            </Frame>
+                <!-- Popup Overlay for Create Emergency -->
+        <ContentView IsVisible="{Binding IsCreatePopupVisible}" 
+                     BackgroundColor="#80000000" 
+                     Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                     ZIndex="1000">
+            <ContentView Content="{Binding EmergencyCreationPopup}" 
+                         VerticalOptions="Center" 
+                         HorizontalOptions="Center" 
+                         WidthRequest="500"
+                         HeightRequest="600"
+                         Margin="20" />
         </ContentView>
 
         <!-- Loading Overlay -->

@@ -49,7 +49,7 @@ public class EmergencyRepositoryTests
     {
         // Arrange
         var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
-        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(1, 1), null, Severity.High);
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(1, 1));
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
 
@@ -67,7 +67,7 @@ public class EmergencyRepositoryTests
     {
         // Arrange
         var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
-        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(2, 2), null, Severity.Low);
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(2, 2));
         e2.Resolve();
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
@@ -85,7 +85,7 @@ public class EmergencyRepositoryTests
     {
         // Arrange
         var e1 = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
-        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(3, 3), null, Severity.Medium);
+        var e2 = new Emergency(Guid.Empty, Guid.Empty, new Location(3, 3));
         e2.Resolve();
         await _repository.AddAsync(e1);
         await _repository.AddAsync(e2);
@@ -253,24 +253,6 @@ public class EmergencyRepositoryTests
     }
 
     [Test]
-    public async Task SaveAsync_UpdatesEmergencySeverityPreserved()
-    {
-        // Arrange
-        Severity originalSeverity = Severity.Low;
-
-        var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone(), severity: originalSeverity);
-        await _repository.AddAsync(emergency);
-
-        // Act
-        emergency.AddResponse(Guid.NewGuid(), true);
-        await _repository.SaveAsync(emergency);
-        Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
-
-        // Assert
-        loaded?.Severity.Should().Be(originalSeverity);
-    }
-
-    [Test]
     public async Task SaveAsync_UpdatesEmergencyEmergencyTypePreserved()
     {
         // Arrange
@@ -281,10 +263,10 @@ public class EmergencyRepositoryTests
         // Act
         emergency.AddResponse(Guid.NewGuid(), true);
         await _repository.SaveAsync(emergency);
-        var loaded = await _repository.GetByIdAsync(emergency.Id);
+        Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
-        loaded.EmergencyType.Should().Be(originalType);
+        loaded?.EmergencyType.Should().Be(originalType);
     }
 
     [Test]

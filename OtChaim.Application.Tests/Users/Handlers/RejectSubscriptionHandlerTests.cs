@@ -15,7 +15,7 @@ namespace OtChaim.Application.Tests.Users.Handlers;
 [TestFixture]
 public class RejectSubscriptionHandlerTests
 {
-    [Test][Ignore("For now, it is broken, but the fix is out of scope")]
+    [Test]
     public async Task Handle_RaisesSubscriptionRejectedEvent_AndSavesUser()
     {
         // Arrange
@@ -23,9 +23,27 @@ public class RejectSubscriptionHandlerTests
         var eventAggregator = Substitute.For<IEventAggregator>();
         var subscriber = new User("Test Subscriber", "subscriber@example.com", "1234567890");
         var subscribedTo = new User("Test SubscribedTo", "subscribedto@example.com", "0987654321");
-        var subscriberId = Guid.NewGuid();
-        var subscribedToId = Guid.NewGuid();
-        
+        var subscriberId = subscriber.Id;
+        var subscribedToId = subscribedTo.Id;
+        eventAggregator
+            .WhenForAnyArgs(eA => eA.PublishEventAsync(Arg.Any<SubscriptionRequested>(), Arg.Any<CancellationToken>()))
+            .Do(callInfo =>
+            {
+                // Simulate event publishing
+                var subscriptionRequestedEvent = callInfo.Arg<SubscriptionRequested>();
+                // Here you can add any additional logic to handle the event if needed
+                subscribedTo.OnSubscriptionRequested(subscriptionRequestedEvent);
+            });
+        eventAggregator
+            .WhenForAnyArgs((eA) => eA.PublishEventAsync(Arg.Any<SubscriptionRejected>(), Arg.Any<CancellationToken>()))
+            .Do(callInfo =>
+            {
+                // Simulate event publishing
+                var subscriptionRejectedEvent = callInfo.Arg<SubscriptionRejected>();
+                // Here you can add any additional logic to handle the event if needed
+                subscribedTo.OnSubscriptionRejected(subscriptionRejectedEvent);
+            });
+
         // First request a subscription
         var requestHandler = new RequestSubscriptionHandler(userRepository, eventAggregator);
         var requestCommand = new RequestSubscription(subscriberId, subscribedToId);
@@ -36,7 +54,7 @@ public class RejectSubscriptionHandlerTests
         await requestHandler.Handle(requestCommand);
         
         // Verify initial subscription status is Pending
-        var subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
+        var subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Pending);
         
         // Now reject the subscription
@@ -48,7 +66,7 @@ public class RejectSubscriptionHandlerTests
 
         // Assert
         // Verify subscription status is now Rejected
-        subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
+        subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Rejected);
         
         await userRepository.Received().SaveAsync(subscriber, Arg.Any<CancellationToken>());

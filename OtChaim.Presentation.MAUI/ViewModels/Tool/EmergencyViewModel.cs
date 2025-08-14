@@ -1,101 +1,137 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OtChaim.Domain.EmergencyEvents;
+using OtChaim.Domain.Common;
+using OtChaim.Application.EmergencyEvents.Commands;
+using OtChaim.Application.Common;
+using OtChaim.Presentation.MAUI.Pages.Tool;
+using Location = OtChaim.Domain.Common.Location;
+using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
-public partial class EmergencyViewModel : ObservableObject
+public partial class EmergencyViewModel : BaseEmergencyViewModel
 {
-    [ObservableProperty]
-    private string _selectedEmergencyType = "Blood-Sugar Low";
+    private readonly ICommandHandler<StartEmergency> _startEmergencyHandler;
 
     [ObservableProperty]
-    private string _emergencyMessage = "I fell again, bring the meds";
+    private EmergencyType _selectedEmergencyType = EmergencyType.BloodSugarLow;
 
-    private int _currentEmergencyTypeIndex = 0;
+    [ObservableProperty]
+    private string _emergencyMessage = "I need immediate assistance. Please help.";
 
-    private readonly List<string> _emergencyTypes =
-    [
-        "Blood-Sugar Low",
-        "Heart Attack",
-        "Stroke",
-        "Fall",
-        "Fire",
-        "Medical Emergency"
-    ];
+    [ObservableProperty]
+    private bool _isEmergencyDialogVisible = false;
 
-    [RelayCommand]
-    private void PreviousEmergencyType()
+    [ObservableProperty]
+    private string _confirmationMessage = "";
+
+    [ObservableProperty]
+    private bool _isCreatePopupVisible = false;
+
+    [ObservableProperty]
+    private ContentView? _emergencyCreationPopup;
+
+    // Contact selection properties
+    [ObservableProperty]
+    private bool _isGroupSelected = true;
+
+    [ObservableProperty]
+    private bool _isSingleSelected = false;
+
+    [ObservableProperty]
+    private bool _isEmailSelected = true;
+
+    [ObservableProperty]
+    private bool _isSmsSelected = true;
+
+    [ObservableProperty]
+    private bool _isMessengerSelected = false;
+
+    // Attachment properties
+    [ObservableProperty]
+    private bool _isPictureAttached = false;
+
+    [ObservableProperty]
+    private bool _isPersonalInfoAttached = false;
+
+    [ObservableProperty]
+    private bool _isMedicalInfoAttached = false;
+
+    [ObservableProperty]
+    private bool _isGpsAttached = true;
+
+    [ObservableProperty]
+    private bool _isDocumentAttached = false;
+
+    [ObservableProperty]
+    private int _selectedMessageTemplateIndex = -1;
+
+    public EmergencyViewModel(ICommandHandler<StartEmergency> startEmergencyHandler, EmergencyCreationPopup emergencyCreationPopup)
     {
-        _currentEmergencyTypeIndex--;
-        if (_currentEmergencyTypeIndex < 0)
-            _currentEmergencyTypeIndex = _emergencyTypes.Count - 1;
+        _startEmergencyHandler = startEmergencyHandler;
+        EmergencyCreationPopup = emergencyCreationPopup;
         
-        SelectedEmergencyType = _emergencyTypes[_currentEmergencyTypeIndex];
-    }
-
-    [RelayCommand]
-    private void NextEmergencyType()
-    {
-        _currentEmergencyTypeIndex++;
-        if (_currentEmergencyTypeIndex >= _emergencyTypes.Count)
-            _currentEmergencyTypeIndex = 0;
-        
-        SelectedEmergencyType = _emergencyTypes[_currentEmergencyTypeIndex];
-    }
-
-    [RelayCommand]
-    private void AddPicture()
-    {
-        // TODO: Implement picture attachment
-        System.Diagnostics.Debug.WriteLine("Add Picture");
-    }
-
-    [RelayCommand]
-    private void AddPersonalInfo()
-    {
-        // TODO: Implement personal info attachment
-        System.Diagnostics.Debug.WriteLine("Add Personal Info");
-    }
-
-    [RelayCommand]
-    private void AddMedicalInfo()
-    {
-        // TODO: Implement medical info attachment
-        System.Diagnostics.Debug.WriteLine("Add Medical Info");
-    }
-
-    [RelayCommand]
-    private void AddGps()
-    {
-        // TODO: Implement GPS attachment
-        System.Diagnostics.Debug.WriteLine("Add GPS");
-    }
-
-    [RelayCommand]
-    private void AddDocument()
-    {
-        // TODO: Implement document attachment
-        System.Diagnostics.Debug.WriteLine("Add Document");
-    }
-
-    [RelayCommand]
-    private void AddMessage()
-    {
-        // TODO: Implement message attachment
-        System.Diagnostics.Debug.WriteLine("Add Message");
-    }
-
-    [RelayCommand]
-    private void RemoveMessage()
-    {
-        // TODO: Implement message removal
-        System.Diagnostics.Debug.WriteLine("Remove Message");
+        // Subscribe to popup events
+        if (EmergencyCreationPopup?.BindingContext is EmergencyCreationViewModel creationViewModel)
+        {
+            creationViewModel.EmergencyCreated += OnEmergencyPopUpFinished;
+            creationViewModel.Cancelled += OnEmergencyPopUpFinished;
+        }
     }
 
     [RelayCommand]
     private void TriggerEmergency()
     {
-        // TODO: Implement emergency trigger
-        System.Diagnostics.Debug.WriteLine("Trigger Emergency");
+        // Show the unified emergency creation popup
+        IsCreatePopupVisible = true;
+    }
+
+    private void OnEmergencyPopUpFinished(object? sender, EventArgs e)
+    {
+        IsCreatePopupVisible = false;
+    }
+
+    [RelayCommand]
+    private async Task ConfirmEmergency()
+    {
+        try
+        {
+            IsLoading = true;
+            IsEmergencyDialogVisible = false;
+
+            // Create location (in real implementation, get from GPS)
+            var location = new Location(0, 0, "Current Location");
+            var affectedAreas = new List<Area> { Area.FromLocation(location, emergencyType: SelectedEmergencyType) };
+
+            // Create the emergency command
+            var command = new StartEmergency(
+                initiatorUserId: Guid.NewGuid(), // In real implementation, get current user ID
+                type: SelectedEmergencyType,
+                location: location,
+                affectedAreas: affectedAreas,
+                description: EmergencyMessage
+            );
+
+            // Execute the command
+            await _startEmergencyHandler.Handle(command, CancellationToken.None);
+
+            await Shell.Current.DisplayAlert("Emergency Triggered", 
+                $"Emergency of type {SelectedEmergencyType} has been triggered successfully. Help is on the way.", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", $"Failed to trigger emergency: {ex.Message}", "OK");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private void CancelEmergency()
+    {
+        IsEmergencyDialogVisible = false;
     }
 }

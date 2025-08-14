@@ -4,22 +4,41 @@ using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
 using Yaref92.Events.Abstractions;
 using FluentAssertions;
+using OtChaim.Domain.Users.Events;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
 [TestFixture]
 public class ApproveSubscriptionHandlerTests
 {
-    [Test][Ignore("For now, it is broken, but the fix is out of scope")]
+    [Test]
     public async Task Handle_RaisesSubscriptionApprovedEvent_AndSavesUser()
     {
         // Arrange
-        var userRepository = Substitute.For<IUserRepository>();
-        var eventAggregator = Substitute.For<IEventAggregator>();
         var subscriber = new User("Test Subscriber", "subscriber@example.com", "1234567890");
         var subscribedTo = new User("Test SubscribedTo", "subscribedto@example.com", "0987654321");
-        var subscriberId = Guid.NewGuid();
-        var subscribedToId = Guid.NewGuid();
+        var subscriberId = subscriber.Id;
+        var subscribedToId = subscribedTo.Id;
+        var userRepository = Substitute.For<IUserRepository>();
+        var eventAggregator = Substitute.For<IEventAggregator>();
+        eventAggregator
+            .WhenForAnyArgs(eA => eA.PublishEventAsync(Arg.Any<SubscriptionRequested>(), Arg.Any<CancellationToken>()))
+            .Do(callInfo =>
+            {
+                // Simulate event publishing
+                var subscriptionRequestedEvent = callInfo.Arg<SubscriptionRequested>();
+                // Here you can add any additional logic to handle the event if needed
+                subscribedTo.OnSubscriptionRequested(subscriptionRequestedEvent);
+            });
+        eventAggregator
+            .WhenForAnyArgs((eA) => eA.PublishEventAsync(Arg.Any<SubscriptionApproved>(), Arg.Any<CancellationToken>()))
+            .Do(callInfo =>
+            {
+                // Simulate event publishing
+                var subscriptionApprovedEvent = callInfo.Arg<SubscriptionApproved>();
+                // Here you can add any additional logic to handle the event if needed
+                subscribedTo.OnSubscriptionApproved(subscriptionApprovedEvent);
+            });
         
         // First request a subscription
         var requestHandler = new RequestSubscriptionHandler(userRepository, eventAggregator);
@@ -31,7 +50,7 @@ public class ApproveSubscriptionHandlerTests
         await requestHandler.Handle(requestCommand);
         
         // Verify initial subscription status is Pending
-        var subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
+        var subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Pending);
         
         // Now approve the subscription
@@ -43,7 +62,7 @@ public class ApproveSubscriptionHandlerTests
 
         // Assert
         // Verify subscription status is now Approved
-        subscription = subscriber.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
+        subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Approved);
         subscription.ApprovedAt.Should().NotBeNull();
 

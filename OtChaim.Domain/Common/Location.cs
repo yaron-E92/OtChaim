@@ -10,15 +10,20 @@ public class Location : ValueObject
     /// <summary>
     /// Gets the latitude of the location.
     /// </summary>
-    public double Latitude { get; private set; }
+    public double Latitude { get; private set; } = -1.0;
     /// <summary>
     /// Gets the longitude of the location.
     /// </summary>
-    public double Longitude { get; private set; }
+    public double Longitude { get; private set; } = -1.0;
     /// <summary>
     /// Gets the description of the location.
     /// </summary>
-    public string Description { get; private set; }
+    public string Description { get; private set; } = "";
+
+    /// <summary>
+    /// Gets an empty location instance.
+    /// </summary>
+    public static Location Empty => new(-1, -1, "");
 
     private Location() { } // For EF Core
 

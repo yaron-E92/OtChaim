@@ -11,15 +11,15 @@ namespace OtChaim.Application.EmergencyEvents.Commands;
 /// <param name="type">The type of emergency.</param>
 /// <param name="location">The location of the emergency.</param>
 /// <param name="affectedAreas">The affected areas</param>
-/// <param name="severity">The severity of the emergency.</param>
 /// <param name="description">A description of the emergency.</param>
+/// <param name="attachments">The attachments for the emergency.</param>
 public class StartEmergency(
     Guid initiatorUserId,
     EmergencyType type,
     Location location,
     IEnumerable<Area> affectedAreas,
-    Severity severity,
-    string description = "") : ICommand
+    string description = "",
+    EmergencyAttachments? attachments = null) : ICommand
 {
     /// <summary>
     /// The ID of the user initiating the emergency.
@@ -38,11 +38,11 @@ public class StartEmergency(
     /// </summary>
     public IEnumerable<Area> AffectedAreas { get; } = affectedAreas;
     /// <summary>
-    /// The severity of the emergency.
-    /// </summary>
-    public Severity Severity { get; } = severity;
-    /// <summary>
     /// The description of the emergency.
     /// </summary>
     public string Description { get; } = description;
+    /// <summary>
+    /// The attachments for the emergency.
+    /// </summary>
+    public EmergencyAttachments? Attachments { get; } = attachments;
 }
