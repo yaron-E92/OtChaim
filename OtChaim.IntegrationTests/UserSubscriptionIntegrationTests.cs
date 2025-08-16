@@ -15,8 +15,8 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     public async Task RequestSubscriptionHandler_AddsSubscriptionToSubscribedToUser()
     {
         // Arrange
-        IUserRepository userRepository = Provider.GetRequiredService<IUserRepository>();
-        RequestSubscriptionHandler? handler = Provider.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
+        IUserRepository userRepository = Provider!.GetRequiredService<IUserRepository>();
+        RequestSubscriptionHandler? handler = Provider!.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
         handler.Should().NotBeNull("RequestSubscriptionHandler should be registered in the service container");
         var subscriber = new User("subscriber", "subscriber@test.com", "0000000");
         var subscribedTo = new User("subscribedTo", "subscribedto@test.com", "1111111");
@@ -41,10 +41,10 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     public async Task ApproveSubscriptionHandler_ApprovesSubscription()
     {
         // Arrange
-        var userRepository = Provider.GetRequiredService<IUserRepository>();
-        RequestSubscriptionHandler? requestHandler = Provider.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
+        var userRepository = Provider!.GetRequiredService<IUserRepository>();
+        RequestSubscriptionHandler? requestHandler = Provider!.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
         requestHandler.Should().NotBeNull("RequestSubscriptionHandler should be registered in the service container");
-        ApproveSubscriptionHandler? approveHandler = Provider.GetRequiredService<ICommandHandler<ApproveSubscription>>() as ApproveSubscriptionHandler;
+        ApproveSubscriptionHandler? approveHandler = Provider!.GetRequiredService<ICommandHandler<ApproveSubscription>>() as ApproveSubscriptionHandler;
         approveHandler.Should().NotBeNull("ApproveSubscriptionHandler should be registered in the service container");
         var subscriber = new User("subscriber", "subscriber@test.com", "0000000");
         var subscribedTo = new User("subscribedTo", "subscribedto@test.com", "1111111");
@@ -70,10 +70,10 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     public async Task RejectSubscriptionHandler_RejectsSubscription()
     {
         // Arrange
-        var userRepository = Provider.GetRequiredService<IUserRepository>();
-        RequestSubscriptionHandler? requestHandler = Provider.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
+        var userRepository = Provider!.GetRequiredService<IUserRepository>();
+        RequestSubscriptionHandler? requestHandler = Provider!.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
         requestHandler.Should().NotBeNull("RequestSubscriptionHandler should be registered in the service container");
-        RejectSubscriptionHandler? rejectHandler = Provider.GetRequiredService<ICommandHandler<RejectSubscription>>() as RejectSubscriptionHandler;
+        RejectSubscriptionHandler? rejectHandler = Provider!.GetRequiredService<ICommandHandler<RejectSubscription>>() as RejectSubscriptionHandler;
         rejectHandler.Should().NotBeNull("RejectSubscriptionHandler should be registered in the service container");
         var subscriber = new User("subscriber", "subscriber@test.com", "0000000");
         var subscribedTo = new User("subscribedTo", "subscribedto@test.com", "1111111");

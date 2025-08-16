@@ -9,7 +9,7 @@ public class UserInfoViewModel : INotifyPropertyChanged
 {
     private string _firstName = "Finn";
     private string _lastName = "Mond";
-    private DateTime _birthday = new(1955, 1, 21);
+    private DateTime _birthday = new(1955, 1, 21, 0, 0, 0, DateTimeKind.Utc);
     private string _weight = "83 Kg";
     private string _selectedBloodType = "A";
     private string _address = "Mondstrasse 3, 71626 Bonn";

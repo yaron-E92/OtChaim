@@ -45,7 +45,7 @@ public class EmergencyEventSubscriberTests
 
         // Assert
         await _repo.Received(1).AddAsync(Arg.Is<Emergency>(e =>
-            e.Location == evt.Location &&
+            e.Location.Equals(evt.Location) &&
             e.EmergencyType == evt.Type &&
             e.AffectedAreas.SequenceEqual(evt.AffectedAreas)
         ), Arg.Any<CancellationToken>());

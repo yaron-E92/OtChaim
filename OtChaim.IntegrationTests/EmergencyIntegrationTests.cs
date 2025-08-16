@@ -17,9 +17,9 @@ public class EmergencyIntegrationTests : IntegrationTestBase
     public async Task StartEmergencyHandler_CreatesEmergencyInDatabase()
     {
         // Arrange
-        StartEmergencyHandler? handler = Provider.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
+        StartEmergencyHandler? handler = Provider!.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
         handler.Should().NotBeNull("StartEmergencyHandler should be registered in the service container");
-        IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
+        IEmergencyRepository repo = Provider!.GetRequiredService<IEmergencyRepository>();
         var location = new Location(1.0, 2.0, "Test");
         var area = new Area(location, 100);
         var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, [area], "Test emergency");
@@ -39,11 +39,11 @@ public class EmergencyIntegrationTests : IntegrationTestBase
     public async Task MarkUserStatusHandler_AddsResponseToEmergency()
     {
         // Arrange
-        StartEmergencyHandler? startHandler = Provider.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
+        StartEmergencyHandler? startHandler = Provider!.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
         startHandler.Should().NotBeNull("StartEmergencyHandler should be registered in the service container");
-        MarkUserStatusHandler? markHandler = Provider.GetRequiredService<ICommandHandler<MarkUserStatus>>() as MarkUserStatusHandler;
+        MarkUserStatusHandler? markHandler = Provider!.GetRequiredService<ICommandHandler<MarkUserStatus>>() as MarkUserStatusHandler;
         markHandler.Should().NotBeNull("MarkUserStatusHandler should be registered in the service container");
-        IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
+        IEmergencyRepository repo = Provider!.GetRequiredService<IEmergencyRepository>();
         var location = new Location(2.0, 3.0, "Test2");
         var area = new Area(location, 200);
         var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, [area], "Flood emergency");
@@ -67,11 +67,11 @@ public class EmergencyIntegrationTests : IntegrationTestBase
     public async Task EndEmergencyHandler_ChangesEmergencyStatusToResolved()
     {
         // Arrange
-        StartEmergencyHandler? startHandler = Provider.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
+        StartEmergencyHandler? startHandler = Provider!.GetRequiredService<ICommandHandler<StartEmergency>>() as StartEmergencyHandler;
         startHandler.Should().NotBeNull("StartEmergencyHandler should be registered in the service container");
-        EndEmergencyHandler? endHandler = Provider.GetRequiredService<ICommandHandler<EndEmergency>>() as EndEmergencyHandler;
+        EndEmergencyHandler? endHandler = Provider!.GetRequiredService<ICommandHandler<EndEmergency>>() as EndEmergencyHandler;
         endHandler.Should().NotBeNull("EndEmergencyHandler should be registered in the service container");
-        IEmergencyRepository repo = Provider.GetRequiredService<IEmergencyRepository>();
+        IEmergencyRepository repo = Provider!.GetRequiredService<IEmergencyRepository>();
         var location = new Location(3.0, 4.0, "Test3");
         var area = new Area(location, 300);
         var command = new StartEmergency(Guid.NewGuid(), EmergencyType.NaturalDisaster, location, [area], "Earthquake");

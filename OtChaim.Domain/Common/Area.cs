@@ -10,7 +10,7 @@ public class Area : ValueObject
     /// <summary>
     /// Gets the center location of the area.
     /// </summary>
-    public Location Center { get; private set; }
+    public Location Center { get; private set; } = Location.Empty;
     /// <summary>
     /// Gets the radius of the area in meters.
     /// </summary>
