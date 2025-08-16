@@ -46,7 +46,7 @@ public class User : Entity
     /// <summary>
     /// Gets a user instance representing no user.
     /// </summary>
-    public static User None { get; } = new User{ Id = Guid.Empty };
+    public static User None { get; } = new User { Id = Guid.Empty };
 
     private User() { } // For EF Core
 

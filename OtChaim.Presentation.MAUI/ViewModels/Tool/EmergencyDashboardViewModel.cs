@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Application.Common;
@@ -9,6 +8,7 @@ using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.EmergencyEvents.Events;
 using OtChaim.Domain.Users;
 using OtChaim.Presentation.MAUI.Pages.Tool;
+using System.Collections.ObjectModel;
 using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
@@ -23,8 +23,8 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 /// emergency state changes. It manages both the emergency list display and the emergency
 /// creation popup functionality.
 /// </remarks>
-    public sealed partial class EmergencyDashboardViewModel : BaseEmergencyViewModel, IDisposable, IAsyncEventSubscriber<EmergencyAlterationPersisted>
-    {
+public sealed partial class EmergencyDashboardViewModel : BaseEmergencyViewModel, IDisposable, IAsyncEventSubscriber<EmergencyAlterationPersisted>
+{
     /// <summary>
     /// The currently selected emergency.
     /// </summary>
@@ -279,7 +279,7 @@ namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
     public void Dispose()
     {
         _eventAggregator.UnsubscribeFromEventType(this);
-        
+
         if (EmergencyCreationPopup?.BindingContext is EmergencyCreationViewModel creationViewModel)
         {
             creationViewModel.EmergencyCreated -= OnEmergencyPopUpFinished;

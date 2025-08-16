@@ -113,4 +113,4 @@ public enum EmergencyAlterationType
     /// Other type of alteration not covered by specific types.
     /// </summary>
     Other
-} 
+}

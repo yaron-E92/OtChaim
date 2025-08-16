@@ -2,9 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
+using OtChaim.Application.ViewModels;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
-using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -270,10 +270,10 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
         var values = Enum.GetValues<EmergencyType>();
         var currentIndex = Array.IndexOf(values, SelectedEmergencyType);
         var previousIndex = currentIndex - 1;
-        
+
         if (previousIndex < 0)
             previousIndex = values.Length - 1;
-        
+
         SelectedEmergencyType = values[previousIndex];
         UpdateEmergencyMessage();
     }
@@ -289,10 +289,10 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
         var values = Enum.GetValues<EmergencyType>();
         var currentIndex = Array.IndexOf(values, SelectedEmergencyType);
         var nextIndex = currentIndex + 1;
-        
+
         if (nextIndex >= values.Length)
             nextIndex = 0;
-        
+
         SelectedEmergencyType = values[nextIndex];
         UpdateEmergencyMessage();
     }
@@ -486,8 +486,8 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
             };
 
             // Use custom message or default based on emergency type
-            string message = string.IsNullOrWhiteSpace(EmergencyMessage) 
-                ? GetDefaultMessage(SelectedEmergencyType) 
+            string message = string.IsNullOrWhiteSpace(EmergencyMessage)
+                ? GetDefaultMessage(SelectedEmergencyType)
                 : EmergencyMessage;
 
             var command = new StartEmergency(

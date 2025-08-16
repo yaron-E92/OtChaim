@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
@@ -5,7 +6,6 @@ using OtChaim.Application.EmergencyEvents.Handlers;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Users;
-using FluentAssertions;
 
 namespace OtChaim.IntegrationTests;
 

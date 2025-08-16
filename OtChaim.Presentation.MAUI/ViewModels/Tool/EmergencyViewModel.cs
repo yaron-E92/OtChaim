@@ -1,12 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using OtChaim.Domain.EmergencyEvents;
-using OtChaim.Domain.Common;
-using OtChaim.Application.EmergencyEvents.Commands;
 using OtChaim.Application.Common;
+using OtChaim.Application.EmergencyEvents.Commands;
+using OtChaim.Application.ViewModels;
+using OtChaim.Domain.Common;
+using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Presentation.MAUI.Pages.Tool;
 using Location = OtChaim.Domain.Common.Location;
-using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -71,7 +71,7 @@ public partial class EmergencyViewModel : BaseEmergencyViewModel
     {
         _startEmergencyHandler = startEmergencyHandler;
         EmergencyCreationPopup = emergencyCreationPopup;
-        
+
         // Subscribe to popup events
         if (EmergencyCreationPopup?.BindingContext is EmergencyCreationViewModel creationViewModel)
         {
@@ -116,7 +116,7 @@ public partial class EmergencyViewModel : BaseEmergencyViewModel
             // Execute the command
             await _startEmergencyHandler.Handle(command, CancellationToken.None);
 
-            await Shell.Current.DisplayAlert("Emergency Triggered", 
+            await Shell.Current.DisplayAlert("Emergency Triggered",
                 $"Emergency of type {SelectedEmergencyType} has been triggered successfully. Help is on the way.", "OK");
         }
         catch (Exception ex)

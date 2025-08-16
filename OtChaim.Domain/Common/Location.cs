@@ -55,7 +55,7 @@ public class Location : ValueObject
     public override string? ToString()
     {
         StringBuilder sb = new StringBuilder($"[{Latitude},{Longitude}]");
-        if ( !string.IsNullOrWhiteSpace(Description) )
+        if (!string.IsNullOrWhiteSpace(Description))
         {
             sb.Append($": {Description}");
         }

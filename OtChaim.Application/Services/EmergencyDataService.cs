@@ -1,6 +1,6 @@
-using System.Collections.ObjectModel;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Users;
+using System.Collections.ObjectModel;
 
 namespace OtChaim.Application.Services;
 

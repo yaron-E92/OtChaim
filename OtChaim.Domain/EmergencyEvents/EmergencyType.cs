@@ -14,14 +14,14 @@ public enum EmergencyType
     AllergicReaction,
     Seizure,
     BreathingDifficulty,
-    
+
     // Personal Emergencies
     PersonalEmergency,
     Fire,
     BreakIn,
     CarAccident,
     LostOrDisoriented,
-    
+
     // Natural Events
     NaturalDisaster,
     WeatherAlert,

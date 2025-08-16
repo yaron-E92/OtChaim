@@ -130,7 +130,7 @@ public class EmergencyContactsViewModel : INotifyPropertyChanged
         _currentContactIndex--;
         if (_currentContactIndex < 0)
             _currentContactIndex = _contacts.Count - 1;
-        
+
         SelectedContact = _contacts[_currentContactIndex];
     }
 
@@ -139,7 +139,7 @@ public class EmergencyContactsViewModel : INotifyPropertyChanged
         _currentContactIndex++;
         if (_currentContactIndex >= _contacts.Count)
             _currentContactIndex = 0;
-        
+
         SelectedContact = _contacts[_currentContactIndex];
     }
 

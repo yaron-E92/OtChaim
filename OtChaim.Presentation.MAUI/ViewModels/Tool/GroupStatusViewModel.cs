@@ -1,6 +1,6 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -38,7 +38,7 @@ public partial class GroupStatusViewModel : ObservableObject
         _currentGroupIndex--;
         if (_currentGroupIndex < 0)
             _currentGroupIndex = _groups.Count - 1;
-        
+
         SelectedGroup = _groups[_currentGroupIndex];
     }
 
@@ -48,7 +48,7 @@ public partial class GroupStatusViewModel : ObservableObject
         _currentGroupIndex++;
         if (_currentGroupIndex >= _groups.Count)
             _currentGroupIndex = 0;
-        
+
         SelectedGroup = _groups[_currentGroupIndex];
     }
 

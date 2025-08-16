@@ -1,9 +1,9 @@
-using System.Collections.ObjectModel;
 using FluentAssertions;
 using NSubstitute;
+using OtChaim.Application.Services;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Users;
-using OtChaim.Application.Services;
+using System.Collections.ObjectModel;
 
 namespace OtChaim.Application.Tests.Services;
 
@@ -54,7 +54,7 @@ public class EmergencyDataServiceTests
     }
 
     [Test]
-    public  async Task LoadActiveEmergenciesAsync_ShouldCompleteSuccessfully()
+    public async Task LoadActiveEmergenciesAsync_ShouldCompleteSuccessfully()
     {
         // Arrange
         var emergencies = new ObservableCollection<Emergency>();
@@ -65,7 +65,7 @@ public class EmergencyDataServiceTests
     }
 
     [Test]
-    public  async Task LoadUsersAsync_ShouldCompleteSuccessfully()
+    public async Task LoadUsersAsync_ShouldCompleteSuccessfully()
     {
         // Arrange
         var users = new ObservableCollection<User>();
@@ -76,7 +76,7 @@ public class EmergencyDataServiceTests
     }
 
     [Test]
-    public  async Task LoadActiveEmergenciesAsync_WithNullCollection_ShouldHandleGracefully()
+    public async Task LoadActiveEmergenciesAsync_WithNullCollection_ShouldHandleGracefully()
     {
         // Act & Assert
         var action = () => _service.LoadActiveEmergenciesAsync(null!);

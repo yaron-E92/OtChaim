@@ -1,13 +1,11 @@
 using Microsoft.Extensions.Logging;
 using OtChaim.Application;
-using OtChaim.Persistence;
-using OtChaim.Presentation.MAUI.ViewModels;
 using OtChaim.Application.Services;
-using OtChaim.Presentation.MAUI.Pages.Tool;
+using OtChaim.Persistence;
 using OtChaim.Presentation.MAUI.Pages.Settings;
+using OtChaim.Presentation.MAUI.Pages.Tool;
 using OtChaim.Presentation.MAUI.ViewModels.Settings;
 using OtChaim.Presentation.MAUI.ViewModels.Tool;
-using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Presentation.MAUI;
 

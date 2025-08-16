@@ -1,6 +1,6 @@
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OtChaim.Domain.Users;
-using FluentAssertions;
 
 namespace OtChaim.Persistence.Tests;
 

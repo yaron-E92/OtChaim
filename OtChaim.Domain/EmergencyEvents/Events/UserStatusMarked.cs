@@ -1,5 +1,5 @@
-using Yaref92.Events;
 using OtChaim.Domain.Users;
+using Yaref92.Events;
 
 namespace OtChaim.Domain.EmergencyEvents.Events;
 

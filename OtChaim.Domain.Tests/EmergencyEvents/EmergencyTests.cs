@@ -1,8 +1,6 @@
-using System;
-using NUnit.Framework;
 using FluentAssertions;
-using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Common;
+using OtChaim.Domain.EmergencyEvents;
 
 namespace OtChaim.Domain.Tests.EmergencyEvents;
 

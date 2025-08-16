@@ -11,7 +11,7 @@ namespace OtChaim.Application.Users.EventSubscribers;
 /// Initializes a new instance of the <see cref="SubscriptionEventSubscriber"/> class.
 /// </remarks>
 /// <param name="userRepository">The user repository to update.</param>
-public class SubscriptionEventSubscriber(IUserRepository userRepository) : 
+public class SubscriptionEventSubscriber(IUserRepository userRepository) :
     IAsyncEventSubscriber<SubscriptionRequested>,
     IAsyncEventSubscriber<SubscriptionApproved>,
     IAsyncEventSubscriber<SubscriptionRejected>

@@ -26,7 +26,7 @@ public class EmergencyPersisted(Guid emergencyId, DateTime persistedAt = default
     /// It serves as a reference for UI updates and subsequent emergency operations.
     /// </remarks>
     public Guid EmergencyId { get; } = emergencyId;
-    
+
     /// <summary>
     /// The date and time when the emergency was persisted to the database.
     /// </summary>
@@ -36,4 +36,4 @@ public class EmergencyPersisted(Guid emergencyId, DateTime persistedAt = default
     /// It inherits from the base DomainEventBase.DateTimeOccurredUtc property.
     /// </remarks>
     public DateTime PersistedAt => DateTimeOccurredUtc;
-} 
+}

@@ -1,10 +1,10 @@
+using FluentAssertions;
 using NSubstitute;
+using OtChaim.Application.EmergencyEvents.EventSubscribers;
+using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.EmergencyEvents.Events;
-using OtChaim.Application.EmergencyEvents.EventSubscribers;
 using OtChaim.Domain.Users;
-using OtChaim.Domain.Common;
-using FluentAssertions;
 using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.Tests.Emergencies.EventSubscribers;

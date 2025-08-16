@@ -1,14 +1,10 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using FluentAssertions;
 using NSubstitute;
-using NUnit.Framework;
 using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
 using OtChaim.Domain.Users.Events;
 using Yaref92.Events.Abstractions;
-using FluentAssertions;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
@@ -47,16 +43,16 @@ public class RejectSubscriptionHandlerTests
         // First request a subscription
         var requestHandler = new RequestSubscriptionHandler(userRepository, eventAggregator);
         var requestCommand = new RequestSubscription(subscriberId, subscribedToId);
-        
+
         userRepository.GetByIdAsync(subscriberId, Arg.Any<CancellationToken>()).Returns(subscriber);
         userRepository.GetByIdAsync(subscribedToId, Arg.Any<CancellationToken>()).Returns(subscribedTo);
-        
+
         await requestHandler.Handle(requestCommand);
-        
+
         // Verify initial subscription status is Pending
         var subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Pending);
-        
+
         // Now reject the subscription
         var rejectHandler = new RejectSubscriptionHandler(userRepository, eventAggregator);
         var rejectCommand = new RejectSubscription(subscriberId, subscribedToId);
@@ -68,7 +64,7 @@ public class RejectSubscriptionHandlerTests
         // Verify subscription status is now Rejected
         subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Rejected);
-        
+
         await userRepository.Received().SaveAsync(subscriber, Arg.Any<CancellationToken>());
     }
-} 
+}

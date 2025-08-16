@@ -80,7 +80,7 @@ public class MedicalInfoViewModel : INotifyPropertyChanged
         _currentConditionIndex--;
         if (_currentConditionIndex < 0)
             _currentConditionIndex = _conditions.Count - 1;
-        
+
         SelectedCondition = _conditions[_currentConditionIndex];
     }
 
@@ -89,7 +89,7 @@ public class MedicalInfoViewModel : INotifyPropertyChanged
         _currentConditionIndex++;
         if (_currentConditionIndex >= _conditions.Count)
             _currentConditionIndex = 0;
-        
+
         SelectedCondition = _conditions[_currentConditionIndex];
     }
 

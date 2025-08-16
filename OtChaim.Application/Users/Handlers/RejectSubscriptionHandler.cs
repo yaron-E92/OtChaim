@@ -30,7 +30,7 @@ public sealed class RejectSubscriptionHandler(IUserRepository userRepository, IE
 
         // Publish the event through the event aggregator
         await _eventAggregator.PublishEventAsync(new SubscriptionRejected(command.SubscriberId, command.SubscribedToId), cancellationToken);
-        
+
         await _userRepository.SaveAsync(subscriber, cancellationToken);
     }
 }

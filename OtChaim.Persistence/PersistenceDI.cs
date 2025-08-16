@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using OtChaim.Domain.Users;
 using OtChaim.Domain.EmergencyEvents;
+using OtChaim.Domain.Users;
 
 namespace OtChaim.Persistence;
 

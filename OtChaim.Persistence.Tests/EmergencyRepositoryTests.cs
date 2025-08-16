@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using OtChaim.Domain.EmergencyEvents;
-using OtChaim.Domain.Common;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using OtChaim.Domain.Common;
+using OtChaim.Domain.EmergencyEvents;
 
 namespace OtChaim.Persistence.Tests;
 
@@ -165,7 +165,7 @@ public class EmergencyRepositoryTests
         var userId1 = Guid.NewGuid();
         var userId2 = Guid.NewGuid();
         await _repository.AddAsync(emergency);
-        
+
         // Act
         emergency.AddResponse(userId1, true, "Safe here");
         emergency.AddResponse(userId2, false, "Need help");
@@ -185,7 +185,7 @@ public class EmergencyRepositoryTests
         var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         await _repository.AddAsync(emergency);
         DateTime beforeResolve = DateTime.UtcNow;
-        
+
         // Act
         emergency.Resolve();
         await _repository.SaveAsync(emergency);
@@ -206,7 +206,7 @@ public class EmergencyRepositoryTests
         emergency.Resolve();
         await _repository.SaveAsync(emergency);
         DateTime? firstResolvedAt = (await _repository.GetByIdAsync(emergency.Id))!.ResolvedAt;
-        
+
         // Act - Try to resolve again
         emergency.Resolve();
         await _repository.SaveAsync(emergency);
@@ -223,7 +223,7 @@ public class EmergencyRepositoryTests
         var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         var userId = Guid.NewGuid();
         await _repository.AddAsync(emergency);
-        
+
         // Act
         emergency.AddResponse(userId, true, null!);
         await _repository.SaveAsync(emergency);
@@ -241,7 +241,7 @@ public class EmergencyRepositoryTests
         var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         var userId = Guid.NewGuid();
         await _repository.AddAsync(emergency);
-        
+
         // Act
         emergency.AddResponse(userId, false, "");
         await _repository.SaveAsync(emergency);
@@ -276,7 +276,7 @@ public class EmergencyRepositoryTests
         var originalLocation = new Location(10.5, 20.3);
         var emergency = new Emergency(Guid.Empty, Guid.Empty, originalLocation.Clone());
         await _repository.AddAsync(emergency);
-        
+
         // Act
         emergency.AddResponse(Guid.NewGuid(), true);
         await _repository.SaveAsync(emergency);
@@ -294,7 +294,7 @@ public class EmergencyRepositoryTests
         var area = new Area(location.Clone(), 50.0);
         var emergency = new Emergency(Guid.Empty, Guid.Empty, location.Clone(), [area]);
         await _repository.AddAsync(emergency);
-        
+
         // Act
         emergency.AddResponse(Guid.NewGuid(), true);
         await _repository.SaveAsync(emergency);
@@ -311,7 +311,7 @@ public class EmergencyRepositoryTests
         var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone());
         await _repository.AddAsync(emergency);
         DateTime originalCreatedAt = emergency.CreatedAt;
-        
+
         // Act
         emergency.AddResponse(Guid.NewGuid(), true);
         await _repository.SaveAsync(emergency);

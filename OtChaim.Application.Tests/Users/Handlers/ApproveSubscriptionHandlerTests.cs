@@ -1,10 +1,10 @@
+using FluentAssertions;
 using NSubstitute;
 using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
-using Yaref92.Events.Abstractions;
-using FluentAssertions;
 using OtChaim.Domain.Users.Events;
+using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.Tests.Users.Handlers;
 
@@ -39,20 +39,20 @@ public class ApproveSubscriptionHandlerTests
                 // Here you can add any additional logic to handle the event if needed
                 subscribedTo.OnSubscriptionApproved(subscriptionApprovedEvent);
             });
-        
+
         // First request a subscription
         var requestHandler = new RequestSubscriptionHandler(userRepository, eventAggregator);
         var requestCommand = new RequestSubscription(subscriberId, subscribedToId);
-        
+
         userRepository.GetByIdAsync(subscriberId, Arg.Any<CancellationToken>()).Returns(subscriber);
         userRepository.GetByIdAsync(subscribedToId, Arg.Any<CancellationToken>()).Returns(subscribedTo);
-        
+
         await requestHandler.Handle(requestCommand);
-        
+
         // Verify initial subscription status is Pending
         var subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Pending);
-        
+
         // Now approve the subscription
         var approveHandler = new ApproveSubscriptionHandler(userRepository, eventAggregator);
         var approveCommand = new ApproveSubscription(subscriberId, subscribedToId);
@@ -68,4 +68,4 @@ public class ApproveSubscriptionHandlerTests
 
         await userRepository.Received().SaveAsync(subscriber, Arg.Any<CancellationToken>());
     }
-} 
+}

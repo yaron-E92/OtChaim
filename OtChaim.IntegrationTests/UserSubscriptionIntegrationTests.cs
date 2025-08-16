@@ -1,9 +1,9 @@
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using OtChaim.Application.Common;
 using OtChaim.Application.Users.Commands;
 using OtChaim.Application.Users.Handlers;
 using OtChaim.Domain.Users;
-using FluentAssertions;
-using OtChaim.Application.Common;
 
 namespace OtChaim.IntegrationTests;
 
