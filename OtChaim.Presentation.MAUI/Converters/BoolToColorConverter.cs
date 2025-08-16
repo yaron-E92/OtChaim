@@ -6,11 +6,7 @@ public class BoolToColorConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is bool isAttached)
-        {
-            return isAttached ? Colors.Green : Colors.White;
-        }
-        return Colors.White;
+        return value is bool isAttached && isAttached ? Colors.Green : Colors.White;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

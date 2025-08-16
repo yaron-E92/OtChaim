@@ -92,7 +92,7 @@ public class EmergencyEventSubscriberTests
         // Assert
         emergency.Responses.Should().ContainSingle(r =>
             r.UserId == evt.UserId &&
-            r.IsSafe == true &&
+            r.IsSafe &&
             r.Message == evt.Message
         );
         await _repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());

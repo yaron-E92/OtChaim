@@ -40,7 +40,7 @@ public class EmergencyTests
     {
         // Arrange
         var location = new Location(32.0853, 34.7818);
-        var type = EmergencyType.WeatherAlert;
+        EmergencyType type = EmergencyType.WeatherAlert;
 
         // Act
         var emergency = new Emergency(Guid.Empty, Guid.Empty, location, null, type);
@@ -73,7 +73,7 @@ public class EmergencyTests
         var location = new Location(32.0853, 34.7818);
         var emergency = new Emergency(Guid.Empty, Guid.Empty, location);
         emergency.Resolve();
-        var firstResolvedAt = emergency.ResolvedAt;
+        DateTime? firstResolvedAt = emergency.ResolvedAt;
 
         // Act
         emergency.Resolve();
@@ -90,8 +90,8 @@ public class EmergencyTests
         var location = new Location(32.0853, 34.7818);
         var emergency = new Emergency(Guid.Empty, Guid.Empty, location);
         var userId = Guid.NewGuid();
-        var isSafe = true;
-        var message = "I'm safe!";
+        bool isSafe = true;
+        string message = "I'm safe!";
 
         // Act
         emergency.AddResponse(userId, isSafe, message);

@@ -6,11 +6,7 @@ public class BoolToTextColorConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is bool isSelected)
-        {
-            return isSelected ? Colors.White : Colors.Black;
-        }
-        return Colors.Black;
+        return value is bool isSelected && isSelected ? Colors.White : Colors.Black;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

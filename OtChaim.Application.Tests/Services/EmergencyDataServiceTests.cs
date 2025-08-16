@@ -32,7 +32,7 @@ public class EmergencyDataServiceTests
         var emergencies = new ObservableCollection<Emergency>();
 
         // Act
-        var result = _service.LoadActiveEmergenciesAsync(emergencies);
+        Task result = _service.LoadActiveEmergenciesAsync(emergencies);
 
         // Assert
         result.Should().NotBeNull();
@@ -46,7 +46,7 @@ public class EmergencyDataServiceTests
         var users = new ObservableCollection<User>();
 
         // Act
-        var result = _service.LoadUsersAsync(users);
+        Task result = _service.LoadUsersAsync(users);
 
         // Assert
         result.Should().NotBeNull();
@@ -60,7 +60,7 @@ public class EmergencyDataServiceTests
         var emergencies = new ObservableCollection<Emergency>();
 
         // Act & Assert
-        var action = () => _service.LoadActiveEmergenciesAsync(emergencies);
+        Func<Task> action = () => _service.LoadActiveEmergenciesAsync(emergencies);
         await action.Should().NotThrowAsync();
     }
 
@@ -71,7 +71,7 @@ public class EmergencyDataServiceTests
         var users = new ObservableCollection<User>();
 
         // Act & Assert
-        var action = () => _service.LoadUsersAsync(users);
+        Func<Task> action = () => _service.LoadUsersAsync(users);
         await action.Should().NotThrowAsync();
     }
 
@@ -79,7 +79,7 @@ public class EmergencyDataServiceTests
     public async Task LoadActiveEmergenciesAsync_WithNullCollection_ShouldHandleGracefully()
     {
         // Act & Assert
-        var action = () => _service.LoadActiveEmergenciesAsync(null!);
+        Func<Task> action = () => _service.LoadActiveEmergenciesAsync(null!);
         await action.Should().NotThrowAsync();
     }
 
@@ -87,7 +87,7 @@ public class EmergencyDataServiceTests
     public async Task LoadUsersAsync_WithNullCollection_ShouldHandleGracefully()
     {
         // Act & Assert
-        var action = () => _service.LoadUsersAsync(null!);
+        Func<Task> action = () => _service.LoadUsersAsync(null!);
         await action.Should().NotThrowAsync();
     }
 }

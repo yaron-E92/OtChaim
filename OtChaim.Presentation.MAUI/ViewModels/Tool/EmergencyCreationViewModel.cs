@@ -267,9 +267,9 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     [RelayCommand]
     private void PreviousEmergencyType()
     {
-        var values = Enum.GetValues<EmergencyType>();
-        var currentIndex = Array.IndexOf(values, SelectedEmergencyType);
-        var previousIndex = currentIndex - 1;
+        EmergencyType[] values = Enum.GetValues<EmergencyType>();
+        int currentIndex = Array.IndexOf(values, SelectedEmergencyType);
+        int previousIndex = currentIndex - 1;
 
         if (previousIndex < 0)
             previousIndex = values.Length - 1;
@@ -286,9 +286,9 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     [RelayCommand]
     private void NextEmergencyType()
     {
-        var values = Enum.GetValues<EmergencyType>();
-        var currentIndex = Array.IndexOf(values, SelectedEmergencyType);
-        var nextIndex = currentIndex + 1;
+        EmergencyType[] values = Enum.GetValues<EmergencyType>();
+        int currentIndex = Array.IndexOf(values, SelectedEmergencyType);
+        int nextIndex = currentIndex + 1;
 
         if (nextIndex >= values.Length)
             nextIndex = 0;
@@ -317,7 +317,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
                 return;
             }
 
-            var photo = await MediaPicker.PickPhotoAsync();
+            FileResult? photo = await MediaPicker.PickPhotoAsync();
             if (photo != null)
             {
                 AttachedPicturePath = photo.FullPath;
@@ -349,7 +349,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
                 return;
             }
 
-            var document = await FilePicker.PickAsync();
+            FileResult? document = await FilePicker.PickAsync();
             if (document != null)
             {
                 AttachedDocumentPath = document.FullPath;

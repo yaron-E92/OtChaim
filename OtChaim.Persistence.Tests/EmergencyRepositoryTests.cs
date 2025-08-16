@@ -170,7 +170,7 @@ public class EmergencyRepositoryTests
         emergency.AddResponse(userId1, true, "Safe here");
         emergency.AddResponse(userId2, false, "Need help");
         await _repository.SaveAsync(emergency);
-        var loaded = await _repository.GetByIdAsync(emergency.Id);
+        Emergency? loaded = await _repository.GetByIdAsync(emergency.Id);
 
         // Assert
         loaded?.Responses.Should().HaveCount(2);
@@ -256,7 +256,7 @@ public class EmergencyRepositoryTests
     public async Task SaveAsync_UpdatesEmergencyEmergencyTypePreserved()
     {
         // Arrange
-        var originalType = EmergencyType.NaturalDisaster;
+        EmergencyType originalType = EmergencyType.NaturalDisaster;
         var emergency = new Emergency(Guid.Empty, Guid.Empty, TestLocation.Clone(), emergencyType: originalType);
         await _repository.AddAsync(emergency);
 

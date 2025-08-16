@@ -7,21 +7,15 @@ namespace OtChaim.Application.Services;
 /// <summary>
 /// Provides data operations for emergencies and users in the OtChaim application.
 /// </summary>
-public class EmergencyDataService
+/// <remarks>
+/// Initializes a new instance of the <see cref="EmergencyDataService"/> class.
+/// </remarks>
+/// <param name="emergencyRepository">The emergency repository.</param>
+/// <param name="userRepository">The user repository.</param>
+public class EmergencyDataService(IEmergencyRepository emergencyRepository, IUserRepository userRepository)
 {
-    private readonly IEmergencyRepository _emergencyRepository;
-    private readonly IUserRepository _userRepository;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmergencyDataService"/> class.
-    /// </summary>
-    /// <param name="emergencyRepository">The emergency repository.</param>
-    /// <param name="userRepository">The user repository.</param>
-    public EmergencyDataService(IEmergencyRepository emergencyRepository, IUserRepository userRepository)
-    {
-        _emergencyRepository = emergencyRepository;
-        _userRepository = userRepository;
-    }
+    private readonly IEmergencyRepository _emergencyRepository = emergencyRepository;
+    private readonly IUserRepository _userRepository = userRepository;
 
     /// <summary>
     /// Loads active emergencies into the provided collection.

@@ -15,18 +15,18 @@ public class RejectSubscriptionHandlerTests
     public async Task Handle_RaisesSubscriptionRejectedEvent_AndSavesUser()
     {
         // Arrange
-        var userRepository = Substitute.For<IUserRepository>();
-        var eventAggregator = Substitute.For<IEventAggregator>();
+        IUserRepository userRepository = Substitute.For<IUserRepository>();
+        IEventAggregator eventAggregator = Substitute.For<IEventAggregator>();
         var subscriber = new User("Test Subscriber", "subscriber@example.com", "1234567890");
         var subscribedTo = new User("Test SubscribedTo", "subscribedto@example.com", "0987654321");
-        var subscriberId = subscriber.Id;
-        var subscribedToId = subscribedTo.Id;
+        Guid subscriberId = subscriber.Id;
+        Guid subscribedToId = subscribedTo.Id;
         eventAggregator
             .WhenForAnyArgs(eA => eA.PublishEventAsync(Arg.Any<SubscriptionRequested>(), Arg.Any<CancellationToken>()))
             .Do(callInfo =>
             {
                 // Simulate event publishing
-                var subscriptionRequestedEvent = callInfo.Arg<SubscriptionRequested>();
+                SubscriptionRequested subscriptionRequestedEvent = callInfo.Arg<SubscriptionRequested>();
                 // Here you can add any additional logic to handle the event if needed
                 subscribedTo.OnSubscriptionRequested(subscriptionRequestedEvent);
             });
@@ -35,7 +35,7 @@ public class RejectSubscriptionHandlerTests
             .Do(callInfo =>
             {
                 // Simulate event publishing
-                var subscriptionRejectedEvent = callInfo.Arg<SubscriptionRejected>();
+                SubscriptionRejected subscriptionRejectedEvent = callInfo.Arg<SubscriptionRejected>();
                 // Here you can add any additional logic to handle the event if needed
                 subscribedTo.OnSubscriptionRejected(subscriptionRejectedEvent);
             });
@@ -50,7 +50,7 @@ public class RejectSubscriptionHandlerTests
         await requestHandler.Handle(requestCommand);
 
         // Verify initial subscription status is Pending
-        var subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
+        Subscription subscription = subscribedTo.Subscriptions.First(s => s.SubscriberId == subscriberId && s.SubscribedToId == subscribedToId);
         subscription.Status.Should().Be(SubscriptionStatus.Pending);
 
         // Now reject the subscription

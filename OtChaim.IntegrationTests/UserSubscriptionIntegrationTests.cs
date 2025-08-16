@@ -41,7 +41,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     public async Task ApproveSubscriptionHandler_ApprovesSubscription()
     {
         // Arrange
-        var userRepository = Provider!.GetRequiredService<IUserRepository>();
+        IUserRepository userRepository = Provider!.GetRequiredService<IUserRepository>();
         RequestSubscriptionHandler? requestHandler = Provider!.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
         requestHandler.Should().NotBeNull("RequestSubscriptionHandler should be registered in the service container");
         ApproveSubscriptionHandler? approveHandler = Provider!.GetRequiredService<ICommandHandler<ApproveSubscription>>() as ApproveSubscriptionHandler;
@@ -56,7 +56,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
 
         // Act
         await approveHandler!.Handle(approveCommand);
-        var updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedTo.Id);
+        User updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedTo.Id);
 
         // Assert
         updatedSubscribedTo.Subscriptions.Should().NotBeEmpty();
@@ -70,7 +70,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
     public async Task RejectSubscriptionHandler_RejectsSubscription()
     {
         // Arrange
-        var userRepository = Provider!.GetRequiredService<IUserRepository>();
+        IUserRepository userRepository = Provider!.GetRequiredService<IUserRepository>();
         RequestSubscriptionHandler? requestHandler = Provider!.GetRequiredService<ICommandHandler<RequestSubscription>>() as RequestSubscriptionHandler;
         requestHandler.Should().NotBeNull("RequestSubscriptionHandler should be registered in the service container");
         RejectSubscriptionHandler? rejectHandler = Provider!.GetRequiredService<ICommandHandler<RejectSubscription>>() as RejectSubscriptionHandler;
@@ -85,7 +85,7 @@ public class UserSubscriptionIntegrationTests : IntegrationTestBase
 
         // Act
         await rejectHandler!.Handle(rejectCommand);
-        var updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedTo.Id);
+        User updatedSubscribedTo = await userRepository.GetByIdAsync(subscribedTo.Id);
 
         // Assert
         updatedSubscribedTo.Subscriptions.Should().NotBeEmpty();
