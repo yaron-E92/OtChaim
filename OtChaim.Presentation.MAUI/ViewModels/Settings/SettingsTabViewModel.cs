@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Presentation.MAUI.Pages.Settings;
+using System.Collections.ObjectModel;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Settings;
 
@@ -23,6 +23,10 @@ public partial class SettingsTabViewModel : ObservableObject
 
     public SettingsTabViewModel(UserInfoPage userInfoPage, MedicalInfoPage medicalInfoPage, EmergencyContactsPage emergencyContactsPage)
     {
+        ArgumentNullException.ThrowIfNull(userInfoPage);
+        ArgumentNullException.ThrowIfNull(medicalInfoPage);
+        ArgumentNullException.ThrowIfNull(emergencyContactsPage);
+
         // Initialize the settings pages using injected dependencies
         SettingsPages =
         [
@@ -33,7 +37,7 @@ public partial class SettingsTabViewModel : ObservableObject
 
         // Set the first page as current
         CurrentPageIndex = 0;
-        CurrentPage = SettingsPages.FirstOrDefault();
+        CurrentPage = SettingsPages.FirstOrDefault()!;
         CurrentPageTitle = _pageTitles[CurrentPageIndex];
     }
 

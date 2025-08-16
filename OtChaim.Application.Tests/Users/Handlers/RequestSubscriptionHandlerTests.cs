@@ -24,7 +24,7 @@ public class RequestSubscriptionHandlerTests
             .Do(callInfo =>
             {
                 // Simulate event publishing
-                var subscriptionRequestedEvent = callInfo.Arg<SubscriptionRequested>();
+                SubscriptionRequested subscriptionRequestedEvent = callInfo.Arg<SubscriptionRequested>();
                 // Here you can add any additional logic to handle the event if needed
                 subscribedTo.OnSubscriptionRequested(subscriptionRequestedEvent);
             });

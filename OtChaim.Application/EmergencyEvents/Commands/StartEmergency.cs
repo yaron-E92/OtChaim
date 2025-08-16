@@ -1,6 +1,6 @@
 using OtChaim.Application.Common;
-using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.Common;
+using OtChaim.Domain.EmergencyEvents;
 
 namespace OtChaim.Application.EmergencyEvents.Commands;
 

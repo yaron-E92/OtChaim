@@ -1,10 +1,10 @@
+using FluentAssertions;
 using NSubstitute;
+using OtChaim.Application.EmergencyEvents.EventSubscribers;
+using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
 using OtChaim.Domain.EmergencyEvents.Events;
-using OtChaim.Application.EmergencyEvents.EventSubscribers;
 using OtChaim.Domain.Users;
-using OtChaim.Domain.Common;
-using FluentAssertions;
 using Yaref92.Events.Abstractions;
 
 namespace OtChaim.Application.Tests.Emergencies.EventSubscribers;
@@ -45,7 +45,7 @@ public class EmergencyEventSubscriberTests
 
         // Assert
         await _repo.Received(1).AddAsync(Arg.Is<Emergency>(e =>
-            e.Location == evt.Location &&
+            e.Location.Equals(evt.Location) &&
             e.EmergencyType == evt.Type &&
             e.AffectedAreas.SequenceEqual(evt.AffectedAreas)
         ), Arg.Any<CancellationToken>());
@@ -92,7 +92,7 @@ public class EmergencyEventSubscriberTests
         // Assert
         emergency.Responses.Should().ContainSingle(r =>
             r.UserId == evt.UserId &&
-            r.IsSafe == true &&
+            r.IsSafe &&
             r.Message == evt.Message
         );
         await _repo.Received(1).SaveAsync(emergency, Arg.Any<CancellationToken>());

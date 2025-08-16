@@ -22,7 +22,7 @@ public class Notification : Entity
     /// <summary>
     /// Gets the message of the notification.
     /// </summary>
-    public string Message { get; private set; }
+    public string Message { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the creation time of the notification.
     /// </summary>

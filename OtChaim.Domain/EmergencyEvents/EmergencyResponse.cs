@@ -18,7 +18,7 @@ public class EmergencyResponse : ValueObject
     /// <summary>
     /// Gets the message provided by the user.
     /// </summary>
-    public string Message { get; private set; }
+    public string Message { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the time the response was made.
     /// </summary>

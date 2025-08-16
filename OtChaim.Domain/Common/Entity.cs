@@ -20,14 +20,8 @@ public abstract class Entity
     /// </summary>
     public override bool Equals(object? obj)
     {
-        if (obj is not Entity other)
-            return false;
-
-        if (ReferenceEquals(this, other))
-            return true;
-
-        return GetType() == other.GetType()
-            && Id == other.Id;
+        return obj is Entity other && (ReferenceEquals(this, other) ||
+            (GetType() == other.GetType() && Id == other.Id));
     }
 
     /// <summary>

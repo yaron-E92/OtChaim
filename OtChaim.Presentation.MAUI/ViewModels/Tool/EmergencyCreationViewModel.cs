@@ -2,9 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Application.Common;
 using OtChaim.Application.EmergencyEvents.Commands;
+using OtChaim.Application.ViewModels;
 using OtChaim.Domain.Common;
 using OtChaim.Domain.EmergencyEvents;
-using OtChaim.Application.ViewModels;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -267,13 +267,13 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     [RelayCommand]
     private void PreviousEmergencyType()
     {
-        var values = Enum.GetValues<EmergencyType>();
-        var currentIndex = Array.IndexOf(values, SelectedEmergencyType);
-        var previousIndex = currentIndex - 1;
-        
+        EmergencyType[] values = Enum.GetValues<EmergencyType>();
+        int currentIndex = Array.IndexOf(values, SelectedEmergencyType);
+        int previousIndex = currentIndex - 1;
+
         if (previousIndex < 0)
             previousIndex = values.Length - 1;
-        
+
         SelectedEmergencyType = values[previousIndex];
         UpdateEmergencyMessage();
     }
@@ -286,13 +286,13 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
     [RelayCommand]
     private void NextEmergencyType()
     {
-        var values = Enum.GetValues<EmergencyType>();
-        var currentIndex = Array.IndexOf(values, SelectedEmergencyType);
-        var nextIndex = currentIndex + 1;
-        
+        EmergencyType[] values = Enum.GetValues<EmergencyType>();
+        int currentIndex = Array.IndexOf(values, SelectedEmergencyType);
+        int nextIndex = currentIndex + 1;
+
         if (nextIndex >= values.Length)
             nextIndex = 0;
-        
+
         SelectedEmergencyType = values[nextIndex];
         UpdateEmergencyMessage();
     }
@@ -317,7 +317,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
                 return;
             }
 
-            var photo = await MediaPicker.PickPhotoAsync();
+            FileResult? photo = await MediaPicker.PickPhotoAsync();
             if (photo != null)
             {
                 AttachedPicturePath = photo.FullPath;
@@ -349,7 +349,7 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
                 return;
             }
 
-            var document = await FilePicker.PickAsync();
+            FileResult? document = await FilePicker.PickAsync();
             if (document != null)
             {
                 AttachedDocumentPath = document.FullPath;
@@ -486,8 +486,8 @@ public partial class EmergencyCreationViewModel : BaseEmergencyViewModel
             };
 
             // Use custom message or default based on emergency type
-            string message = string.IsNullOrWhiteSpace(EmergencyMessage) 
-                ? GetDefaultMessage(SelectedEmergencyType) 
+            string message = string.IsNullOrWhiteSpace(EmergencyMessage)
+                ? GetDefaultMessage(SelectedEmergencyType)
                 : EmergencyMessage;
 
             var command = new StartEmergency(

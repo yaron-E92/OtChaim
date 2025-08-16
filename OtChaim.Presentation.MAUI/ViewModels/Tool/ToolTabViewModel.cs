@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OtChaim.Presentation.MAUI.Pages.Tool;
+using System.Collections.ObjectModel;
 
 namespace OtChaim.Presentation.MAUI.ViewModels.Tool;
 
@@ -23,6 +23,10 @@ public partial class ToolTabViewModel : ObservableObject
 
     public ToolTabViewModel(EmergencyDashboardPage emergencyDashboardPage, EmergencyPage emergencyPage, GroupStatusPage groupStatusPage)
     {
+        ArgumentNullException.ThrowIfNull(emergencyDashboardPage);
+        ArgumentNullException.ThrowIfNull(emergencyPage);
+        ArgumentNullException.ThrowIfNull(groupStatusPage);
+
         // Initialize the tool pages using injected dependencies
         ToolPages =
         [
@@ -33,7 +37,7 @@ public partial class ToolTabViewModel : ObservableObject
 
         // Set the first page as current
         CurrentPageIndex = 0;
-        CurrentPage = ToolPages.FirstOrDefault();
+        CurrentPage = ToolPages.FirstOrDefault()!;
         CurrentPageTitle = _pageTitles[CurrentPageIndex];
     }
 

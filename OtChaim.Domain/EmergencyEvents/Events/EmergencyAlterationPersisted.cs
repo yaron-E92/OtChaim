@@ -47,4 +47,4 @@ public class EmergencyAlterationPersisted(Guid emergencyId, EmergencyAlterationT
     /// It inherits from the base DomainEventBase.DateTimeOccurredUtc property.
     /// </remarks>
     public DateTime PersistedAt => DateTimeOccurredUtc;
-} 
+}
